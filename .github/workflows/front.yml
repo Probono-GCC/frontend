@@ -9,7 +9,7 @@ env:
   AWS_REGION: ap-northeast-2
   AWS_S3_BUCKET: probono-gcc-bucket
   AWS_CODE_DEPLOY_APPLICATION: probono-gcc-codedeploy-app
-  AWS_CODE_DEPLOY_GROUP: probono-gcc-codedeploy-group
+  AWS_CODE_DEPLOY_GROUP: probono-gcc-codedeploy-group-front
 
 jobs: # job 시작 명시(모든 job의 묶음)
   build: # job 이름
