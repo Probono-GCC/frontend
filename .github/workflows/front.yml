@@ -1,5 +1,5 @@
 name: front ci/cd # workflow 이름(Actions에서 보여질 이름)
-run-name: ${{ github.actor }} is learning GitHub Actions # workflow 실행리스트에 보여질 이름
+run-name: ${{ github.actor }} is learning GitHub Actions # workflow 실행리스트에 보여질 이름.
 on: # 트리거
   push:
     branches: [ "main" ]
