@@ -12,6 +12,7 @@ function Calender() {
 
     const user = useSelector((state) => state.user);
 
+    // 토요일을 빨간색으로 바꾸기!!
     return (
         <div id={styles.myCalendar}>
         <FullCalendar
