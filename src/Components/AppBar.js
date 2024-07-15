@@ -1,5 +1,5 @@
 import * as React from "react";
-import { styled, alpha, useTheme } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
@@ -23,13 +23,13 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
 import HomeIcon from "@mui/icons-material/Home";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import BookIcon from "@mui/icons-material/Book";
 import SchoolIcon from "@mui/icons-material/School";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
+import Avatar from "@mui/material/Avatar";
 
 export default function AppBar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -285,16 +285,15 @@ export default function AppBar() {
               width: drawerWidth,
             }}
           >
-            <img
+            <Avatar
+              alt="Administrator"
               src="/images/profile_temp.png"
-              alt="Profile"
-              style={{
-                width: 80,
-                height: 80,
-                borderRadius: "50%",
-                marginBottom: theme.spacing(1),
+              sx={{
+                width: 60,
+                height: 60,
+                marginBottom: theme.spacing(2),
               }}
-            />
+            />{" "}
             <Typography variant="body1" sx={{ fontWeight: "bold" }}>
               Administrator
             </Typography>
