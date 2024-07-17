@@ -30,10 +30,27 @@ import BookIcon from "@mui/icons-material/Book";
 import SchoolIcon from "@mui/icons-material/School";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import Avatar from "@mui/material/Avatar";
+import { useNavigate } from "react-router-dom";
+
+import Accordion from "@mui/material/Accordion";
+import AccordionActions from "@mui/material/AccordionActions";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Button from "@mui/material/Button";
 
 export default function AppBar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+
+  const navigate = useNavigate();
+
+  const goHome = () => {
+    navigate("/home");
+  };
+  const goNoticeBoard = () => {
+    navigate("/notice-board");
+  };
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -140,7 +157,7 @@ export default function AppBar() {
     </Menu>
   );
 
-  const drawerWidth = 240;
+  const drawerWidth = 280;
 
   const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
     ({ theme, open }) => ({
@@ -300,65 +317,110 @@ export default function AppBar() {
           </Box>
           <Divider />
           <List>
-            {["Home", "Notice board"].map((text, index) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    {index % 2 === 0 ? (
-                      <HomeIcon color="primary" />
-                    ) : (
-                      <FormatListBulletedIcon />
-                    )}
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
+            <Accordion
+              sx={{
+                boxShadow: "none",
+                "&::before": { display: "none" },
+                marginBottom: "0px",
+              }}
+            >
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                sx={{ padding: "0 16px", height: "48px" }}
+              >
+                <ListItem key={"User Management"} disablePadding>
+                  <ListItemButton>
+                    <ListItemIcon sx={{ minWidth: "40px" }}>
+                      <AdminPanelSettingsIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"User Management"} />
+                  </ListItemButton>
+                </ListItem>
+              </AccordionSummary>
+              <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
+                <ListItem key={"Create Account"} disablePadding>
+                  <ListItemButton sx={{ pl: 10 }}>
+                    <ListItemText primary={"Create Account"} />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem key={"View Student"} disablePadding>
+                  <ListItemButton sx={{ pl: 10 }}>
+                    <ListItemText primary={"View Student"} />
+                  </ListItemButton>
+                </ListItem>
+              </AccordionDetails>
+            </Accordion>
+            <ListItem key={"Home"} disablePadding>
+              <ListItemButton
+                onClick={() => console.log("Go Home")}
+                sx={{ paddingLeft: "16px" }}
+              >
+                <ListItemIcon sx={{ minWidth: "40px" }}>
+                  <HomeIcon />
+                </ListItemIcon>
+                <ListItemText primary={"Home"} />
+              </ListItemButton>
+            </ListItem>
+            <ListItem key={"Notice board"} disablePadding>
+              <ListItemButton
+                onClick={() => console.log("Go Notice Board")}
+                sx={{ paddingLeft: "16px" }}
+              >
+                <ListItemIcon sx={{ minWidth: "40px" }}>
+                  <FormatListBulletedIcon />
+                </ListItemIcon>
+                <ListItemText primary={"Notice board"} />
+              </ListItemButton>
+            </ListItem>
           </List>
           <Divider />
           <List>
-            {[
-              "User Management",
-              "Class/Course Management",
-              "Elective Course Management",
-            ].map((text, index) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    {index === 0 && <AdminPanelSettingsIcon />}
-                    {index === 1 && <BookIcon />}
-                    {index === 2 && <BookIcon />}
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
+            <ListItem key={"User Management"} disablePadding>
+              <ListItemButton sx={{ paddingLeft: "16px" }}>
+                <ListItemIcon sx={{ minWidth: "40px" }}>
+                  <AdminPanelSettingsIcon />
+                </ListItemIcon>
+                <ListItemText primary={"User Management"} />
+              </ListItemButton>
+            </ListItem>
+            <ListItem key={"Class/Course Management"} disablePadding>
+              <ListItemButton sx={{ paddingLeft: "16px" }}>
+                <ListItemIcon sx={{ minWidth: "40px" }}>
+                  <BookIcon />
+                </ListItemIcon>
+                <ListItemText primary={"Class/Course Management"} />
+              </ListItemButton>
+            </ListItem>
+            <ListItem key={"Elective Course Management"} disablePadding>
+              <ListItemButton sx={{ paddingLeft: "16px" }}>
+                <ListItemIcon sx={{ minWidth: "40px" }}>
+                  <BookIcon />
+                </ListItemIcon>
+                <ListItemText primary={"Elective Course Management"} />
+              </ListItemButton>
+            </ListItem>
           </List>
           <Divider />
           <List>
-            {["Classes"].map((text, index) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    <SchoolIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
+            <ListItem key={"Classes"} disablePadding>
+              <ListItemButton sx={{ paddingLeft: "16px" }}>
+                <ListItemIcon sx={{ minWidth: "40px" }}>
+                  <SchoolIcon />
+                </ListItemIcon>
+                <ListItemText primary={"Classes"} />
+              </ListItemButton>
+            </ListItem>
           </List>
           <Divider />
           <List>
-            {["My Profile"].map((text, index) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    <AccountCircleRoundedIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
+            <ListItem key={"My Profile"} disablePadding>
+              <ListItemButton sx={{ paddingLeft: "16px" }}>
+                <ListItemIcon sx={{ minWidth: "40px" }}>
+                  <AccountCircleRoundedIcon />
+                </ListItemIcon>
+                <ListItemText primary={"My Profile"} />
+              </ListItemButton>
+            </ListItem>
           </List>
         </Drawer>
 

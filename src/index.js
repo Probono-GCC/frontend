@@ -1,17 +1,24 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import reportWebVitals from './reportWebVitals';
-import Home from './Pages/home'
-import { Provider } from 'react-redux';
-import store from './store'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter, Route, Navigate, Routes } from "react-router-dom";
+import "./index.css";
+import reportWebVitals from "./reportWebVitals";
+import Home from "./Pages/Home";
+import { Provider } from "react-redux";
+import store from "./store";
+import NoticeBoard from "./Pages/NoticeBoard";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
-  <React.StrictMode>
-    <Home />
-  </React.StrictMode>
+    <React.StrictMode>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/home" element={<Home />} />
+          <Route path="/notice-board" element={<NoticeBoard />} />
+        </Routes>
+      </BrowserRouter>
+    </React.StrictMode>
   </Provider>
 );
 
