@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import axios from "axios";
 import { convertDateFormat, convertTimeFormat } from "../Util/DateUtils";
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers";
@@ -48,7 +48,7 @@ function CalendarEventModal({ onClose }) {
         },
         {
           headers: {
-            Authorization: `Authorization ${access_token}`, // 여기에 Google Calendar API에 대한 액세스 토큰을 넣어야 합니다.
+            Authorization: `Bearer ${access_token}`, // 여기에 Google Calendar API에 대한 액세스 토큰을 넣어야 합니다.
           },
         }
       );
