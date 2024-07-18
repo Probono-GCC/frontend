@@ -42,13 +42,13 @@ function CalendarEventModal({ onClose }) {
             timeZone: "Asia/Seoul",
           },
           end: {
-            dateTime: "2024-07-03T13:00:00", // 종료 일시
-            timeZone: "Asia/Seoul", // 사용자의 시간대로 변경
+            dateTime: "2024-07-03T13:00:00",
+            timeZone: "Asia/Seoul",
           },
         },
         {
           headers: {
-            Authorization: `Bearer ${access_token}`, // 여기에 Google Calendar API에 대한 액세스 토큰을 넣어야 합니다.
+            Authorization: `Bearer ${access_token}`, 
           },
         }
       );

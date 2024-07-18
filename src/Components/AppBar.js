@@ -52,6 +52,10 @@ export default function AppBar() {
     navigate("/notice-board");
   };
 
+  const goStudentView = () => {
+    navigate("/student-view");
+  }
+
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -343,7 +347,7 @@ export default function AppBar() {
                     <ListItemText primary={"Create Account"} />
                   </ListItemButton>
                 </ListItem>
-                <ListItem key={"View Student"} disablePadding>
+                <ListItem onClick={goStudentView} key={"View Student"} disablePadding>
                   <ListItemButton sx={{ pl: 10 }}>
                     <ListItemText primary={"View Student"} />
                   </ListItemButton>

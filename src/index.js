@@ -1,12 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Route, Navigate, Routes } from "react-router-dom";
-import "./index.css";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
-import Home from "./Pages/Home";
 import { Provider } from "react-redux";
 import store from "./store";
+
+import "./index.css";
+
+//Pages
 import NoticeBoard from "./Pages/NoticeBoard";
+import Home from "./Pages/Home.js";
+import StudentView from "./Pages/StudentView.js"
+
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -14,8 +19,9 @@ root.render(
     <React.StrictMode>
       <BrowserRouter>
         <Routes>
-          <Route path="/home" element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="/notice-board" element={<NoticeBoard />} />
+          <Route path="/student-view" element = {<StudentView/>}/>
         </Routes>
       </BrowserRouter>
     </React.StrictMode>
