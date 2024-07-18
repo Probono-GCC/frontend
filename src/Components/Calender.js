@@ -10,7 +10,7 @@ import ModalComponent from "./CalendarEventModal.js";
 import styles from "../Styles/css/Calendar.module.css";
 
 function Calender() {
-  const apiKey = process.env.REACT_APP_GOOGLE_API_KEY;
+  const API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
 
   // const user = useSelector((state) => state.user);
   const [modalOpen, setModalOpen] = useState(false);
@@ -24,7 +24,6 @@ function Calender() {
     clickInfo.jsEvent.preventDefault(); // 기본 동작 막기
   };
 
-
   return (
     <div>
       <div>
@@ -34,7 +33,7 @@ function Calender() {
         <FullCalendar
           plugins={[dayGridPlugin, googleCalendarPlugin]}
           initialView="dayGridMonth"
-          googleCalendarApiKey={apiKey}
+          googleCalendarApiKey={API_KEY}
           events={{
             googleCalendarId: "gofn2023@gmail.com",
           }}
