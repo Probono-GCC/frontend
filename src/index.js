@@ -7,6 +7,7 @@ import Home from "./Pages/Home";
 import { Provider } from "react-redux";
 import store from "./store";
 import NoticeBoard from "./Pages/NoticeBoard";
+import CreateAccount from "./Pages/CreateAccount";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -16,6 +17,7 @@ root.render(
         <Routes>
           <Route path="/home" element={<Home />} />
           <Route path="/notice-board" element={<NoticeBoard />} />
+          <Route path="/create-account" element={<CreateAccount />} />
         </Routes>
       </BrowserRouter>
     </React.StrictMode>

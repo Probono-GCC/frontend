@@ -5,7 +5,7 @@ import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 //import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-function Home() {
+function NoticeBoard() {
   return (
     <div>
       <AppBar />
@@ -20,4 +20,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default NoticeBoard;

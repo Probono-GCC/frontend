@@ -48,8 +48,13 @@ export default function AppBar() {
   const goHome = () => {
     navigate("/home");
   };
+
   const goNoticeBoard = () => {
     navigate("/notice-board");
+  };
+
+  const goCreateAccount = () => {
+    navigate("/create-account");
   };
 
   const isMenuOpen = Boolean(anchorEl);
@@ -204,6 +209,11 @@ export default function AppBar() {
     ...theme.mixins.toolbar,
     justifyContent: "flex-end",
   }));
+  const [expanded, setExpanded] = React.useState(false);
+
+  const handleAccordionChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
 
   return (
     <div>
@@ -220,10 +230,7 @@ export default function AppBar() {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" noWrap component="div">
-              Home
-            </Typography>
-
+            <Typography variant="h6" noWrap component="div"></Typography>
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: { xs: "none", md: "flex" } }}>
               <IconButton
@@ -317,44 +324,8 @@ export default function AppBar() {
           </Box>
           <Divider />
           <List>
-            <Accordion
-              sx={{
-                boxShadow: "none",
-                "&::before": { display: "none" },
-                marginBottom: "0px",
-              }}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                sx={{ padding: "0 16px", height: "48px" }}
-              >
-                <ListItem key={"User Management"} disablePadding>
-                  <ListItemButton>
-                    <ListItemIcon sx={{ minWidth: "40px" }}>
-                      <AdminPanelSettingsIcon />
-                    </ListItemIcon>
-                    <ListItemText primary={"User Management"} />
-                  </ListItemButton>
-                </ListItem>
-              </AccordionSummary>
-              <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
-                <ListItem key={"Create Account"} disablePadding>
-                  <ListItemButton sx={{ pl: 10 }}>
-                    <ListItemText primary={"Create Account"} />
-                  </ListItemButton>
-                </ListItem>
-                <ListItem key={"View Student"} disablePadding>
-                  <ListItemButton sx={{ pl: 10 }}>
-                    <ListItemText primary={"View Student"} />
-                  </ListItemButton>
-                </ListItem>
-              </AccordionDetails>
-            </Accordion>
             <ListItem key={"Home"} disablePadding>
-              <ListItemButton
-                onClick={() => console.log("Go Home")}
-                sx={{ paddingLeft: "16px" }}
-              >
+              <ListItemButton onClick={goHome} sx={{ paddingLeft: "16px" }}>
                 <ListItemIcon sx={{ minWidth: "40px" }}>
                   <HomeIcon />
                 </ListItemIcon>
@@ -363,7 +334,7 @@ export default function AppBar() {
             </ListItem>
             <ListItem key={"Notice board"} disablePadding>
               <ListItemButton
-                onClick={() => console.log("Go Notice Board")}
+                onClick={goNoticeBoard}
                 sx={{ paddingLeft: "16px" }}
               >
                 <ListItemIcon sx={{ minWidth: "40px" }}>
@@ -375,22 +346,119 @@ export default function AppBar() {
           </List>
           <Divider />
           <List>
-            <ListItem key={"User Management"} disablePadding>
-              <ListItemButton sx={{ paddingLeft: "16px" }}>
-                <ListItemIcon sx={{ minWidth: "40px" }}>
+            <Accordion
+              sx={{
+                boxShadow: "none",
+                "&::before": { display: "none" },
+                marginBottom: "0px",
+              }}
+              expanded={expanded === "userManagement"}
+              onChange={handleAccordionChange("userManagement")}
+            >
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                sx={{
+                  padding: "0 16px",
+                  height: "48px",
+                  "&:hover": {
+                    backgroundColor: theme.palette.action.hover,
+                  },
+                  ...(expanded === "userManagement" && {
+                    backgroundColor: theme.palette.action.selected,
+                  }),
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: "40px",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
                   <AdminPanelSettingsIcon />
                 </ListItemIcon>
                 <ListItemText primary={"User Management"} />
-              </ListItemButton>
-            </ListItem>
-            <ListItem key={"Class/Course Management"} disablePadding>
-              <ListItemButton sx={{ paddingLeft: "16px" }}>
-                <ListItemIcon sx={{ minWidth: "40px" }}>
+              </AccordionSummary>
+              <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
+                <ListItem key={"Create Account"} disablePadding>
+                  <ListItemButton onClick={goCreateAccount} sx={{ pl: 10 }}>
+                    <ListItemText primary={"Create Account"} />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem key={"View Student"} disablePadding>
+                  <ListItemButton sx={{ pl: 10 }}>
+                    <ListItemText primary={"View Student"} />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem key={"View Teacher"} disablePadding>
+                  <ListItemButton sx={{ pl: 10 }}>
+                    <ListItemText primary={"View Teacher"} />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem key={"Change Password"} disablePadding>
+                  <ListItemButton sx={{ pl: 10 }}>
+                    <ListItemText primary={"Change Password"} />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem key={"Change Grade"} disablePadding>
+                  <ListItemButton sx={{ pl: 10 }}>
+                    <ListItemText primary={"Change Grade"} />
+                  </ListItemButton>
+                </ListItem>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion
+              sx={{
+                boxShadow: "none",
+                "&::before": { display: "none" },
+                marginBottom: "0px",
+              }}
+              expanded={expanded === "classCourseManagement"}
+              onChange={handleAccordionChange("classCourseManagement")}
+            >
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                sx={{
+                  padding: "0 16px",
+                  height: "72px",
+                  "&:hover": {
+                    backgroundColor: theme.palette.action.hover,
+                  },
+                  ...(expanded === "classCourseManagement" && {
+                    backgroundColor: theme.palette.action.selected,
+                  }),
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: "40px",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
                   <BookIcon />
                 </ListItemIcon>
                 <ListItemText primary={"Class/Course Management"} />
-              </ListItemButton>
-            </ListItem>
+              </AccordionSummary>
+              <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
+                <ListItem key={"Create Class"} disablePadding>
+                  <ListItemButton sx={{ pl: 10 }}>
+                    <ListItemText primary={"Create Class"} />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem key={"Assign Homeroom"} disablePadding>
+                  <ListItemButton sx={{ pl: 10 }}>
+                    <ListItemText primary={"Assign Homeroom"} />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem key={"Common Course Management"} disablePadding>
+                  <ListItemButton sx={{ pl: 10 }}>
+                    <ListItemText primary={"Common Course Management"} />
+                  </ListItemButton>
+                </ListItem>
+              </AccordionDetails>
+            </Accordion>
             <ListItem key={"Elective Course Management"} disablePadding>
               <ListItemButton sx={{ paddingLeft: "16px" }}>
                 <ListItemIcon sx={{ minWidth: "40px" }}>
