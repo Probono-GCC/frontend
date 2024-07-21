@@ -1,19 +1,16 @@
 import React, { useState, forwardRef } from "react";
 import clsx from "clsx";
 import { styled, css } from "@mui/system";
-import { Modal as BaseModal } from "@mui/base/Modal";
+import { Modal as BaseModal, Backdrop } from "@mui/material";
 import { blue, grey } from "../Styles/Color"; // 색상 팔레트 임포트
 
-function CustomModal() {
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+function CustomModal({ open, handleClose, rowData }) {
+  // const [open, setOpen] = useState(false);
+  // const handleOpen = () => setOpen(true);
+  // const handleClose = () => setOpen(false);
 
   return (
     <div>
-      <TriggerButton type="button" onClick={handleOpen}>
-        Open modal
-      </TriggerButton>
       <Modal
         aria-labelledby="keep-mounted-modal-title"
         aria-describedby="keep-mounted-modal-description"
@@ -27,7 +24,7 @@ function CustomModal() {
             Text in a modal
           </h2>
           <p id="keep-mounted-modal-description" className="modal-description">
-            Aliquid amet deserunt earum!
+            {JSON.stringify(rowData)}
           </p>
         </ModalContent>
       </Modal>
@@ -45,7 +42,6 @@ const Modal = styled(BaseModal)(`
   display: flex;
   align-items: center;
   justify-content: center;
-
   &.base-Modal-hidden {
     visibility: hidden;
   }
@@ -61,6 +57,7 @@ const StyledBackdrop = styled(Backdrop)`
 
 const ModalContent = styled("div")(
   ({ theme }) => css`
+    height: 70vh;
     font-family: "IBM Plex Sans", sans-serif;
     font-weight: 500;
     text-align: start;
@@ -89,38 +86,6 @@ const ModalContent = styled("div")(
       font-weight: 400;
       color: ${theme.palette.mode === "dark" ? grey[400] : grey[800]};
       margin-bottom: 4px;
-    }
-  `
-);
-
-const TriggerButton = styled("button")(
-  ({ theme }) => css`
-    font-family: "IBM Plex Sans", sans-serif;
-    font-weight: 600;
-    font-size: 0.875rem;
-    line-height: 1.5;
-    padding: 8px 16px;
-    border-radius: 8px;
-    transition: all 150ms ease;
-    cursor: pointer;
-    background: ${theme.palette.mode === "dark" ? grey[900] : "#fff"};
-    border: 1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]};
-    color: ${theme.palette.mode === "dark" ? grey[200] : grey[900]};
-    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-
-    &:hover {
-      background: ${theme.palette.mode === "dark" ? grey[800] : grey[50]};
-      border-color: ${theme.palette.mode === "dark" ? grey[600] : grey[300]};
-    }
-
-    &:active {
-      background: ${theme.palette.mode === "dark" ? grey[700] : grey[100]};
-    }
-
-    &:focus-visible {
-      box-shadow: 0 0 0 4px
-        ${theme.palette.mode === "dark" ? blue[300] : blue[200]};
-      outline: none;
     }
   `
 );

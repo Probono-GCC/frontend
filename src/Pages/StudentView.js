@@ -2,8 +2,12 @@ import React, { useState, useNavigate } from "react";
 
 import AppBar from "../Components/AppBar";
 import Table from "../Components/Table";
-
+import Button from "../Components/Button";
 import styles from "../Styles/css/Table.module.css";
+import IconButton from "@mui/material/IconButton";
+
+import InfoIcon from "@mui/icons-material/Info";
+import Modal from "../Components/Modal";
 const columns = [
   { field: "sn", headerName: "SN", type: "number", flex: 0.05 },
   { field: "name", headerName: "Name", flex: 0.2 },
@@ -89,8 +93,42 @@ const rows = [
 ];
 
 function StudentView() {
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalRowData, setModalRowData] = useState("default row data");
+
+  const handleRowSelection = (newSelection) => {
+    setSelectedRows(newSelection);
+  };
+
+  const handleModalOpen = (row) => {
+    setModalRowData(row);
+    setModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+    setModalRowData(null);
+  };
+
+  const updatedColumns = [
+    ...columns,
+    {
+      field: "actions",
+      headerName: "Actions",
+      flex: 0.1,
+      renderCell: (params) => (
+        <IconButton
+          aria-label="info"
+          onClick={() => handleModalOpen(params.row)}
+        >
+          <InfoIcon />
+        </IconButton>
+      ),
+    },
+  ];
   return (
-    <div>
+    <div id="page_content">
       <AppBar />
       <div id={styles.table_container}>
         {" "}
@@ -98,8 +136,18 @@ function StudentView() {
           {" "}
           <h1>Student Board</h1>
         </div>
-        <Table columns={columns} rows={rows} />
+        <Table
+          columns={updatedColumns}
+          rows={rows}
+          onRowSelection={handleRowSelection}
+        />
       </div>
+      <Button title={"Delete"} disabled={selectedRows.length === 0} />
+      <Modal
+        open={modalOpen}
+        handleClose={handleModalClose}
+        rowData={modalRowData}
+      />
     </div>
   );
 }
