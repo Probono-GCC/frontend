@@ -5,33 +5,38 @@ import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
-
-const Item = styled(Paper)(({ theme }) => ({
-  width: "100%",
-  padding: theme.spacing(2),
-  textAlign: "left",
-  borderLeft: "5px solid #1B8EF2", // 하늘색 윤곽선 추가
-  transition: "background-color 0.3s", // 배경색 전환 효과
-  "&:hover": {
-    backgroundColor: theme.palette.action.hover, // hover 시 배경색 변경
-  },
-}));
-
-const NoticeTitle = styled(Box)(({ theme }) => ({
-  color: "black",
-  fontSize: "24px",
-  fontWeight: "500",
-  fontFamily: "Copperplate",
-}));
-
-const NoticeDate = styled(Box)(({ theme }) => ({
-  color: "#B3B3B3",
-  fontSize: "16px",
-  fontWeight: "400",
-  fontFamily: "Copperplate",
-}));
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function NoticeStack() {
+  const navigate = useNavigate();
+  const Item = styled(Paper)(({ theme }) => ({
+    width: "100%",
+    padding: theme.spacing(2),
+    textAlign: "left",
+    borderLeft: "5px solid #1B8EF2", // 하늘색 윤곽선 추가
+    transition: "background-color 0.3s", // 배경색 전환 효과
+    "&:hover": {
+      backgroundColor: theme.palette.action.hover, // hover 시 배경색 변경
+    },
+  }));
+
+  const NoticeTitle = styled(Box)(({ theme }) => ({
+    color: "black",
+    fontSize: "24px",
+    fontWeight: "500",
+    fontFamily: "Copperplate",
+  }));
+
+  const NoticeDate = styled(Box)(({ theme }) => ({
+    color: "#B3B3B3",
+    fontSize: "16px",
+    fontWeight: "400",
+    fontFamily: "Copperplate",
+  }));
+
+  const goNoticeBoard = () => {
+    navigate("/notice-board");
+  };
   return (
     <Box
       sx={{
@@ -58,7 +63,7 @@ export default function NoticeStack() {
           Notice Board
         </Box>
         <IconButton
-          //onClick={handleAddClick}
+          onClick={goNoticeBoard}
           sx={{
             "&:hover": { backgroundColor: "#BBDEFB" },
           }}

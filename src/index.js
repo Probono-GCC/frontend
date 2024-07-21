@@ -8,6 +8,7 @@ import { Provider } from "react-redux";
 import store from "./store";
 import NoticeBoard from "./Pages/NoticeBoard";
 import CreateAccount from "./Pages/CreateAccount";
+import MyProfile from "./Pages/MyProfile";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -18,6 +19,7 @@ root.render(
           <Route path="/home" element={<Home />} />
           <Route path="/notice-board" element={<NoticeBoard />} />
           <Route path="/create-account" element={<CreateAccount />} />
+          <Route path="/my-profile" element={<MyProfile />} />
         </Routes>
       </BrowserRouter>
     </React.StrictMode>

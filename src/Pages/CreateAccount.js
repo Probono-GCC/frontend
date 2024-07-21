@@ -20,7 +20,7 @@ function CreateAccount() {
   const [showRePassword, setShowRePassword] = useState(false);
   const [password, setPassword] = useState("");
   const [rePassword, setRePassword] = useState("");
-  const [passwordError, setPasswordError] = useState(false);
+  const [rePasswordError, setRePasswordError] = useState(false);
   const [grade, setGrade] = useState("PlayGroup");
   const [isIdChecked, setIsIdChecked] = useState(false);
   const [isSnChecked, setIsSnChecked] = useState(false);
@@ -52,9 +52,9 @@ function CreateAccount() {
 
   const checkPasswords = (pw, rePw) => {
     if (pw.length > 0 && rePw.length > 0 && pw !== rePw) {
-      setPasswordError(true);
+      setRePasswordError(true);
     } else {
-      setPasswordError(false);
+      setRePasswordError(false);
     }
   };
 
@@ -210,8 +210,6 @@ function CreateAccount() {
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={handlePasswordChange}
-              error={passwordError}
-              helperText={passwordError ? "Passwords do not match" : ""}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -235,8 +233,8 @@ function CreateAccount() {
               type={showRePassword ? "text" : "password"}
               value={rePassword}
               onChange={handleRePasswordChange}
-              error={passwordError}
-              helperText={passwordError ? "Passwords do not match" : ""}
+              error={rePasswordError}
+              helperText={rePasswordError ? "Passwords do not match" : ""}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">

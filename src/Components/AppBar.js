@@ -59,6 +59,10 @@ export default function AppBar() {
     navigate("/create-account");
   };
 
+  const goMyProfile = () => {
+    navigate("/my-profile");
+  };
+
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -389,7 +393,7 @@ export default function AppBar() {
                     color:
                       location.pathname === "/notice-board"
                         ? theme.palette.primary.main
-                        : "inherit",
+                        : "none",
                   }}
                 >
                   <FormatListBulletedIcon />
@@ -682,11 +686,32 @@ export default function AppBar() {
           <Divider />
           <List>
             <ListItem key={"My Profile"} disablePadding>
-              <ListItemButton sx={{ paddingLeft: "16px" }}>
-                <ListItemIcon sx={{ minWidth: "40px" }}>
+              <ListItemButton
+                onClick={goMyProfile}
+                sx={{ paddingLeft: "16px" }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: "40px",
+                    color:
+                      location.pathname === "/my-profile"
+                        ? theme.palette.primary.main
+                        : "none",
+                  }}
+                >
                   <AccountCircleRoundedIcon />
                 </ListItemIcon>
-                <ListItemText primary={"My Profile"} />
+                <ListItemText
+                  primary={"My Profile"}
+                  sx={{
+                    "& .MuiTypography-root": {
+                      fontWeight:
+                        location.pathname === "/my-profile"
+                          ? theme.typography.fontWeightBold
+                          : theme.typography.fontWeightRegular,
+                    },
+                  }}
+                />
               </ListItemButton>
             </ListItem>
           </List>
