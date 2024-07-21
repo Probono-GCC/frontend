@@ -85,6 +85,7 @@ function CreateAccount() {
     { value: "Class10", label: "Class 10" },
   ];
 
+  // 정규표현식으로 입력 조건 필터링 필요
   const handleRegister = () => {
     if (!isIdChecked) {
       alert("Please Check your ID");
