@@ -1,5 +1,9 @@
 #table_body {
   height: 400px;
-  width: "100%";
-  margin: 2%;
+  width: 90vw;
+  /* margin: 2%; */
+  margin: auto;
+}
+#table_container {
+  width: 100vw;
 }

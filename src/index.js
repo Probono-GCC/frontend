@@ -7,11 +7,10 @@ import store from "./store";
 
 import "./index.css";
 
-//Pages
+//page
 import NoticeBoard from "./Pages/NoticeBoard";
 import Home from "./Pages/Home.js";
-import StudentView from "./Pages/StudentView.js"
-
+import StudentView from "./Pages/StudentView.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -21,7 +20,7 @@ root.render(
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/notice-board" element={<NoticeBoard />} />
-          <Route path="/student-view" element = {<StudentView/>}/>
+          <Route path="/student-view" element={<StudentView />} />
         </Routes>
       </BrowserRouter>
     </React.StrictMode>
