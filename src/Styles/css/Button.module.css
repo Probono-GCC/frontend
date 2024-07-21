@@ -1,0 +1,17 @@
+#button {
+  position: absolute;
+  right: 5vw;
+  width: 13vw;
+  margin-top: 3vh;
+}
+
+/* 활성화 버튼 디자인*/
+#button:not(:disabled) {
+  background-color: #d8edff;
+  color: #1b8ef2;
+}
+/* 비활성화 버튼 디자인 */
+#button:disabled {
+  background-color: #cccccc;
+  color: #808792;
+}
