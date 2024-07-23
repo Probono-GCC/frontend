@@ -7,6 +7,7 @@ import Home from "./Pages/Home";
 import { Provider } from "react-redux";
 import store from "./store";
 import NoticeBoard from "./Pages/NoticeBoard";
+import NewPostForm from "./Pages/NewPostForm";
 import CreateAccount from "./Pages/CreateAccount";
 import MyProfile from "./Pages/MyProfile";
 
@@ -20,6 +21,7 @@ root.render(
           <Route path="/notice-board" element={<NoticeBoard />} />
           <Route path="/create-account" element={<CreateAccount />} />
           <Route path="/my-profile" element={<MyProfile />} />
+          <Route path="/new-post-form" element={<NewPostForm />} />
         </Routes>
       </BrowserRouter>
     </React.StrictMode>
