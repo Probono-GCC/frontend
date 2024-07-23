@@ -8,6 +8,7 @@ import IconButton from "@mui/material/IconButton";
 
 import InfoIcon from "@mui/icons-material/Info";
 import Modal from "../Components/Modal";
+
 const columns = [
   { field: "sn", headerName: "SN", type: "number", flex: 0.05 },
   { field: "name", headerName: "Name", flex: 0.2 },
@@ -114,8 +115,8 @@ function StudentView() {
   const updatedColumns = [
     ...columns,
     {
-      field: "actions",
-      headerName: "Actions",
+      field: "Detail",
+      headerName: "Detail",
       flex: 0.1,
       renderCell: (params) => (
         <IconButton
@@ -132,7 +133,7 @@ function StudentView() {
       <AppBar />
       <div id={styles.table_container}>
         {" "}
-        <div class="header_title">
+        <div className="header_title">
           {" "}
           <h1>Student Board</h1>
         </div>
@@ -146,6 +147,7 @@ function StudentView() {
       <Modal
         open={modalOpen}
         handleClose={handleModalClose}
+        title={"Detail Information"}
         rowData={modalRowData}
       />
     </div>

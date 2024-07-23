@@ -1,10 +1,12 @@
-import React, { useState, forwardRef } from "react";
-import clsx from "clsx";
+import React from "react";
 import { styled, css } from "@mui/system";
 import { Modal as BaseModal, Backdrop } from "@mui/material";
-import { blue, grey } from "../Styles/Color"; // 색상 팔레트 임포트
+import { grey } from "../Styles/Color"; // 색상 팔레트 임포트
 
-function CustomModal({ open, handleClose, rowData }) {
+import DetailTable from "./DetailTable";
+import ProfileImg from "../Assets/img/profile_temp.png";
+
+function CustomModal({ open, handleClose, title, rowData }) {
   // const [open, setOpen] = useState(false);
   // const handleOpen = () => setOpen(true);
   // const handleClose = () => setOpen(false);
@@ -19,13 +21,22 @@ function CustomModal({ open, handleClose, rowData }) {
         slots={{ backdrop: StyledBackdrop }}
         keepMounted
       >
-        <ModalContent sx={{ width: 400 }}>
+        <ModalContent
+          sx={{
+            width: 400,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           <h2 id="keep-mounted-modal-title" className="modal-title">
-            Text in a modal
+            {title}
           </h2>
-          <p id="keep-mounted-modal-description" className="modal-description">
+          <img src={ProfileImg} width="120px" height="120px" />
+          <DetailTable data={rowData} />
+          {/* <p id="keep-mounted-modal-description" className="modal-description">
             {JSON.stringify(rowData)}
-          </p>
+          </p> */}
         </ModalContent>
       </Modal>
     </div>
