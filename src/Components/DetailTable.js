@@ -24,26 +24,28 @@ export default function DetailTable({ data }) {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        {rowsHeader.map((rowHeader, index) => (
-          <TableRow>
-            <TableCell
-              sx={{
-                backgroundColor: "#D8EDFF",
-                color: "#1B8EF2",
-                textAlign: "center",
-                fontWeight: "bold",
-              }}
-              align="left"
-              width="100px"
-            >
-              {rowHeader.name}
-            </TableCell>
+        <TableBody>
+          {rowsHeader.map((rowHeader, index) => (
+            <TableRow key={index}>
+              <TableCell
+                sx={{
+                  backgroundColor: "#D8EDFF",
+                  color: "#1B8EF2",
+                  textAlign: "center",
+                  fontWeight: "bold",
+                }}
+                align="left"
+                width="100px"
+              >
+                {rowHeader.name}
+              </TableCell>
 
-            <TableCell align="left">
-              {data && data[rowHeader.field] ? data[rowHeader.field] : "null"}
-            </TableCell>
-          </TableRow>
-        ))}
+              <TableCell align="left">
+                {data && data[rowHeader.field] ? data[rowHeader.field] : "null"}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
         {/* <TableHead>
           <TableRow>
             <TableCell>Dessert (100g serving)</TableCell>

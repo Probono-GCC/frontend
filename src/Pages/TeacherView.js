@@ -25,7 +25,7 @@ const columns = [
   { field: "gender", headerName: "Gender", flex: 0.1 },
   { field: "birth", headerName: "Birth", flex: 0.1 },
   { field: "id", headerName: "ID", flex: 0.2 },
-  { field: "grade", headerName: "Grade", flex: 0.3 },
+  { field: "phone", headerName: "phone", flex: 0.3 },
 ];
 
 const rows = [
@@ -33,77 +33,85 @@ const rows = [
     sn: 1,
     gender: "Male",
     name: "Jon",
-    birth: "20.02.24",
-    id: "a0000",
-    grade: "PlayGroup",
+    birth: "92.02.24",
+    id: "b0000",
+    phone: "01021143454",
   },
   {
     sn: 2,
     gender: "Female",
     name: "Cersei",
-    birth: "20.01.04",
-    id: "a0001",
-    grade: "PlayGroup",
+    birth: "92.01.04",
+    id: "b0001",
+    phone: "01021143454",
   },
   {
     sn: 3,
     gender: "Male",
     name: "Jaime",
-    birth: "20.12.24",
-    id: "a0002",
-    grade: "PlayGroup",
+    birth: "92.12.24",
+    id: "b0002",
+    phone: "01021143454",
   },
   {
     sn: 4,
     gender: "Male",
     name: "Arya",
-    birth: "20.05.27",
-    id: "a0003",
-    grade: "PlayGroup",
+    birth: "92.05.27",
+    id: "b0003",
+    phone: "01021143454",
   },
   {
     sn: 5,
     gender: "Male",
     name: "Daenerys",
-    birth: "20.08.14",
-    id: "a0004",
-    grade: "PlayGroup",
+    birth: "92.08.14",
+    id: "b0004",
+    phone: "01021143454",
   },
   {
     sn: 6,
     gender: "Male",
     name: "nell",
-    birth: "20.12.24",
-    id: "a0005",
-    grade: "PlayGroup",
+    birth: "92.12.24",
+    id: "b0005",
+    phone: "01021143454",
   },
   {
     sn: 7,
     gender: "Female",
     name: "Ferrara",
-    birth: "19.07.05",
+    birth: "88.07.05",
     id: "b0006",
-    grade: "UnderKG",
+    phone: "01042174900",
   },
   {
     sn: 8,
     gender: "Female",
     name: "Rossini",
-    birth: "19.07.25",
+    birth: "88.07.25",
     id: "b0007",
-    grade: "UnderKG",
+    phone: "01042174900",
   },
   {
     sn: 9,
     gender: "Female",
     name: "Harvey",
-    birth: "19.07.04",
+    birth: "88.07.04",
     id: "b0008",
-    grade: "UnderKG",
+    phone: "01042174900",
+  },
+  {
+    sn: 10,
+    gender: "Female",
+    name: "Uri",
+    birth: "89.12.03",
+    id: "b0009",
+    phone: "01042174900",
   },
 ];
 
-function StudentView() {
+function TeacherView() {
   // const [selectedRows, setSelectedRows] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalRowData, setModalRowData] = useState("default row data");
@@ -179,7 +187,7 @@ function StudentView() {
         {" "}
         <div className="header_title">
           {" "}
-          <h1>Student Board</h1>
+          <h1>Teacher Board</h1>
         </div>
         <Table
           columns={updatedColumns}
@@ -204,4 +212,4 @@ function StudentView() {
   );
 }
 
-export default StudentView;
+export default TeacherView;

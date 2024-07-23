@@ -11,7 +11,7 @@ import "./index.css";
 import NoticeBoard from "./Pages/NoticeBoard";
 import Home from "./Pages/Home.js";
 import StudentView from "./Pages/StudentView.js";
-
+import TeacherView from "./Pages/TeacherView.js";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
@@ -21,6 +21,7 @@ root.render(
           <Route path="/" element={<Home />} />
           <Route path="/notice-board" element={<NoticeBoard />} />
           <Route path="/student-view" element={<StudentView />} />
+          <Route path="/teacher-view" element={<TeacherView />} />
         </Routes>
       </BrowserRouter>
     </React.StrictMode>

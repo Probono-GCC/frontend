@@ -1,7 +1,7 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
 import styles from "../Styles/css/Table.module.css";
-function Table({ columns, rows, onRowSelection }) {
+function Table({ columns, rows, onRowSelection, onRowDoubleClick }) {
   return (
     <div id={styles.table_body}>
       <DataGrid
@@ -24,7 +24,7 @@ function Table({ columns, rows, onRowSelection }) {
           },
         }}
         pageSizeOptions={[5, 10, 15]}
-        checkboxSelection
+        onRowDoubleClick={onRowDoubleClick}
       />
     </div>
   );

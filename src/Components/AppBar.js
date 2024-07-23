@@ -54,7 +54,11 @@ export default function AppBar() {
 
   const goStudentView = () => {
     navigate("/student-view");
-  }
+  };
+
+  const goTeacherView = () => {
+    navigate("/teacher-view");
+  };
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -347,9 +351,22 @@ export default function AppBar() {
                     <ListItemText primary={"Create Account"} />
                   </ListItemButton>
                 </ListItem>
-                <ListItem onClick={goStudentView} key={"View Student"} disablePadding>
+                <ListItem
+                  onClick={goStudentView}
+                  key={"View Student"}
+                  disablePadding
+                >
                   <ListItemButton sx={{ pl: 10 }}>
                     <ListItemText primary={"View Student"} />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem
+                  onClick={goTeacherView}
+                  key={"View Teacher"}
+                  disablePadding
+                >
+                  <ListItemButton sx={{ pl: 10 }}>
+                    <ListItemText primary={"View Teacher"} />
                   </ListItemButton>
                 </ListItem>
               </AccordionDetails>
