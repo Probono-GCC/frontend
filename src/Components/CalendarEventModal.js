@@ -18,132 +18,123 @@ function CalendarEventModal({ onClose }) {
   const [endTimeValue, setEndTimeValue] = useState();
   const [titleValue, setTitleValue] = useState("");
   const [contentsValue, setContentsValue] = useState("");
-  const access_token = process.env.REACT_APP_GOOGLE_ACCESS_TOKEN;
+  const [titleError, setTitleError] = useState(false);
+
+  const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
+  const CLIENT_SECRET = process.env.REACT_APP_CLIENT_SECRET;
+  const REFRESH_TOKEN = process.env.REACT_APP_REFRESH_TOKEN;
+  const API_URL = process.env.REACT_APP_API_URL;
+  // const access_token = process.env.REACT_APP_GOOGLE_ACCESS_TOKEN;
 
   const handleTitleChange = (event) => {
     setTitleValue(event.target.value);
+    setTitleError(false);
   };
 
   const handleContentsChange = (event) => {
     setContentsValue(event.target.value);
   };
-  const apiUrl =
-    "https://www.googleapis.com/calendar/v3/calendars/gofn2023@gmail.com/events";
-  const handleAddEvent = async () => {
+
+  const fetchAccessToken = async () => {
     try {
-      // Google Calendar API에 요청 보내기
       const response = await axios.post(
-        apiUrl,
+        "https://oauth2.googleapis.com/token",
+        null,
         {
-          summary: "Sample Event",
-          description: "A sample event added using axios",
-          start: {
-            dateTime: "2024-07-03T12:00:00",
-            timeZone: "Asia/Seoul",
-          },
-          end: {
-            dateTime: "2024-07-03T13:00:00", // 종료 일시
-            timeZone: "Asia/Seoul", // 사용자의 시간대로 변경
-          },
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${access_token}`, // 여기에 Google Calendar API에 대한 액세스 토큰을 넣어야 합니다.
+          params: {
+            client_id: CLIENT_ID,
+            client_secret: CLIENT_SECRET,
+            refresh_token: REFRESH_TOKEN,
+            grant_type: "refresh_token",
           },
         }
       );
-
-      // 성공적으로 이벤트가 추가되었을 때의 처리
-      console.log("Event added successfully:", response);
+      return response.data.access_token;
     } catch (error) {
-      // 오류 처리
-      console.error("Error adding event:", error.response);
+      console.error("Error fetching access token", error);
     }
   };
 
   const registerEvent = async () => {
+    if (!titleValue) {
+      setTitleError(true);
+      return;
+    }
+    const access_token = await fetchAccessToken();
+
     const startDate =
-      convertDateFormat(dateValue) + convertTimeFormat(startTimeValue);
+      convertDateFormat(dateValue) +
+      (startTimeValue ? convertTimeFormat(startTimeValue) : "T00:00:00");
     const endDate =
-      convertDateFormat(dateValue) + convertTimeFormat(endTimeValue);
-    console.log("startDate" + startDate);
-    console.log("endDate" + endDate);
+      convertDateFormat(dateValue) +
+      (endTimeValue ? convertTimeFormat(endTimeValue) : "T23:59:59");
+
+    const event = {
+      summary: titleValue,
+      description: contentsValue ? contentsValue : "",
+      start: {
+        dateTime: startTimeValue ? startDate : undefined,
+        date: !startTimeValue ? convertDateFormat(dateValue) : undefined,
+        timeZone: "Asia/Kathmandu",
+      },
+      end: {
+        dateTime: endTimeValue ? endDate : undefined,
+        date: !endTimeValue ? convertDateFormat(dateValue) : undefined,
+        timeZone: "Asia/Kathmandu",
+      },
+    };
 
     try {
       // Google Calendar API에 요청 보내기
-      const response = await axios.post(
-        apiUrl,
-        {
-          summary: titleValue,
-          description: contentsValue,
-          start: {
-            dateTime: startDate,
-            timeZone: "Asia/Seoul",
-          },
-          end: {
-            dateTime: endDate, // 종료 일시
-            timeZone: "Asia/Seoul", // 사용자의 시간대로 변경
-          },
+      const response = await axios.post(API_URL, event, {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${access_token}`, // 여기에 Google Calendar API에 대한 액세스 토큰을 넣어야 합니다.
-          },
-        }
-      );
-
-      // 성공적으로 이벤트가 추가되었을 때의 처리
+      });
       console.log("Event added successfully:", response);
+      onClose(true);
     } catch (error) {
       // 오류 처리
-      console.error("Error adding event:", error.response);
+      console.error("Error adding event:", error.response, event);
     }
   };
+
   return (
     <div className={styles.modal_container}>
       <div className={styles.modal_content}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DemoItem label="Date">
+          <DemoItem label="Date *">
             <DatePicker
               value={dateValue}
               onChange={(newValue) => {
                 setDateValue(newValue);
-
-                // console.log(convertDateFormat(newValue));
               }}
             />
           </DemoItem>
           <DemoItem label="Start Time">
             <TimeField
-              defaultValue={dayjs(`${convertDateFormat(dateValue)}` + "T00:00")}
               value={startTimeValue}
               onChange={(newValue) => {
-                console.log(
-                  "defaultVal:" + `${convertDateFormat(dateValue)}` + "T00:00"
-                );
-                console.log(convertTimeFormat(newValue));
                 setStartTimeValue(newValue);
               }}
             />
           </DemoItem>
           <DemoItem label="End Time">
             <TimeField
-              defaultValue={dayjs(`${convertDateFormat(dateValue)}` + "T00:00")}
               value={endTimeValue}
               onChange={(newValue) => {
-                console.log(
-                  "defaultVal:" + `${convertDateFormat(dateValue)}` + "T00:00"
-                );
                 setEndTimeValue(newValue);
               }}
             />
           </DemoItem>
-          <DemoItem label="Title">
+          <DemoItem label="Title *">
             <TextField
               required
               id="outlined-required"
               value={titleValue}
               onChange={handleTitleChange}
+              error={titleError}
+              helperText={titleError ? "Title is required" : ""}
             />
           </DemoItem>
 
@@ -160,7 +151,7 @@ function CalendarEventModal({ onClose }) {
             className={`${styles.modal_btn} ${styles.close_btn}`}
             size="sm"
             color="info"
-            onClick={handleAddEvent}
+            onClick={registerEvent}
           >
             Register
           </button>
@@ -170,7 +161,7 @@ function CalendarEventModal({ onClose }) {
             color="alert"
             onClick={onClose}
           >
-            close
+            Close
           </button>
 
           <DemoContainer

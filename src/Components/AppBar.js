@@ -61,6 +61,13 @@ export default function AppBar() {
 
   const goMyProfile = () => {
     navigate("/my-profile");
+
+  const goStudentView = () => {
+    navigate("/student-view");
+  };
+
+  const goTeacherView = () => {
+    navigate("/teacher-view");
   };
 
   const isMenuOpen = Boolean(anchorEl);
@@ -463,7 +470,11 @@ export default function AppBar() {
                     />
                   </ListItemButton>
                 </ListItem>
-                <ListItem key={"View Student"} disablePadding>
+                <ListItem
+                  onClick={goStudentView}
+                  key={"View Student"}
+                  disablePadding
+                >
                   <ListItemButton sx={{ pl: 10 }}>
                     <ListItemText
                       primary={"View Student"}
@@ -478,7 +489,11 @@ export default function AppBar() {
                     />
                   </ListItemButton>
                 </ListItem>
-                <ListItem key={"View Teacher"} disablePadding>
+                <ListItem 
+                  onClick={goTeacherView} 
+                  key={"View Teacher"} 
+                  disablePadding
+                >
                   <ListItemButton sx={{ pl: 10 }}>
                     <ListItemText
                       primary={"View Teacher"}

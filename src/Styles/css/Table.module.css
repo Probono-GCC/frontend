@@ -1,0 +1,13 @@
+#table_body {
+  height: 460px;
+  width: 90vw;
+  /* margin: 2%; */
+  margin: auto;
+}
+#table_container {
+  width: 100vw;
+}
+
+#centerAlign {
+  text-align: center;
+}

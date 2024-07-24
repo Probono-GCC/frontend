@@ -1,9 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Route, Navigate, Routes } from "react-router-dom";
-import "./index.css";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
-import Home from "./Pages/Home";
 import { Provider } from "react-redux";
 import store from "./store";
 import NoticeBoard from "./Pages/NoticeBoard";
@@ -11,17 +9,26 @@ import NewPostForm from "./Pages/NewPostForm";
 import CreateAccount from "./Pages/CreateAccount";
 import MyProfile from "./Pages/MyProfile";
 
+import "./index.css";
+
+//page
+import NoticeBoard from "./Pages/NoticeBoard";
+import Home from "./Pages/Home.js";
+import StudentView from "./Pages/StudentView.js";
+import TeacherView from "./Pages/TeacherView.js";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
     <React.StrictMode>
       <BrowserRouter>
         <Routes>
-          <Route path="/home" element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="/notice-board" element={<NoticeBoard />} />
           <Route path="/create-account" element={<CreateAccount />} />
           <Route path="/my-profile" element={<MyProfile />} />
           <Route path="/new-post-form" element={<NewPostForm />} />
+          <Route path="/student-view" element={<StudentView />} />
+          <Route path="/teacher-view" element={<TeacherView />} />
         </Routes>
       </BrowserRouter>
     </React.StrictMode>
