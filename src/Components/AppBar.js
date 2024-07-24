@@ -48,7 +48,7 @@ export default function AppBar() {
 
   const location = useLocation();
   const goHome = () => {
-    navigate("/home");
+    navigate("/");
   };
 
   const goNoticeBoard = () => {
@@ -61,6 +61,7 @@ export default function AppBar() {
 
   const goMyProfile = () => {
     navigate("/my-profile");
+  };
 
   const goStudentView = () => {
     navigate("/student-view");
@@ -177,24 +178,24 @@ export default function AppBar() {
 
   const drawerWidth = 280;
 
-  const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
-    ({ theme, open }) => ({
-      flexGrow: 1,
-      padding: theme.spacing(3),
+  const Main = styled("main", {
+    shouldForwardProp: (prop) => prop !== "open",
+  })(({ theme, open }) => ({
+    flexGrow: 1,
+    padding: theme.spacing(3),
+    transition: theme.transitions.create("margin", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    marginLeft: `-${drawerWidth}px`,
+    ...(open && {
       transition: theme.transitions.create("margin", {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
+        easing: theme.transitions.easing.easeOut,
+        duration: theme.transitions.duration.enteringScreen,
       }),
-      marginLeft: `-${drawerWidth}px`,
-      ...(open && {
-        transition: theme.transitions.create("margin", {
-          easing: theme.transitions.easing.easeOut,
-          duration: theme.transitions.duration.enteringScreen,
-        }),
-        marginLeft: 0,
-      }),
-    })
-  );
+      marginLeft: 0,
+    }),
+  }));
 
   const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== "open",
@@ -370,8 +371,7 @@ export default function AppBar() {
                 <ListItemIcon
                   sx={{
                     minWidth: "40px",
-                    color:
-                      location.pathname === "/home" ? "primary.main" : "none",
+                    color: location.pathname === "/" ? "primary.main" : "none",
                   }}
                 >
                   <HomeIcon />
@@ -381,7 +381,7 @@ export default function AppBar() {
                   sx={{
                     "& .MuiTypography-root": {
                       fontWeight:
-                        location.pathname === "/home"
+                        location.pathname === "/"
                           ? theme.typography.fontWeightBold
                           : theme.typography.fontWeightRegular,
                     },
@@ -489,9 +489,9 @@ export default function AppBar() {
                     />
                   </ListItemButton>
                 </ListItem>
-                <ListItem 
-                  onClick={goTeacherView} 
-                  key={"View Teacher"} 
+                <ListItem
+                  onClick={goTeacherView}
+                  key={"View Teacher"}
                   disablePadding
                 >
                   <ListItemButton sx={{ pl: 10 }}>

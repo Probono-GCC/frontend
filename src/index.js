@@ -12,7 +12,6 @@ import MyProfile from "./Pages/MyProfile";
 import "./index.css";
 
 //page
-import NoticeBoard from "./Pages/NoticeBoard";
 import Home from "./Pages/Home.js";
 import StudentView from "./Pages/StudentView.js";
 import TeacherView from "./Pages/TeacherView.js";
