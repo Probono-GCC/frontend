@@ -15,3 +15,14 @@ code {
 .fc-day-sat a {
   color: red;
 }
+
+.header_title {
+  width: 100%;
+  text-align: center;
+}
+h1 {
+  margin: 0 0 21px 0;
+}
+#page_content {
+  position: relative;
+}
