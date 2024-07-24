@@ -30,7 +30,7 @@ import BookIcon from "@mui/icons-material/Book";
 import SchoolIcon from "@mui/icons-material/School";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import Avatar from "@mui/material/Avatar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import Accordion from "@mui/material/Accordion";
 import AccordionActions from "@mui/material/AccordionActions";
@@ -38,6 +38,7 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Button from "@mui/material/Button";
+import { useEffect } from "react";
 
 export default function AppBar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -45,12 +46,21 @@ export default function AppBar() {
 
   const navigate = useNavigate();
 
+  const location = useLocation();
   const goHome = () => {
     navigate("/home");
   };
+
   const goNoticeBoard = () => {
     navigate("/notice-board");
   };
+
+  const goCreateAccount = () => {
+    navigate("/create-account");
+  };
+
+  const goMyProfile = () => {
+    navigate("/my-profile");
 
   const goStudentView = () => {
     navigate("/student-view");
@@ -212,6 +222,39 @@ export default function AppBar() {
     ...theme.mixins.toolbar,
     justifyContent: "flex-end",
   }));
+  const [expanded, setExpanded] = React.useState(false);
+
+  const handleAccordionChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
+
+  // 하위 경로 확인 및 Accordion 상태 설정 (classes 추후 수정 필요)
+  useEffect(() => {
+    const userManagementPaths = [
+      "/create-account",
+      "/view-student",
+      "/view-teacher",
+      "/change-password",
+      "/change-grade",
+    ];
+    const classCourseManagementPaths = [
+      "/create-class",
+      "/assign-homeroom",
+      "/common-course-management",
+    ];
+    if (
+      userManagementPaths.some((path) => location.pathname.startsWith(path))
+    ) {
+      setExpanded("userManagement");
+    }
+    if (
+      classCourseManagementPaths.some((path) =>
+        location.pathname.startsWith(path)
+      )
+    ) {
+      setExpanded("classCourseManagement");
+    }
+  }, [location.pathname]);
 
   return (
     <div>
@@ -228,10 +271,7 @@ export default function AppBar() {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" noWrap component="div">
-              Home
-            </Typography>
-
+            <Typography variant="h6" noWrap component="div"></Typography>
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: { xs: "none", md: "flex" } }}>
               <IconButton
@@ -325,30 +365,109 @@ export default function AppBar() {
           </Box>
           <Divider />
           <List>
+            <ListItem key={"Home"} disablePadding>
+              <ListItemButton onClick={goHome} sx={{ paddingLeft: "16px" }}>
+                <ListItemIcon
+                  sx={{
+                    minWidth: "40px",
+                    color:
+                      location.pathname === "/home" ? "primary.main" : "none",
+                  }}
+                >
+                  <HomeIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary={"Home"}
+                  sx={{
+                    "& .MuiTypography-root": {
+                      fontWeight:
+                        location.pathname === "/home"
+                          ? theme.typography.fontWeightBold
+                          : theme.typography.fontWeightRegular,
+                    },
+                  }}
+                />
+              </ListItemButton>
+            </ListItem>
+            <ListItem key={"Notice board"} disablePadding>
+              <ListItemButton
+                onClick={goNoticeBoard}
+                sx={{ paddingLeft: "16px" }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: "40px",
+                    color:
+                      location.pathname === "/notice-board"
+                        ? theme.palette.primary.main
+                        : "none",
+                  }}
+                >
+                  <FormatListBulletedIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary={"Notice board"}
+                  sx={{
+                    "& .MuiTypography-root": {
+                      fontWeight:
+                        location.pathname === "/notice-board"
+                          ? theme.typography.fontWeightBold
+                          : theme.typography.fontWeightRegular,
+                    },
+                  }}
+                />
+              </ListItemButton>
+            </ListItem>
+          </List>
+          <Divider />
+          <List>
             <Accordion
               sx={{
                 boxShadow: "none",
                 "&::before": { display: "none" },
                 marginBottom: "0px",
               }}
+              expanded={expanded === "userManagement"}
+              onChange={handleAccordionChange("userManagement")}
             >
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
-                sx={{ padding: "0 16px", height: "48px" }}
+                sx={{
+                  padding: "0 16px",
+                  height: "48px",
+                  "&:hover": {
+                    backgroundColor: theme.palette.action.hover,
+                  },
+                  ...(expanded === "userManagement" && {
+                    backgroundColor: theme.palette.action.selected,
+                  }),
+                }}
               >
-                <ListItem key={"User Management"} disablePadding>
-                  <ListItemButton>
-                    <ListItemIcon sx={{ minWidth: "40px" }}>
-                      <AdminPanelSettingsIcon />
-                    </ListItemIcon>
-                    <ListItemText primary={"User Management"} />
-                  </ListItemButton>
-                </ListItem>
+                <ListItemIcon
+                  sx={{
+                    minWidth: "40px",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <AdminPanelSettingsIcon />
+                </ListItemIcon>
+                <ListItemText primary={"User Management"} />
               </AccordionSummary>
               <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
                 <ListItem key={"Create Account"} disablePadding>
-                  <ListItemButton sx={{ pl: 10 }}>
-                    <ListItemText primary={"Create Account"} />
+                  <ListItemButton onClick={goCreateAccount} sx={{ pl: 10 }}>
+                    <ListItemText
+                      primary={"Create Account"}
+                      sx={{
+                        "& .MuiTypography-root": {
+                          fontWeight:
+                            location.pathname === "/create-account"
+                              ? theme.typography.fontWeightBold
+                              : theme.typography.fontWeightRegular,
+                        },
+                      }}
+                    />
                   </ListItemButton>
                 </ListItem>
                 <ListItem
@@ -357,61 +476,152 @@ export default function AppBar() {
                   disablePadding
                 >
                   <ListItemButton sx={{ pl: 10 }}>
-                    <ListItemText primary={"View Student"} />
+                    <ListItemText
+                      primary={"View Student"}
+                      sx={{
+                        "& .MuiTypography-root": {
+                          fontWeight:
+                            location.pathname === "/view-student"
+                              ? theme.typography.fontWeightBold
+                              : theme.typography.fontWeightRegular,
+                        },
+                      }}
+                    />
                   </ListItemButton>
                 </ListItem>
-                <ListItem
-                  onClick={goTeacherView}
-                  key={"View Teacher"}
+                <ListItem 
+                  onClick={goTeacherView} 
+                  key={"View Teacher"} 
                   disablePadding
                 >
                   <ListItemButton sx={{ pl: 10 }}>
-                    <ListItemText primary={"View Teacher"} />
+                    <ListItemText
+                      primary={"View Teacher"}
+                      sx={{
+                        "& .MuiTypography-root": {
+                          fontWeight:
+                            location.pathname === "/view-teacher"
+                              ? theme.typography.fontWeightBold
+                              : theme.typography.fontWeightRegular,
+                        },
+                      }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem key={"Change Password"} disablePadding>
+                  <ListItemButton sx={{ pl: 10 }}>
+                    <ListItemText
+                      primary={"Change Password"}
+                      sx={{
+                        "& .MuiTypography-root": {
+                          fontWeight:
+                            location.pathname === "/change-password"
+                              ? theme.typography.fontWeightBold
+                              : theme.typography.fontWeightRegular,
+                        },
+                      }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem key={"Change Grade"} disablePadding>
+                  <ListItemButton sx={{ pl: 10 }}>
+                    <ListItemText
+                      primary={"Change Grade"}
+                      sx={{
+                        "& .MuiTypography-root": {
+                          fontWeight:
+                            location.pathname === "/change-grade"
+                              ? theme.typography.fontWeightBold
+                              : theme.typography.fontWeightRegular,
+                        },
+                      }}
+                    />
                   </ListItemButton>
                 </ListItem>
               </AccordionDetails>
             </Accordion>
-            <ListItem key={"Home"} disablePadding>
-              <ListItemButton
-                onClick={() => console.log("Go Home")}
-                sx={{ paddingLeft: "16px" }}
+
+            <Accordion
+              sx={{
+                boxShadow: "none",
+                "&::before": { display: "none" },
+                marginBottom: "0px",
+              }}
+              expanded={expanded === "classCourseManagement"}
+              onChange={handleAccordionChange("classCourseManagement")}
+            >
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                sx={{
+                  padding: "0 16px",
+                  height: "72px",
+                  "&:hover": {
+                    backgroundColor: theme.palette.action.hover,
+                  },
+                  ...(expanded === "classCourseManagement" && {
+                    backgroundColor: theme.palette.action.selected,
+                  }),
+                }}
               >
-                <ListItemIcon sx={{ minWidth: "40px" }}>
-                  <HomeIcon />
-                </ListItemIcon>
-                <ListItemText primary={"Home"} />
-              </ListItemButton>
-            </ListItem>
-            <ListItem key={"Notice board"} disablePadding>
-              <ListItemButton
-                onClick={() => console.log("Go Notice Board")}
-                sx={{ paddingLeft: "16px" }}
-              >
-                <ListItemIcon sx={{ minWidth: "40px" }}>
-                  <FormatListBulletedIcon />
-                </ListItemIcon>
-                <ListItemText primary={"Notice board"} />
-              </ListItemButton>
-            </ListItem>
-          </List>
-          <Divider />
-          <List>
-            <ListItem key={"User Management"} disablePadding>
-              <ListItemButton sx={{ paddingLeft: "16px" }}>
-                <ListItemIcon sx={{ minWidth: "40px" }}>
-                  <AdminPanelSettingsIcon />
-                </ListItemIcon>
-                <ListItemText primary={"User Management"} />
-              </ListItemButton>
-            </ListItem>
-            <ListItem key={"Class/Course Management"} disablePadding>
-              <ListItemButton sx={{ paddingLeft: "16px" }}>
-                <ListItemIcon sx={{ minWidth: "40px" }}>
+                <ListItemIcon
+                  sx={{
+                    minWidth: "40px",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
                   <BookIcon />
                 </ListItemIcon>
                 <ListItemText primary={"Class/Course Management"} />
-              </ListItemButton>
-            </ListItem>
+              </AccordionSummary>
+              <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
+                <ListItem key={"Create Class"} disablePadding>
+                  <ListItemButton sx={{ pl: 10 }}>
+                    <ListItemText
+                      primary={"Create Class"}
+                      sx={{
+                        "& .MuiTypography-root": {
+                          fontWeight:
+                            location.pathname === "/create-class"
+                              ? theme.typography.fontWeightBold
+                              : theme.typography.fontWeightRegular,
+                        },
+                      }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem key={"Assign Homeroom"} disablePadding>
+                  <ListItemButton sx={{ pl: 10 }}>
+                    <ListItemText
+                      primary={"Assign Homeroom"}
+                      sx={{
+                        "& .MuiTypography-root": {
+                          fontWeight:
+                            location.pathname === "/assign-homeroom"
+                              ? theme.typography.fontWeightBold
+                              : theme.typography.fontWeightRegular,
+                        },
+                      }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem key={"Common Course Management"} disablePadding>
+                  <ListItemButton sx={{ pl: 10 }}>
+                    <ListItemText
+                      primary={"Common Course Management"}
+                      sx={{
+                        "& .MuiTypography-root": {
+                          fontWeight:
+                            location.pathname === "/common-course-management"
+                              ? theme.typography.fontWeightBold
+                              : theme.typography.fontWeightRegular,
+                        },
+                      }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              </AccordionDetails>
+            </Accordion>
             <ListItem key={"Elective Course Management"} disablePadding>
               <ListItemButton sx={{ paddingLeft: "16px" }}>
                 <ListItemIcon sx={{ minWidth: "40px" }}>
@@ -422,24 +632,101 @@ export default function AppBar() {
             </ListItem>
           </List>
           <Divider />
-          <List>
-            <ListItem key={"Classes"} disablePadding>
-              <ListItemButton sx={{ paddingLeft: "16px" }}>
-                <ListItemIcon sx={{ minWidth: "40px" }}>
-                  <SchoolIcon />
-                </ListItemIcon>
-                <ListItemText primary={"Classes"} />
-              </ListItemButton>
-            </ListItem>
-          </List>
+          <Accordion
+            sx={{
+              boxShadow: "none",
+              "&::before": { display: "none" },
+              marginBottom: "0px",
+            }}
+            expanded={expanded === "classes"}
+            onChange={handleAccordionChange("classes")}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              sx={{
+                padding: "0 16px",
+                height: "60px",
+                "&:hover": {
+                  backgroundColor: theme.palette.action.hover,
+                },
+                ...(expanded === "classes" && {
+                  backgroundColor: theme.palette.action.selected,
+                }),
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: "40px",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <SchoolIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Classes"} />
+            </AccordionSummary>
+            <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
+              <ListItem key={""} disablePadding>
+                <ListItemButton sx={{ pl: 10 }}>
+                  <ListItemText
+                    primary={"Class 1"}
+                    sx={{
+                      "& .MuiTypography-root": {
+                        fontWeight:
+                          location.pathname === "/class1"
+                            ? theme.typography.fontWeightBold
+                            : theme.typography.fontWeightRegular,
+                      },
+                    }}
+                  />
+                </ListItemButton>
+              </ListItem>
+              <ListItem key={""} disablePadding>
+                <ListItemButton sx={{ pl: 10 }}>
+                  <ListItemText
+                    primary={"Class 2"}
+                    sx={{
+                      "& .MuiTypography-root": {
+                        fontWeight:
+                          location.pathname === "/class2"
+                            ? theme.typography.fontWeightBold
+                            : theme.typography.fontWeightRegular,
+                      },
+                    }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            </AccordionDetails>
+          </Accordion>
           <Divider />
           <List>
             <ListItem key={"My Profile"} disablePadding>
-              <ListItemButton sx={{ paddingLeft: "16px" }}>
-                <ListItemIcon sx={{ minWidth: "40px" }}>
+              <ListItemButton
+                onClick={goMyProfile}
+                sx={{ paddingLeft: "16px" }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: "40px",
+                    color:
+                      location.pathname === "/my-profile"
+                        ? theme.palette.primary.main
+                        : "none",
+                  }}
+                >
                   <AccountCircleRoundedIcon />
                 </ListItemIcon>
-                <ListItemText primary={"My Profile"} />
+                <ListItemText
+                  primary={"My Profile"}
+                  sx={{
+                    "& .MuiTypography-root": {
+                      fontWeight:
+                        location.pathname === "/my-profile"
+                          ? theme.typography.fontWeightBold
+                          : theme.typography.fontWeightRegular,
+                    },
+                  }}
+                />
               </ListItemButton>
             </ListItem>
           </List>

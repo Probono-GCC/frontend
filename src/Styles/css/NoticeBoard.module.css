@@ -1,0 +1,85 @@
+.title {
+  text-align: center !important;
+  font-family: "Copperplate", serif !important;
+  margin-top: 20px !important;
+  margin-bottom: 30px !important;
+}
+
+.tableContainer {
+  width: 80% !important; /* 화면 전체의 80% */
+  margin: 0 auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table {
+  table-layout: fixed; /* 고정된 테이블 레이아웃 */
+  width: 80%;
+}
+
+.tableHeader {
+  background-color: #d8edff;
+}
+
+.tableHeaderCell {
+  text-align: left;
+  font-weight: bold !important;
+}
+
+.tableRow {
+  transition: background-color 0.3s;
+}
+
+.tableRow:hover {
+  background-color: #f5f5f5;
+}
+
+.tableCell {
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+  overflow: hidden;
+  text-overflow: ellipsis; /* 내용이 길 경우 생략 부호(...) 추가 */
+  white-space: nowrap;
+}
+
+.tableCellTitle {
+  width: 50%; /* Title 열의 너비 */
+}
+
+.tableCellGrade {
+  width: 15%; /* Grade 열의 너비 */
+}
+
+.tableCellAuthor {
+  width: 20%; /* Author 열의 너비 */
+}
+
+.tableCellViewCount {
+  width: 15%; /* View Count 열의 너비 */
+}
+
+.secondaryText {
+  color: #999;
+  font-size: 0.875em;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.newButtonContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin: 20px 10%; /* 오른쪽에 위치시키기 위해 조정 */
+}
+
+.newButton {
+  background-color: #1b8ef2;
+  color: white;
+}
+
+.newButton:hover {
+  background-color: #1565c0;
+}
