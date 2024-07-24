@@ -82,7 +82,7 @@ function MyProfile() {
   return (
     <div>
       <AppBar />
-      <Box sx={{ display: "flex", justifyContent: "center", marginTop: 4 }}>
+      <Box sx={{ display: "flex", justifyContent: "center", marginTop: 0 }}>
         <Typography
           variant="h3"
           component="div"

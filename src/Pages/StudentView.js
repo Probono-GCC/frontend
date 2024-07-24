@@ -12,7 +12,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import Modal from "../Components/Modal";
 import Checkbox from "@mui/material/Checkbox";
 import { textAlign } from "@mui/system";
-
+import { Typography, Box } from "@mui/material";
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 const columns = [
   {
@@ -176,11 +176,22 @@ function StudentView() {
       )}
 
       <div id={styles.table_container}>
-        {" "}
-        <div className="header_title">
-          {" "}
-          <h1>Student Board</h1>
-        </div>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: 0,
+            marginBottom: 3,
+          }}
+        >
+          <Typography
+            variant="h3"
+            component="div"
+            sx={{ fontFamily: "Copperplate" }}
+          >
+            Student Board
+          </Typography>
+        </Box>
         <Table
           columns={updatedColumns}
           rows={rows}
