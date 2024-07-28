@@ -71,6 +71,10 @@ export default function AppBar() {
     navigate("/teacher-view");
   };
 
+  const goCreateClass = () => {
+    navigate("/create-class");
+  };
+
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -233,8 +237,8 @@ export default function AppBar() {
   useEffect(() => {
     const userManagementPaths = [
       "/create-account",
-      "/view-student",
-      "/view-teacher",
+      "/student-view",
+      "/teacher-view",
       "/change-password",
       "/change-grade",
     ];
@@ -481,7 +485,7 @@ export default function AppBar() {
                       sx={{
                         "& .MuiTypography-root": {
                           fontWeight:
-                            location.pathname === "/view-student"
+                            location.pathname === "/student-view"
                               ? theme.typography.fontWeightBold
                               : theme.typography.fontWeightRegular,
                         },
@@ -500,7 +504,7 @@ export default function AppBar() {
                       sx={{
                         "& .MuiTypography-root": {
                           fontWeight:
-                            location.pathname === "/view-teacher"
+                            location.pathname === "/teacher-view"
                               ? theme.typography.fontWeightBold
                               : theme.typography.fontWeightRegular,
                         },
@@ -576,7 +580,7 @@ export default function AppBar() {
               </AccordionSummary>
               <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
                 <ListItem key={"Create Class"} disablePadding>
-                  <ListItemButton sx={{ pl: 10 }}>
+                  <ListItemButton onClick={goCreateClass} sx={{ pl: 10 }}>
                     <ListItemText
                       primary={"Create Class"}
                       sx={{

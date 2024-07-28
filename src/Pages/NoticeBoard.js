@@ -85,7 +85,6 @@ const rows = [
   createData("Library Open", "2023. 04. 04.", "All", "Admin", 7890),
   createData("Summer Camp", "2023. 03. 03.", "All", "Admin", 456),
 ];
-
 function NoticeBoard() {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
@@ -105,6 +104,10 @@ function NoticeBoard() {
 
   const handleNextGroup = () => {
     setPage((prevPage) => Math.min(prevPage + 5, totalPages));
+  };
+
+  const handleRowClick = () => {
+    navigate("/post");
   };
 
   const totalPages = Math.ceil(rows.length / itemsPerPage);
@@ -129,31 +132,46 @@ function NoticeBoard() {
     <div>
       <AppBar />
       <Box>
-        <Typography variant="h3" className={styles.title}>
+        <Typography
+          variant="h3"
+          sx={{
+            textAlign: "center",
+            fontFamily: "Copperplate",
+            marginTop: "20px",
+            marginBottom: "30px",
+          }}
+        >
           Notice Board
         </Typography>
       </Box>
-      <TableContainer component={Paper} className={styles.tableContainer}>
-        <Table className={styles.table}>
-          <TableHead className={styles.tableHeader}>
+      <TableContainer
+        component={Paper}
+        sx={{
+          width: "80%",
+          margin: "0 auto",
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <Table sx={{ tableLayout: "fixed", width: "100%" }}>
+          <TableHead sx={{ backgroundColor: "#d8edff" }}>
             <TableRow>
               <TableCell
-                className={`${styles.tableHeaderCell} ${styles.tableCellTitle}`}
+                sx={{ textAlign: "left", fontWeight: "bold", width: "50%" }}
               >
                 Title
               </TableCell>
               <TableCell
-                className={`${styles.tableHeaderCell} ${styles.tableCellGrade}`}
+                sx={{ textAlign: "left", fontWeight: "bold", width: "15%" }}
               >
                 Grade
               </TableCell>
               <TableCell
-                className={`${styles.tableHeaderCell} ${styles.tableCellAuthor}`}
+                sx={{ textAlign: "left", fontWeight: "bold", width: "20%" }}
               >
                 Author
               </TableCell>
               <TableCell
-                className={`${styles.tableHeaderCell} ${styles.tableCellViewCount}`}
+                sx={{ textAlign: "left", fontWeight: "bold", width: "15%" }}
               >
                 View Count
               </TableCell>
@@ -161,27 +179,66 @@ function NoticeBoard() {
           </TableHead>
           <TableBody>
             {displayedRows.map((row, index) => (
-              <TableRow key={index} className={styles.tableRow}>
+              <TableRow
+                key={index}
+                sx={{
+                  cursor: "pointer",
+                  transition: "background-color 0.3s",
+                  "&:hover": { backgroundColor: "#f5f5f5" },
+                }}
+                onClick={handleRowClick}
+              >
                 <TableCell
-                  className={`${styles.tableCell} ${styles.tableCellTitle}`}
+                  sx={{
+                    padding: "16px",
+                    textAlign: "left",
+                    borderBottom: "1px solid #e0e0e0",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
                 >
                   {row.title}
-                  <Typography variant="body2" className={styles.secondaryText}>
+                  <Typography
+                    variant="body2"
+                    sx={{ color: "#999", fontSize: "0.875em" }}
+                  >
                     {row.date}
                   </Typography>
                 </TableCell>
                 <TableCell
-                  className={`${styles.tableCell} ${styles.tableCellGrade}`}
+                  sx={{
+                    padding: "16px",
+                    textAlign: "left",
+                    borderBottom: "1px solid #e0e0e0",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
                 >
                   {row.grade}
                 </TableCell>
                 <TableCell
-                  className={`${styles.tableCell} ${styles.tableCellAuthor}`}
+                  sx={{
+                    padding: "16px",
+                    textAlign: "left",
+                    borderBottom: "1px solid #e0e0e0",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
                 >
                   {row.author}
                 </TableCell>
                 <TableCell
-                  className={`${styles.tableCell} ${styles.tableCellViewCount}`}
+                  sx={{
+                    padding: "16px",
+                    textAlign: "left",
+                    borderBottom: "1px solid #e0e0e0",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
                 >
                   {row.viewCount}
                 </TableCell>
@@ -190,7 +247,7 @@ function NoticeBoard() {
           </TableBody>
         </Table>
       </TableContainer>
-      <Box className={styles.pagination}>
+      <Box sx={{ display: "flex", justifyContent: "center", margin: "20px 0" }}>
         <IconButton onClick={handlePreviousGroup} disabled={page <= 1}>
           <KeyboardDoubleArrowLeftIcon />
         </IconButton>
@@ -222,10 +279,16 @@ function NoticeBoard() {
           <KeyboardDoubleArrowRightIcon />
         </IconButton>
       </Box>
-      <Box className={styles.newButtonContainer}>
+      <Box
+        sx={{ display: "flex", justifyContent: "flex-end", margin: "20px 10%" }}
+      >
         <Button
           variant="contained"
-          className={styles.newButton}
+          sx={{
+            backgroundColor: "#1b8ef2",
+            color: "white",
+            "&:hover": { backgroundColor: "#1565c0" },
+          }}
           onClick={handleNewPost}
         >
           New

@@ -13,7 +13,6 @@ import Modal from "../Components/Modal";
 import Checkbox from "@mui/material/Checkbox";
 import { Typography, Box } from "@mui/material";
 
-import { getTeachers } from "../Apis/Api/User";
 import axios from "axios";
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 const columns = [
