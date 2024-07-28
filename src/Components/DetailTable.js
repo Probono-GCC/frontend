@@ -16,7 +16,7 @@ const rowsHeader = [
   { field: "grade", name: "Grade" },
 ];
 
-export default function DetailTable({ data }) {
+export default function DetailTable({ data, rowsHeader }) {
   useEffect(() => {
     console.log(data);
   }, [data]);
@@ -37,7 +37,7 @@ export default function DetailTable({ data }) {
                 align="left"
                 width="100px"
               >
-                {rowHeader.name}
+                {rowHeader.headerName}
               </TableCell>
 
               <TableCell align="left">

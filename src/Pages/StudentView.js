@@ -210,6 +210,7 @@ function StudentView() {
         handleClose={handleModalClose}
         title={"Detail Information"}
         rowData={modalRowData}
+        rowsHeader={columns}
       />
     </div>
   );

@@ -12,114 +12,59 @@ import InfoIcon from "@mui/icons-material/Info";
 import Modal from "../Components/Modal";
 import Checkbox from "@mui/material/Checkbox";
 import { Typography, Box } from "@mui/material";
-
+import { getTeachers } from "../Apis/Api/User";
 import axios from "axios";
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 const columns = [
-  {
-    field: "sn",
-    headerName: "SN",
-    flex: 0.05,
-    cellClassName: styles.centerAlign,
-  },
   { field: "name", headerName: "Name", flex: 0.2 },
-  { field: "gender", headerName: "Gender", flex: 0.1 },
+  { field: "sex", headerName: "Gender", flex: 0.1 },
   { field: "birth", headerName: "Birth", flex: 0.1 },
-  { field: "id", headerName: "ID", flex: 0.2 },
-  { field: "phone", headerName: "phone", flex: 0.3 },
+  { field: "login_id", headerName: "ID", flex: 0.2 },
+  { field: "phone_num", headerName: "phone", flex: 0.3 },
 ];
 
-// const rows = [
-//   {
-//     sn: 1,
-//     gender: "Male",
-//     name: "Jon",
-//     birth: "92.02.24",
-//     id: "b0000",
-//     phone: "01021143454",
-//   },
-//   {
-//     sn: 2,
-//     gender: "Female",
-//     name: "Cersei",
-//     birth: "92.01.04",
-//     id: "b0001",
-//     phone: "01021143454",
-//   },
-//   {
-//     sn: 3,
-//     gender: "Male",
-//     name: "Jaime",
-//     birth: "92.12.24",
-//     id: "b0002",
-//     phone: "01021143454",
-//   },
-//   {
-//     sn: 4,
-//     gender: "Male",
-//     name: "Arya",
-//     birth: "92.05.27",
-//     id: "b0003",
-//     phone: "01021143454",
-//   },
-//   {
-//     sn: 5,
-//     gender: "Male",
-//     name: "Daenerys",
-//     birth: "92.08.14",
-//     id: "b0004",
-//     phone: "01021143454",
-//   },
-//   {
-//     sn: 6,
-//     gender: "Male",
-//     name: "nell",
-//     birth: "92.12.24",
-//     id: "b0005",
-//     phone: "01021143454",
-//   },
-//   {
-//     sn: 7,
-//     gender: "Female",
-//     name: "Ferrara",
-//     birth: "88.07.05",
-//     id: "b0006",
-//     phone: "01042174900",
-//   },
-//   {
-//     sn: 8,
-//     gender: "Female",
-//     name: "Rossini",
-//     birth: "88.07.25",
-//     id: "b0007",
-//     phone: "01042174900",
-//   },
-//   {
-//     sn: 9,
-//     gender: "Female",
-//     name: "Harvey",
-//     birth: "88.07.04",
-//     id: "b0008",
-//     phone: "01042174900",
-//   },
-//   {
-//     sn: 10,
-//     gender: "Female",
-//     name: "Uri",
-//     birth: "89.12.03",
-//     id: "b0009",
-//     phone: "01042174900",
-//   },
-// ];
+const rows = [
+  {
+    id: 0,
+    sex: "Male",
+    name: "Jon",
+    birth: "92.02.24",
+    login_id: "b0000",
+    phone_num: "01021143454",
+  },
+  {
+    id: 1,
+    sex: "Female",
+    name: "Cersei",
+    birth: "92.01.04",
+    login_id: "b0001",
+    phone_num: "01021143454",
+  },
+  {
+    id: 2,
+    sex: "Male",
+    name: "Jaime",
+    birth: "92.12.24",
+    login_id: "b0002",
+    phone_num: "01021143454",
+  },
+  {
+    id: 3,
+    sex: "Male",
+    name: "Arya",
+    birth: "92.05.27",
+    login_id: "b0003",
+    phone_num: "01021143454",
+  },
+];
 
 function TeacherView() {
-  const baseURL = process.env.BASE_URL;
   // const [selectedRows, setSelectedRows] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalRowData, setModalRowData] = useState("default row data");
   const [alert, setAlert] = useState(false);
   const [checkedRows, setCheckedRows] = useState([]);
-  const [rows, setRows] = useState([]);
+  // const rows = "";
   const handleRowSelection = (id) => {
     setCheckedRows((prevCheckedRows) =>
       prevCheckedRows.includes(id)
@@ -158,21 +103,16 @@ function TeacherView() {
       ),
     },
     ...columns,
-    // {
-    //   field: "Detail",
-    //   headerName: "Detail",
-    //   flex: 0.1,
-    //   renderCell: (params) => (
-    //     <IconButton
-    //       aria-label="info"
-    //       onClick={() => handleModalOpen(params.row)}
-    //     >
-    //       <InfoIcon />
-    //     </IconButton>
-    //   ),
-    // },
   ];
-  useEffect(() => {});
+  useEffect(() => {
+    // const result = getTeachers();
+    // console.log(result);
+    const result = axios
+      .get("http://localhost:8080/teachers")
+      .then((result) => {
+        console.log(result);
+      });
+  });
   return (
     <div id="page_content">
       <AppBar />
@@ -223,6 +163,7 @@ function TeacherView() {
         handleClose={handleModalClose}
         title={"Detail Information"}
         rowData={modalRowData}
+        rowsHeader={columns}
       />
     </div>
   );
