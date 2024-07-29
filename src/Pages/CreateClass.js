@@ -7,13 +7,16 @@ import {
   Paper,
   Select,
   Typography,
-  Checkbox,
   Alert,
   Stack,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AppBar from "../Components/AppBar";
 import Table from "../Components/Table"; // Import the Table component
+import Checkbox from "@mui/material/Checkbox";
+
+import axios from "axios";
+const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 const grades = [
   { value: "PlayGroup", label: "PlayGroup" },
@@ -44,9 +47,8 @@ function CreateClass() {
   const [batch, setBatch] = useState("");
   const [grade, setGrade] = useState("");
   const [section, setSection] = useState("");
-  const [checkedRows, setCheckedRows] = useState([]);
   const [alert, setAlert] = useState(false);
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [checkedRows, setCheckedRows] = useState([]);
 
   const handleCreate = () => {
     // Implement the create functionality here
@@ -60,20 +62,10 @@ function CreateClass() {
     );
   };
 
-  const handleDelete = () => {
-    setDialogOpen(false);
+  const deleteRow = () => {
     setAlert(true);
-    setTimeout(() => setAlert(false), 2000);
-    console.log("Deleting rows:", checkedRows);
+    setTimeout(() => setAlert(false), 2000); // Hide the alert after 2 seconds
     setCheckedRows([]);
-  };
-
-  const handleDialogClose = () => {
-    setDialogOpen(false);
-  };
-
-  const handleDialogOpen = () => {
-    setDialogOpen(true);
   };
 
   const columns = [
@@ -83,6 +75,7 @@ function CreateClass() {
       flex: 0.05,
       renderCell: (params) => (
         <Checkbox
+          {...label}
           checked={checkedRows.includes(params.row.id)}
           onChange={() => handleRowSelection(params.row.id)}
         />
@@ -190,15 +183,18 @@ function CreateClass() {
             onRowSelection={handleRowSelection}
           />
           <Box
-            sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}
+            sx={{ display: "flex", justifyContent: "flex-end", marginTop: 3 }}
           >
             <Button
               variant="contained"
-              color="error"
-              onClick={handleDialogOpen}
+              sx={{
+                backgroundColor: checkedRows.length > 0 ? "#1976d2" : "#d8edff",
+                color: checkedRows.length > 0 ? "#fff" : "#1976d2",
+              }}
+              onClick={deleteRow}
               disabled={checkedRows.length === 0}
             >
-              Delete
+              DELETE
             </Button>
           </Box>
         </Paper>
