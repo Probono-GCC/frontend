@@ -7,15 +7,13 @@ import {
   Paper,
   Select,
   Typography,
+  Checkbox,
+  Alert,
+  Stack,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AppBar from "../Components/AppBar";
-import DetailTable from "../Components/DetailTable"; // Import the DetailTable component
 import Table from "../Components/Table"; // Import the Table component
-import Checkbox from "@mui/material/Checkbox";
-
-import axios from "axios";
-const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 const grades = [
   { value: "PlayGroup", label: "PlayGroup" },
@@ -46,12 +44,50 @@ function CreateClass() {
   const [batch, setBatch] = useState("");
   const [grade, setGrade] = useState("");
   const [section, setSection] = useState("");
+  const [checkedRows, setCheckedRows] = useState([]);
+  const [alert, setAlert] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleCreate = () => {
     // Implement the create functionality here
   };
 
+  const handleRowSelection = (id) => {
+    setCheckedRows((prevCheckedRows) =>
+      prevCheckedRows.includes(id)
+        ? prevCheckedRows.filter((rowId) => rowId !== id)
+        : [...prevCheckedRows, id]
+    );
+  };
+
+  const handleDelete = () => {
+    setDialogOpen(false);
+    setAlert(true);
+    setTimeout(() => setAlert(false), 2000);
+    console.log("Deleting rows:", checkedRows);
+    setCheckedRows([]);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
+  };
+
   const columns = [
+    {
+      field: "check",
+      headerName: "",
+      flex: 0.05,
+      renderCell: (params) => (
+        <Checkbox
+          checked={checkedRows.includes(params.row.id)}
+          onChange={() => handleRowSelection(params.row.id)}
+        />
+      ),
+    },
     { field: "batch", headerName: "Batch", flex: 0.33 },
     { field: "grade", headerName: "Grade", flex: 0.33 },
     { field: "section", headerName: "Section", flex: 0.33 },
@@ -65,40 +101,17 @@ function CreateClass() {
     { id: 5, batch: "2084", grade: "UpperKG", section: "B" },
   ];
 
-  const baseURL = process.env.BASE_URL;
-  // const [selectedRows, setSelectedRows] = useState([]);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalRowData, setModalRowData] = useState("default row data");
-  const [alert, setAlert] = useState(false);
-  const [checkedRows, setCheckedRows] = useState([]);
-
-  const handleRowSelection = (id) => {
-    setCheckedRows((prevCheckedRows) =>
-      prevCheckedRows.includes(id)
-        ? prevCheckedRows.filter((rowId) => rowId !== id)
-        : [...prevCheckedRows, id]
-    );
-  };
-  const handleModalOpen = (row) => {
-    setModalRowData(row);
-    setModalOpen(true);
-  };
-
-  const handleModalClose = () => {
-    setModalOpen(false);
-    setModalRowData(null);
-  };
-  const deleteRow = () => {
-    setAlert(true);
-    setTimeout(() => setAlert(false), 2000); // Hide the alert after 3 seconds
-
-    console.log("Deleting rows:", checkedRows);
-    setCheckedRows([]);
-  };
-
   return (
     <div>
       <AppBar />
+      {alert && (
+        <Stack
+          sx={{ width: "100%", position: "fixed", top: "65px", zIndex: 10 }}
+          spacing={2}
+        >
+          <Alert severity="success">Deleted successfully!</Alert>
+        </Stack>
+      )}
       <Box sx={{ padding: 3 }}>
         <Typography
           variant="h3"
@@ -175,8 +188,19 @@ function CreateClass() {
             columns={columns}
             rows={rows}
             onRowSelection={handleRowSelection}
-            onRowDoubleClick={(params) => handleModalOpen(params.row)}
           />
+          <Box
+            sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}
+          >
+            <Button
+              variant="contained"
+              color="error"
+              onClick={handleDialogOpen}
+              disabled={checkedRows.length === 0}
+            >
+              Delete
+            </Button>
+          </Box>
         </Paper>
       </Box>
     </div>

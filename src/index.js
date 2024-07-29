@@ -17,6 +17,8 @@ import StudentView from "./Pages/StudentView.js";
 import TeacherView from "./Pages/TeacherView.js";
 import Post from "./Pages/Post.js";
 import CreateClass from "./Pages/CreateClass.js";
+import ClassBoard from "./Pages/ClassBoard.js";
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   // 하위 주소는 /class-board/* -> navigate('/class-board/%{newPage})
@@ -34,6 +36,7 @@ root.render(
           <Route path="/student-view" element={<StudentView />} />
           <Route path="/teacher-view" element={<TeacherView />} />
           <Route path="/create-class" element={<CreateClass />} />
+          <Route path="/class-board" element={<ClassBoard />} />
         </Routes>
       </BrowserRouter>
     </React.StrictMode>
