@@ -107,11 +107,11 @@ function TeacherView() {
   useEffect(() => {
     // const result = getTeachers();
     // console.log(result);
-    const result = axios
-      .get("http://localhost:8080/teachers")
-      .then((result) => {
-        console.log(result);
-      });
+    // const result = axios
+    //   .get("http://localhost:8080/teachers")
+    //   .then((result) => {
+    //     console.log(result);
+    //   });
   });
   return (
     <div id="page_content">
@@ -156,6 +156,7 @@ function TeacherView() {
         title={"Delete"}
         disabled={checkedRows.length === 0}
         onClick={deleteRow}
+        id={"view_btn"}
       />
 
       <Modal
