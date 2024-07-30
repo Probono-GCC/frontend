@@ -3,6 +3,10 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { TextField, Typography } from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+
 import Button from "../Components/Button";
 
 import BackImage1 from "../Assets/img/BackgroundSample/sample_images_00.png";
@@ -19,7 +23,13 @@ function Login({ type }) {
   const [rePassword, setRePassword] = useState("");
   const [currentIndex, setCurrentIndex] = useState(1);
   const [rePasswordError, setRePasswordError] = useState(false);
+  /**언어 선택 임시 선택상자 */
+  const [age, setAge] = useState(10);
 
+  const handleChange = (event) => {
+    setAge(event.target.value);
+  };
+  /**언어 선택 임시 선택상자 */
   const BackgroundSample = [
     { img: BackImage1, key: 1 },
     { img: BackImage2, key: 2 },
@@ -56,7 +66,22 @@ function Login({ type }) {
     <div id={styles.page_container}>
       {type == "default" ? (
         <div id={styles.login_container}>
-          <div>언어선택 영역</div>
+          <div>
+            {" "}
+            <FormControl sx={{ m: 1, minWidth: 120, marginLeft: "30vw" }}>
+              <Select
+                value={age}
+                onChange={handleChange}
+                displayEmpty
+                inputProps={{ "aria-label": "Without label" }}
+                sx={{ height: "5vh" }}
+              >
+                <MenuItem value={10}>Eng</MenuItem>
+                <MenuItem value={20}>Nepali</MenuItem>
+                <MenuItem value={30}>Kor</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
           <Typography
             variant="h5"
             sx={{
@@ -111,18 +136,24 @@ function Login({ type }) {
         </div>
       ) : (
         <div>
-          <div>언어선택</div>
-          <Typography
-            variant="h5"
-            sx={{
-              fontFamily: "Copperplate",
-              marginLeft: "1vw",
-              marginTop: "3vh",
-              fontWeight: "bold",
-            }}
-          >
+          <div>
+            <FormControl sx={{ m: 1, minWidth: 120, marginLeft: "30vw" }}>
+              <Select
+                value={age}
+                onChange={handleChange}
+                displayEmpty
+                inputProps={{ "aria-label": "Without label" }}
+                sx={{ height: "5vh" }}
+              >
+                <MenuItem value={10}>Eng</MenuItem>
+                <MenuItem value={20}>Nepali</MenuItem>
+                <MenuItem value={30}>Kor</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+          <div className={styles.titleText} style={{ fontWeight: "bold" }}>
             Forgot your password?
-          </Typography>
+          </div>
           <p className={styles.questionText}>1.Enter your ID</p>
           <TextField
             sx={{ margin: "1vw 5vh", width: "30vw" }}

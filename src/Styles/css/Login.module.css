@@ -42,3 +42,9 @@
 .questionText {
   margin: 1vw 2vh;
 }
+.titleText {
+  margin: 1vw 2vh;
+  font-weight: bold;
+  font-size: larger;
+  color: #1b3da6;
+}
