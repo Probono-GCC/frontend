@@ -38,7 +38,7 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Button from "@mui/material/Button";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function AppBar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -69,6 +69,14 @@ export default function AppBar() {
 
   const goTeacherView = () => {
     navigate("/teacher-view");
+  };
+
+  const goCreateClass = () => {
+    navigate("/create-class");
+  };
+
+  const goClassBoard = () => {
+    navigate("/class-board");
   };
 
   const isMenuOpen = Boolean(anchorEl);
@@ -223,18 +231,32 @@ export default function AppBar() {
     ...theme.mixins.toolbar,
     justifyContent: "flex-end",
   }));
-  const [expanded, setExpanded] = React.useState(false);
+  // const [expanded, setExpanded] = useState(false);
+
+  // const handleAccordionChange = (panel) => (event, isExpanded) => {
+  //   setExpanded(isExpanded ? panel : false);
+  // };
+  const [expanded, setExpanded] = useState({
+    userManagement: false,
+    classCourseManagement: false,
+    classes: false,
+    class1A: false,
+    class1B: false,
+  });
 
   const handleAccordionChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
+    setExpanded((prevExpanded) => ({
+      ...prevExpanded,
+      [panel]: isExpanded,
+    }));
   };
 
   // 하위 경로 확인 및 Accordion 상태 설정 (classes 추후 수정 필요)
   useEffect(() => {
     const userManagementPaths = [
       "/create-account",
-      "/view-student",
-      "/view-teacher",
+      "/student-view",
+      "/teacher-view",
       "/change-password",
       "/change-grade",
     ];
@@ -427,7 +449,7 @@ export default function AppBar() {
                 "&::before": { display: "none" },
                 marginBottom: "0px",
               }}
-              expanded={expanded === "userManagement"}
+              expanded={expanded.userManagement}
               onChange={handleAccordionChange("userManagement")}
             >
               <AccordionSummary
@@ -438,7 +460,7 @@ export default function AppBar() {
                   "&:hover": {
                     backgroundColor: theme.palette.action.hover,
                   },
-                  ...(expanded === "userManagement" && {
+                  ...(expanded.userManagement && {
                     backgroundColor: theme.palette.action.selected,
                   }),
                 }}
@@ -481,7 +503,7 @@ export default function AppBar() {
                       sx={{
                         "& .MuiTypography-root": {
                           fontWeight:
-                            location.pathname === "/view-student"
+                            location.pathname === "/student-view"
                               ? theme.typography.fontWeightBold
                               : theme.typography.fontWeightRegular,
                         },
@@ -500,7 +522,7 @@ export default function AppBar() {
                       sx={{
                         "& .MuiTypography-root": {
                           fontWeight:
-                            location.pathname === "/view-teacher"
+                            location.pathname === "/teacher-view"
                               ? theme.typography.fontWeightBold
                               : theme.typography.fontWeightRegular,
                         },
@@ -547,7 +569,7 @@ export default function AppBar() {
                 "&::before": { display: "none" },
                 marginBottom: "0px",
               }}
-              expanded={expanded === "classCourseManagement"}
+              expanded={expanded.classCourseManagement}
               onChange={handleAccordionChange("classCourseManagement")}
             >
               <AccordionSummary
@@ -558,7 +580,7 @@ export default function AppBar() {
                   "&:hover": {
                     backgroundColor: theme.palette.action.hover,
                   },
-                  ...(expanded === "classCourseManagement" && {
+                  ...(expanded.classCourseManagement && {
                     backgroundColor: theme.palette.action.selected,
                   }),
                 }}
@@ -576,7 +598,7 @@ export default function AppBar() {
               </AccordionSummary>
               <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
                 <ListItem key={"Create Class"} disablePadding>
-                  <ListItemButton sx={{ pl: 10 }}>
+                  <ListItemButton onClick={goCreateClass} sx={{ pl: 10 }}>
                     <ListItemText
                       primary={"Create Class"}
                       sx={{
@@ -632,72 +654,124 @@ export default function AppBar() {
             </ListItem>
           </List>
           <Divider />
-          <Accordion
-            sx={{
-              boxShadow: "none",
-              "&::before": { display: "none" },
-              marginBottom: "0px",
-            }}
-            expanded={expanded === "classes"}
-            onChange={handleAccordionChange("classes")}
-          >
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
+          <Box>
+            <Accordion
               sx={{
-                padding: "0 16px",
-                height: "60px",
-                "&:hover": {
-                  backgroundColor: theme.palette.action.hover,
-                },
-                ...(expanded === "classes" && {
-                  backgroundColor: theme.palette.action.selected,
-                }),
+                boxShadow: "none",
+                "&::before": { display: "none" },
+                marginBottom: "0px",
               }}
+              expanded={expanded.classes}
+              onChange={handleAccordionChange("classes")}
             >
-              <ListItemIcon
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
                 sx={{
-                  minWidth: "40px",
-                  display: "flex",
-                  alignItems: "center",
+                  padding: "0 16px",
+                  height: "60px",
+                  "&:hover": {
+                    backgroundColor: "#f5f5f5",
+                  },
+                  ...(expanded.classes && {
+                    backgroundColor: "#e0e0e0",
+                  }),
                 }}
               >
-                <SchoolIcon />
-              </ListItemIcon>
-              <ListItemText primary={"Classes"} />
-            </AccordionSummary>
-            <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
-              <ListItem key={""} disablePadding>
-                <ListItemButton sx={{ pl: 10 }}>
-                  <ListItemText
-                    primary={"Class 1"}
+                <ListItemIcon
+                  sx={{
+                    minWidth: "40px",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <SchoolIcon />
+                </ListItemIcon>
+                <ListItemText primary={"Classes"} />
+              </AccordionSummary>
+              <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
+                <Accordion
+                  sx={{
+                    boxShadow: "none",
+                    "&::before": { display: "none" },
+                    marginBottom: "0px",
+                  }}
+                  expanded={expanded.class1A}
+                  onChange={handleAccordionChange("class1A")}
+                >
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
                     sx={{
-                      "& .MuiTypography-root": {
-                        fontWeight:
-                          location.pathname === "/class1"
-                            ? theme.typography.fontWeightBold
-                            : theme.typography.fontWeightRegular,
+                      padding: "0 16px",
+                      height: "48px",
+                      "&:hover": {
+                        backgroundColor: "#f5f5f5",
                       },
+                      ...(expanded.class1A && {
+                        backgroundColor: "#e0e0e0",
+                      }),
+                      ...(expanded && {
+                        minHeight: "48px !important",
+                      }),
                     }}
-                  />
-                </ListItemButton>
-              </ListItem>
-              <ListItem key={""} disablePadding>
-                <ListItemButton sx={{ pl: 10 }}>
-                  <ListItemText
-                    primary={"Class 2"}
+                  >
+                    <ListItemText primary={"Class 1-A"} />
+                  </AccordionSummary>
+                  <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
+                    <ListItem key={"Class 1-A Info"} disablePadding>
+                      <ListItemButton sx={{ pl: 10 }}>
+                        <ListItemText primary={"Class Info"} />
+                      </ListItemButton>
+                    </ListItem>
+                    <ListItem key={"Class 1-A Board"} disablePadding>
+                      <ListItemButton sx={{ pl: 10 }} onClick={goClassBoard}>
+                        <ListItemText primary={"Class Board"} />
+                      </ListItemButton>
+                    </ListItem>
+                  </AccordionDetails>
+                </Accordion>
+                <Accordion
+                  sx={{
+                    boxShadow: "none",
+                    "&::before": { display: "none" },
+                    marginBottom: "0px",
+                  }}
+                  expanded={expanded.class1B}
+                  onChange={handleAccordionChange("class1B")}
+                >
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
                     sx={{
-                      "& .MuiTypography-root": {
-                        fontWeight:
-                          location.pathname === "/class2"
-                            ? theme.typography.fontWeightBold
-                            : theme.typography.fontWeightRegular,
+                      padding: "0 16px",
+                      height: "48px",
+                      "&:hover": {
+                        backgroundColor: "#f5f5f5",
                       },
+                      ...(expanded.class1B && {
+                        backgroundColor: "#e0e0e0",
+                      }),
+                      ...(expanded && {
+                        minHeight: "48px !important",
+                      }),
                     }}
-                  />
-                </ListItemButton>
-              </ListItem>
-            </AccordionDetails>
-          </Accordion>
+                  >
+                    <ListItemText primary={"Class 1-B"} />
+                  </AccordionSummary>
+                  <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
+                    <ListItem key={"Class 1-B Info"} disablePadding>
+                      <ListItemButton sx={{ pl: 10 }}>
+                        <ListItemText primary={"Class Info"} />
+                      </ListItemButton>
+                    </ListItem>
+                    <ListItem key={"Class 1-B Board"} disablePadding>
+                      <ListItemButton sx={{ pl: 10 }} onClick={goClassBoard}>
+                        <ListItemText primary={"Class Board"} />
+                      </ListItemButton>
+                    </ListItem>
+                  </AccordionDetails>
+                </Accordion>
+              </AccordionDetails>
+            </Accordion>
+          </Box>
           <Divider />
           <List>
             <ListItem key={"My Profile"} disablePadding>

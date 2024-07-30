@@ -14,78 +14,24 @@ import {
   IconButton,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import styles from "../Styles/css/NoticeBoard.module.css";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 
-function createData(title, date, grade, author, viewCount) {
-  return { title, date, grade, author, viewCount };
+function createData(title, date, type, author, viewCount) {
+  return { title, date, type, author, viewCount };
 }
 
 const rows = [
-  createData("Midterm Notice", "2024. 04. 24.", "All", "Admin", 123),
-  createData("School Aniversary", "2024. 04. 21.", "All", "Admin", 256),
-  createData("Library Open", "2023. 04. 04.", "All", "Admin", 7890),
-  createData("Summer Camp", "2023. 03. 03.", "All", "Admin", 456),
-  createData("Parent Meeting", "2023. 02. 02.", "All", "Admin", 678),
-  createData("Event Notice", "2023. 11. 11.", "All", "Admin", 345),
-  createData("Holiday Announcement", "2023. 10. 10.", "All", "Admin", 567),
-  createData("New Curriculum", "2023. 09. 09.", "All", "Admin", 789),
-  createData("Exam Schedule", "2023. 08. 08.", "All", "Admin", 890),
-  createData("Field Trip", "2023. 07. 07.", "All", "Admin", 3456),
-  createData("Extra Class", "2023. 06. 06.", "All", "Admin", 234),
-  createData("New Teacher", "2023. 05. 05.", "All", "Admin", 1234),
-  createData("Library Open", "2023. 04. 04.", "All", "Admin", 7890),
-  createData("Summer Camp", "2023. 03. 03.", "All", "Admin", 456),
-  createData("Parent Meeting", "2023. 02. 02.", "All", "Admin", 678),
-  createData("Extra Class", "2023. 06. 06.", "All", "Admin", 234),
-  createData("New Teacher", "2023. 05. 05.", "All", "Admin", 1234),
-  createData("Library Open", "2023. 04. 04.", "All", "Admin", 7890),
-  createData("Summer Camp", "2023. 03. 03.", "All", "Admin", 456),
-  createData("Parent Meeting", "2023. 02. 02.", "All", "Admin", 678),
-  createData("Midterm Notice", "2024. 04. 24.", "All", "Admin", 123),
-  createData("School Aniversary", "2024. 04. 21.", "All", "Admin", 256),
-  createData("Library Open", "2023. 04. 04.", "All", "Admin", 7890),
-  createData("Summer Camp", "2023. 03. 03.", "All", "Admin", 456),
-  createData("Parent Meeting", "2023. 02. 02.", "All", "Admin", 678),
-  createData("Event Notice", "2023. 11. 11.", "All", "Admin", 345),
-  createData("Holiday Announcement", "2023. 10. 10.", "All", "Admin", 567),
-  createData("New Curriculum", "2023. 09. 09.", "All", "Admin", 789),
-  createData("Exam Schedule", "2023. 08. 08.", "All", "Admin", 890),
-  createData("Field Trip", "2023. 07. 07.", "All", "Admin", 3456),
-  createData("Extra Class", "2023. 06. 06.", "All", "Admin", 234),
-  createData("New Teacher", "2023. 05. 05.", "All", "Admin", 1234),
-  createData("Library Open", "2023. 04. 04.", "All", "Admin", 7890),
-  createData("Summer Camp", "2023. 03. 03.", "All", "Admin", 456),
-  createData("Parent Meeting", "2023. 02. 02.", "All", "Admin", 678),
-  createData("Extra Class", "2023. 06. 06.", "All", "Admin", 234),
-  createData("New Teacher", "2023. 05. 05.", "All", "Admin", 1234),
-  createData("Library Open", "2023. 04. 04.", "All", "Admin", 7890),
-  createData("Summer Camp", "2023. 03. 03.", "All", "Admin", 456),
-  createData("Parent Meeting", "2023. 02. 02.", "All", "Admin", 678),
-  createData("Midterm Notice", "2024. 04. 24.", "All", "Admin", 123),
-  createData("School Aniversary", "2024. 04. 21.", "All", "Admin", 256),
-  createData("Library Open", "2023. 04. 04.", "All", "Admin", 7890),
-  createData("Summer Camp", "2023. 03. 03.", "All", "Admin", 456),
-  createData("Parent Meeting", "2023. 02. 02.", "All", "Admin", 678),
-  createData("Event Notice", "2023. 11. 11.", "All", "Admin", 345),
-  createData("Holiday Announcement", "2023. 10. 10.", "All", "Admin", 567),
-  createData("New Curriculum", "2023. 09. 09.", "All", "Admin", 789),
-  createData("Exam Schedule", "2023. 08. 08.", "All", "Admin", 890),
-  createData("Field Trip", "2023. 07. 07.", "All", "Admin", 3456),
-  createData("Extra Class", "2023. 06. 06.", "All", "Admin", 234),
-  createData("New Teacher", "2023. 05. 05.", "All", "Admin", 1234),
-  createData("Library Open", "2023. 04. 04.", "All", "Admin", 7890),
-  createData("Summer Camp", "2023. 03. 03.", "All", "Admin", 456),
-  createData("Parent Meeting", "2023. 02. 02.", "All", "Admin", 678),
-  createData("Extra Class", "2023. 06. 06.", "All", "Admin", 234),
-  createData("New Teacher", "2023. 05. 05.", "All", "Admin", 1234),
-  createData("Library Open", "2023. 04. 04.", "All", "Admin", 7890),
-  createData("Summer Camp", "2023. 03. 03.", "All", "Admin", 456),
+  createData("Midterm Notice", "2024. 04. 24.", "Homeroom", "Mozart", 123),
+  createData("School Aniversary", "2024. 04. 21.", "Homeroom", "AMozart", 256),
+  createData("Library Open", "2023. 04. 04.", "English", "Euler", 7890),
+  createData("Summer Camp", "2023. 03. 03.", "Homeroom", "Mozart", 456),
+  createData("Parent Meeting", "2023. 02. 02.", "Nepali", "Fermat", 6781),
 ];
-function NoticeBoard() {
+
+function ClassBoard() {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const itemsPerPage = 10;
@@ -141,7 +87,7 @@ function NoticeBoard() {
             marginBottom: "30px",
           }}
         >
-          Notice Board
+          Class Board
         </Typography>
       </Box>
       <TableContainer
@@ -163,7 +109,7 @@ function NoticeBoard() {
               <TableCell
                 sx={{ textAlign: "left", fontWeight: "bold", width: "15%" }}
               >
-                Grade
+                Type
               </TableCell>
               <TableCell
                 sx={{ textAlign: "left", fontWeight: "bold", width: "20%" }}
@@ -298,4 +244,4 @@ function NoticeBoard() {
   );
 }
 
-export default NoticeBoard;
+export default ClassBoard;
