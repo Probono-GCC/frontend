@@ -1,0 +1,50 @@
+#page_container {
+  display: flex;
+  justify-content: space-between;
+  /* display: inline; */
+  width: 100vw;
+  height: 100vh;
+}
+#image_container {
+  width: 60vw;
+}
+#login_container {
+  display: flex;
+  flex-direction: column;
+  width: 40vw;
+}
+#logoImg {
+  height: 30vh; /* Viewport height */
+  width: 30vw; /* Viewport width */
+  margin: 3vw 5vh;
+  background-image: url("../../Assets/img/CLALogo.png"); /* 이미지 경로 */
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+#slider {
+  width: 100%;
+  /* max-width: 600px; */
+  /* margin: auto; */
+  overflow: hidden;
+  position: relative;
+}
+#slides {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+#slides img {
+  width: 100%;
+  display: flex;
+}
+
+.questionText {
+  margin: 1vw 2vh;
+}
+.titleText {
+  margin: 1vw 2vh;
+  font-weight: bold;
+  font-size: larger;
+  color: #1b3da6;
+}

@@ -12,6 +12,7 @@ import MyProfile from "./Pages/MyProfile";
 import "./index.css";
 
 //page
+import Login from "./Pages/Login.js";
 import Home from "./Pages/Home.js";
 import StudentView from "./Pages/StudentView.js";
 import TeacherView from "./Pages/TeacherView.js";
@@ -27,6 +28,11 @@ root.render(
     <React.StrictMode>
       <BrowserRouter>
         <Routes>
+          <Route path="/login" element={<Login type={"default"} />} />
+          <Route
+            path="/forgot-password"
+            element={<Login type={"forgot-password"} />}
+          />
           <Route path="/" element={<Home />} />
           <Route path="/notice-board" element={<NoticeBoard />} />
           <Route path="/create-account" element={<CreateAccount />} />

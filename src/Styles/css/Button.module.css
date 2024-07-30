@@ -1,17 +1,31 @@
-#button {
+.bg_button {
+  /* position: absolute;
+  right: 5vw; */
+  width: 13vw;
+  height: 5vh;
+  margin-top: 3vh;
+}
+.md_button {
+  /* position: absolute;
+  right: 5vw; */
+  width: 8vw;
+  height: 5vh;
+}
+
+#login_btn {
+  position: static;
+  justify-content: space-between;
+  width: 30vw;
+  right: 10vw;
+  margin: 5vh;
+}
+
+#view_btn {
   position: absolute;
   right: 5vw;
-  width: 13vw;
   margin-top: 3vh;
 }
 
-/* 활성화 버튼 디자인*/
-#button:not(:disabled) {
-  background-color: #d8edff;
-  color: #1b8ef2;
-}
-/* 비활성화 버튼 디자인 */
-#button:disabled {
-  background-color: #cccccc;
-  color: #808792;
+#forgotPw_btn:hover {
+  cursor: pointer;
 }

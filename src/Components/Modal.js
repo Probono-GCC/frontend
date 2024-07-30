@@ -6,7 +6,7 @@ import { grey } from "../Styles/Color"; // 색상 팔레트 임포트
 import DetailTable from "./DetailTable";
 import ProfileImg from "../Assets/img/profile_temp.png";
 
-function CustomModal({ open, handleClose, title, rowData }) {
+function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
   // const [open, setOpen] = useState(false);
   // const handleOpen = () => setOpen(true);
   // const handleClose = () => setOpen(false);
@@ -33,7 +33,7 @@ function CustomModal({ open, handleClose, title, rowData }) {
             {title}
           </h2>
           <img src={ProfileImg} width="120px" height="120px" />
-          <DetailTable data={rowData} />
+          <DetailTable data={rowData} rowsHeader={rowsHeader} />
           {/* <p id="keep-mounted-modal-description" className="modal-description">
             {JSON.stringify(rowData)}
           </p> */}

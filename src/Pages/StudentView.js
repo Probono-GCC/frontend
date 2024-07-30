@@ -203,6 +203,8 @@ function StudentView() {
         title={"Delete"}
         disabled={checkedRows.length === 0}
         onClick={deleteRow}
+        id={"view_btn"}
+        size={"bg"}
       />
 
       <Modal
@@ -210,6 +212,7 @@ function StudentView() {
         handleClose={handleModalClose}
         title={"Detail Information"}
         rowData={modalRowData}
+        rowsHeader={columns}
       />
     </div>
   );
