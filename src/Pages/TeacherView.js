@@ -1,4 +1,4 @@
-import React, { useState, useNavigate, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 
 import AppBar from "../Components/AppBar";
 import Table from "../Components/Table";
@@ -8,7 +8,6 @@ import IconButton from "@mui/material/IconButton";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 
-import InfoIcon from "@mui/icons-material/Info";
 import Modal from "../Components/Modal";
 import Checkbox from "@mui/material/Checkbox";
 import { Typography, Box } from "@mui/material";
@@ -23,40 +22,40 @@ const columns = [
   { field: "phone_num", headerName: "phone", flex: 0.3 },
 ];
 
-const rows = [
-  {
-    id: 0,
-    sex: "Male",
-    name: "Jon",
-    birth: "92.02.24",
-    login_id: "b0000",
-    phone_num: "01021143454",
-  },
-  {
-    id: 1,
-    sex: "Female",
-    name: "Cersei",
-    birth: "92.01.04",
-    login_id: "b0001",
-    phone_num: "01021143454",
-  },
-  {
-    id: 2,
-    sex: "Male",
-    name: "Jaime",
-    birth: "92.12.24",
-    login_id: "b0002",
-    phone_num: "01021143454",
-  },
-  {
-    id: 3,
-    sex: "Male",
-    name: "Arya",
-    birth: "92.05.27",
-    login_id: "b0003",
-    phone_num: "01021143454",
-  },
-];
+// const rows = [
+//   {
+//     id: 0,
+//     sex: "Male",
+//     name: "Jon",
+//     birth: "92.02.24",
+//     login_id: "b0000",
+//     phone_num: "01021143454",
+//   },
+//   {
+//     id: 1,
+//     sex: "Female",
+//     name: "Cersei",
+//     birth: "92.01.04",
+//     login_id: "b0001",
+//     phone_num: "01021143454",
+//   },
+//   {
+//     id: 2,
+//     sex: "Male",
+//     name: "Jaime",
+//     birth: "92.12.24",
+//     login_id: "b0002",
+//     phone_num: "01021143454",
+//   },
+//   {
+//     id: 3,
+//     sex: "Male",
+//     name: "Arya",
+//     birth: "92.05.27",
+//     login_id: "b0003",
+//     phone_num: "01021143454",
+//   },
+// ];
 
 function TeacherView() {
   // const [selectedRows, setSelectedRows] = useState([]);
@@ -64,7 +63,8 @@ function TeacherView() {
   const [modalRowData, setModalRowData] = useState("default row data");
   const [alert, setAlert] = useState(false);
   const [checkedRows, setCheckedRows] = useState([]);
-  // const rows = "";
+  const [rows, setRows] = useState([]);
+
   const handleRowSelection = (id) => {
     setCheckedRows((prevCheckedRows) =>
       prevCheckedRows.includes(id)
@@ -89,30 +89,34 @@ function TeacherView() {
     setCheckedRows([]);
   };
 
-  const updatedColumns = [
-    {
-      field: "check",
-      headerName: "",
-      flex: 0.05,
-      renderCell: (params) => (
-        <Checkbox
-          {...label}
-          checked={checkedRows.includes(params.row.id)}
-          onChange={() => handleRowSelection(params.row.id)}
-        />
-      ),
-    },
-    ...columns,
-  ];
+  const updatedColumns = useMemo(
+    () => [
+      {
+        field: "check",
+        headerName: "",
+        flex: 0.05,
+        renderCell: (params) => (
+          <Checkbox
+            {...label}
+            checked={checkedRows.includes(params.row.id)}
+            onChange={() => handleRowSelection(params.row.id)}
+          />
+        ),
+      },
+      ...columns,
+    ],
+    [checkedRows]
+  );
   useEffect(() => {
-    // const result = getTeachers();
-    // console.log(result);
-    // const result = axios
-    //   .get("http://localhost:8080/teachers")
-    //   .then((result) => {
-    //     console.log(result);
-    //   });
-  });
+    getTeachers()
+      .then((result) => {
+        console.log(result); // 결과값은 배열로 저장됨
+        setRows(result);
+      })
+      .catch((error) => {
+        console.error("Error fetching teachers:", error);
+      });
+  }, []);
   return (
     <div id="page_content">
       <AppBar />
