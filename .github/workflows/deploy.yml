@@ -2,9 +2,9 @@ name: front ci/cd # workflow 이름(Actions에서 보여질 이름)
 run-name: ${{ github.actor }} is learning GitHub Actions # workflow 실행리스트에 보여질 이름.
 on: # 트리거
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 env:
   AWS_REGION: ap-northeast-2
   AWS_S3_BUCKET: probono-gcc-bucket
@@ -13,28 +13,27 @@ env:
 
 jobs: # job 시작 명시(모든 job의 묶음)
   build: # job 이름
-
     runs-on: ubuntu-22.04 # workflow를 실행할 runner(가상머신) 지정
     permissions:
       contents: read
 
     steps: # step 시작 명시(모든 step의 묶음)
       - uses: actions/checkout@v4 # use 키워드는 actions/checkout의 v4버전을 실행할 것을 의미. repository 코드를 runner에 다운하고 브랜치 전환하는 역할. workflow가 repository 코드를 사용할때 사용해야한다.
-      
+
       # .env에 있던 환경변수들을 등록해주는 단계
       # - name: .env setting
       #   run: |
       #     echo "REACT_APP_SERVER_IP=${{ secrets.REACT_APP_API_URL }}" >> .env
       #     echo "REACT_APP_EXAMPLE=${{ secrets.REACT_APP_API_URL }}" >> .env
-
+      #
+      #
       - name: install npm dependencies
         run: npm install
-        
+
       - name: react build
         run: npm run build
         env:
-          CI: ""  
-
+          CI: ""
 
       - name: AWS credential 설정
         uses: aws-actions/configure-aws-credentials@v1
