@@ -204,6 +204,7 @@ function StudentView() {
         disabled={checkedRows.length === 0}
         onClick={deleteRow}
         id={"view_btn"}
+        size={"bg"}
       />
 
       <Modal
