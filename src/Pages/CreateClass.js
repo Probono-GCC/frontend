@@ -38,7 +38,8 @@ const grades = [
 const sections = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"];
 
 const batchYears = [];
-for (let year = 2020; year <= 2030; year++) {
+for (let year = 2020 + 57; year <= 2030 + 57; year++) {
+  // 네팔력
   batchYears.push(year);
 }
 
