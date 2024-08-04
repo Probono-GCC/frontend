@@ -79,6 +79,10 @@ export default function AppBar() {
     navigate("/class-board");
   };
 
+  const goClassInfo = () => {
+    navigate("/class-info");
+  };
+
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -718,7 +722,7 @@ export default function AppBar() {
                   </AccordionSummary>
                   <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
                     <ListItem key={"Class 1-A Info"} disablePadding>
-                      <ListItemButton sx={{ pl: 10 }}>
+                      <ListItemButton sx={{ pl: 10 }} onClick={goClassInfo}>
                         <ListItemText primary={"Class Info"} />
                       </ListItemButton>
                     </ListItem>
@@ -758,7 +762,7 @@ export default function AppBar() {
                   </AccordionSummary>
                   <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
                     <ListItem key={"Class 1-B Info"} disablePadding>
-                      <ListItemButton sx={{ pl: 10 }}>
+                      <ListItemButton sx={{ pl: 10 }} onClick={goClassInfo}>
                         <ListItemText primary={"Class Info"} />
                       </ListItemButton>
                     </ListItem>

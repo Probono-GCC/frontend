@@ -20,6 +20,7 @@ import Post from "./Pages/Post.js";
 import CreateClass from "./Pages/CreateClass.js";
 import ClassBoard from "./Pages/ClassBoard.js";
 import ClassNewPostForm from "./Pages/ClassNewPostForm.js";
+import ClassInfo from "./Pages/ClassInfo.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -45,6 +46,7 @@ root.render(
           <Route path="/teacher-view" element={<TeacherView />} />
           <Route path="/create-class" element={<CreateClass />} />
           <Route path="/class-board" element={<ClassBoard />} />
+          <Route path="/class-info" element={<ClassInfo />} />
         </Routes>
       </BrowserRouter>
     </React.StrictMode>
