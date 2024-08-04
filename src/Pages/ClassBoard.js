@@ -41,7 +41,7 @@ function ClassBoard() {
   };
 
   const handleNewPost = () => {
-    navigate("/new-post-form");
+    navigate("/class-new-post-form");
   };
 
   const handlePreviousGroup = () => {

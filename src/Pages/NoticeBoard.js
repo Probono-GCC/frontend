@@ -95,7 +95,7 @@ function NoticeBoard() {
   };
 
   const handleNewPost = () => {
-    navigate("/new-post-form");
+    navigate("/notice-new-post-form");
   };
 
   const handlePreviousGroup = () => {
