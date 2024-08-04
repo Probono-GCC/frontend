@@ -102,7 +102,12 @@ function ClassBoard() {
           <TableHead sx={{ backgroundColor: "#d8edff" }}>
             <TableRow>
               <TableCell
-                sx={{ textAlign: "left", fontWeight: "bold", width: "50%" }}
+                sx={{ textAlign: "left", fontWeight: "bold", width: "5%" }}
+              >
+                No
+              </TableCell>
+              <TableCell
+                sx={{ textAlign: "left", fontWeight: "bold", width: "45%" }}
               >
                 Title
               </TableCell>
@@ -144,6 +149,18 @@ function ClassBoard() {
                     whiteSpace: "nowrap",
                   }}
                 >
+                  {rows.length - (index + (page - 1) * itemsPerPage)}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    padding: "16px",
+                    textAlign: "left",
+                    borderBottom: "1px solid #e0e0e0",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
                   {row.title}
                   <Typography
                     variant="body2"
@@ -162,7 +179,7 @@ function ClassBoard() {
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {row.grade}
+                  {row.type}
                 </TableCell>
                 <TableCell
                   sx={{
