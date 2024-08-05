@@ -40,7 +40,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Button from "@mui/material/Button";
 import { useEffect, useState } from "react";
 
-export default function AppBar() {
+function AppBar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -77,6 +77,10 @@ export default function AppBar() {
 
   const goClassBoard = () => {
     navigate("/class-board");
+  };
+
+  const goClassInfo = () => {
+    navigate("/class-info");
   };
 
   const isMenuOpen = Boolean(anchorEl);
@@ -718,7 +722,7 @@ export default function AppBar() {
                   </AccordionSummary>
                   <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
                     <ListItem key={"Class 1-A Info"} disablePadding>
-                      <ListItemButton sx={{ pl: 10 }}>
+                      <ListItemButton sx={{ pl: 10 }} onClick={goClassInfo}>
                         <ListItemText primary={"Class Info"} />
                       </ListItemButton>
                     </ListItem>
@@ -758,7 +762,7 @@ export default function AppBar() {
                   </AccordionSummary>
                   <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
                     <ListItem key={"Class 1-B Info"} disablePadding>
-                      <ListItemButton sx={{ pl: 10 }}>
+                      <ListItemButton sx={{ pl: 10 }} onClick={goClassInfo}>
                         <ListItemText primary={"Class Info"} />
                       </ListItemButton>
                     </ListItem>
@@ -815,3 +819,5 @@ export default function AppBar() {
     </div>
   );
 }
+
+export default AppBar;

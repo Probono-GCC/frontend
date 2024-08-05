@@ -5,7 +5,7 @@ import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import store from "./store";
 import NoticeBoard from "./Pages/NoticeBoard";
-import NewPostForm from "./Pages/NewPostForm";
+import NoticeNewPostForm from "./Pages/NoticeNewPostForm.js";
 import CreateAccount from "./Pages/CreateAccount";
 import MyProfile from "./Pages/MyProfile";
 
@@ -19,6 +19,8 @@ import TeacherView from "./Pages/TeacherView.js";
 import Post from "./Pages/Post.js";
 import CreateClass from "./Pages/CreateClass.js";
 import ClassBoard from "./Pages/ClassBoard.js";
+import ClassNewPostForm from "./Pages/ClassNewPostForm.js";
+import ClassInfo from "./Pages/ClassInfo.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -38,11 +40,13 @@ root.render(
           <Route path="/create-account" element={<CreateAccount />} />
           <Route path="/my-profile" element={<MyProfile />} />
           <Route path="/post" element={<Post />} />
-          <Route path="/new-post-form" element={<NewPostForm />} />
+          <Route path="/notice-new-post-form" element={<NoticeNewPostForm />} />
+          <Route path="/class-new-post-form" element={<ClassNewPostForm />} />
           <Route path="/student-view" element={<StudentView />} />
           <Route path="/teacher-view" element={<TeacherView />} />
           <Route path="/create-class" element={<CreateClass />} />
           <Route path="/class-board" element={<ClassBoard />} />
+          <Route path="/class-info" element={<ClassInfo />} />
         </Routes>
       </BrowserRouter>
     </React.StrictMode>

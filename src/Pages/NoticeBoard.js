@@ -14,7 +14,6 @@ import {
   IconButton,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import styles from "../Styles/css/NoticeBoard.module.css";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
@@ -85,6 +84,7 @@ const rows = [
   createData("Library Open", "2023. 04. 04.", "All", "Admin", 7890),
   createData("Summer Camp", "2023. 03. 03.", "All", "Admin", 456),
 ];
+
 function NoticeBoard() {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
@@ -95,7 +95,7 @@ function NoticeBoard() {
   };
 
   const handleNewPost = () => {
-    navigate("/new-post-form");
+    navigate("/notice-new-post-form");
   };
 
   const handlePreviousGroup = () => {
@@ -156,7 +156,12 @@ function NoticeBoard() {
           <TableHead sx={{ backgroundColor: "#d8edff" }}>
             <TableRow>
               <TableCell
-                sx={{ textAlign: "left", fontWeight: "bold", width: "50%" }}
+                sx={{ textAlign: "left", fontWeight: "bold", width: "5%" }}
+              >
+                No
+              </TableCell>
+              <TableCell
+                sx={{ textAlign: "left", fontWeight: "bold", width: "45%" }}
               >
                 Title
               </TableCell>
@@ -188,6 +193,18 @@ function NoticeBoard() {
                 }}
                 onClick={handleRowClick}
               >
+                <TableCell
+                  sx={{
+                    padding: "16px",
+                    textAlign: "left",
+                    borderBottom: "1px solid #e0e0e0",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {rows.length - (index + (page - 1) * itemsPerPage)}
+                </TableCell>
                 <TableCell
                   sx={{
                     padding: "16px",

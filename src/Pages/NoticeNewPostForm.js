@@ -30,7 +30,7 @@ const grades = [
   { value: "Class10", label: "Class 10" },
 ];
 
-function NewPostForm() {
+function NoticeNewPostForm() {
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [grade, setGrade] = useState("All");
@@ -57,7 +57,7 @@ function NewPostForm() {
         { indent: "-1" },
         { indent: "+1" },
       ],
-      ["link", "image", "video"],
+      ["link", "image"],
       ["clean"],
     ],
   };
@@ -169,4 +169,4 @@ function NewPostForm() {
   );
 }
 
-export default NewPostForm;
+export default NoticeNewPostForm;

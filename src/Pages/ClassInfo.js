@@ -11,9 +11,11 @@ import Stack from "@mui/material/Stack";
 import InfoIcon from "@mui/icons-material/Info";
 import Modal from "../Components/Modal";
 import Checkbox from "@mui/material/Checkbox";
-import { textAlign } from "@mui/system";
+import { maxWidth, textAlign } from "@mui/system";
 import { Typography, Box } from "@mui/material";
+import InfoBox from "../Components/InfoBox";
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
+
 const columns = [
   {
     field: "sn",
@@ -26,6 +28,33 @@ const columns = [
   { field: "birth", headerName: "Birth", flex: 0.1 },
   { field: "id", headerName: "ID", flex: 0.2 },
   { field: "grade", headerName: "Grade", flex: 0.3 },
+];
+
+const courseColumns = [
+  { field: "batch", headerName: "Batch", flex: 0.1 },
+  { field: "grade", headerName: "Grade", flex: 0.2 },
+  { field: "section", headerName: "Section", flex: 0.1 },
+  { field: "teacher", headerName: "Teacher", flex: 0.3 },
+  { field: "subject", headerName: "Subject", flex: 0.2 },
+];
+
+const courseRows = [
+  {
+    id: 1,
+    batch: 2084,
+    grade: "Class 10",
+    section: "A",
+    teacher: "Mozart",
+    subject: "Nepali",
+  },
+  {
+    id: 2,
+    batch: 2084,
+    grade: "Class 10",
+    section: "A",
+    teacher: "Fermat",
+    subject: "Math",
+  },
 ];
 
 const rows = [
@@ -103,12 +132,13 @@ const rows = [
   },
 ];
 
-function StudentView() {
+function ClassInfo() {
   // const [selectedRows, setSelectedRows] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalRowData, setModalRowData] = useState("default row data");
   const [alert, setAlert] = useState(false);
   const [checkedRows, setCheckedRows] = useState([]);
+
   const handleRowSelection = (id) => {
     setCheckedRows((prevCheckedRows) =>
       prevCheckedRows.includes(id)
@@ -116,6 +146,7 @@ function StudentView() {
         : [...prevCheckedRows, id]
     );
   };
+
   const handleModalOpen = (row) => {
     setModalRowData(row);
     setModalOpen(true);
@@ -125,42 +156,7 @@ function StudentView() {
     setModalOpen(false);
     setModalRowData(null);
   };
-  const deleteRow = () => {
-    setAlert(true);
-    setTimeout(() => setAlert(false), 2000); // Hide the alert after 3 seconds
 
-    console.log("Deleting rows:", checkedRows);
-    setCheckedRows([]);
-  };
-
-  const updatedColumns = [
-    {
-      field: "check",
-      headerName: "",
-      flex: 0.05,
-      renderCell: (params) => (
-        <Checkbox
-          {...label}
-          checked={checkedRows.includes(params.row.id)}
-          onChange={() => handleRowSelection(params.row.id)}
-        />
-      ),
-    },
-    ...columns,
-    // {
-    //   field: "Detail",
-    //   headerName: "Detail",
-    //   flex: 0.1,
-    //   renderCell: (params) => (
-    //     <IconButton
-    //       aria-label="info"
-    //       onClick={() => handleModalOpen(params.row)}
-    //     >
-    //       <InfoIcon />
-    //     </IconButton>
-    //   ),
-    // },
-  ];
   return (
     <div id="page_content">
       <AppBar />
@@ -189,24 +185,61 @@ function StudentView() {
             component="div"
             sx={{ fontFamily: "Copperplate" }}
           >
-            Student Board
+            Class Info
+          </Typography>
+        </Box>
+        <InfoBox />
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "left",
+            marginTop: 10,
+            marginBottom: 3,
+            paddingLeft: "5%",
+          }}
+        >
+          <Typography
+            variant="h4"
+            component="div"
+            sx={{ fontFamily: "Copperplate" }}
+          >
+            Course Info
           </Typography>
         </Box>
         <Table
-          columns={updatedColumns}
+          columns={courseColumns}
+          rows={courseRows}
+          onRowSelection={handleRowSelection}
+          onRowDoubleClick={(params) => handleModalOpen(params.row)}
+          getRowId={(row) => row.id}
+        />
+
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "left",
+            marginTop: 10,
+            marginBottom: 3,
+            paddingLeft: "5%",
+          }}
+        >
+          <Typography
+            variant="h4"
+            component="div"
+            sx={{ fontFamily: "Copperplate" }}
+          >
+            Student Info
+          </Typography>
+        </Box>
+
+        <Table
+          columns={columns}
           rows={rows}
           onRowSelection={handleRowSelection}
           onRowDoubleClick={(params) => handleModalOpen(params.row)}
           getRowId={(row) => row.sn}
         />
       </div>
-      <Button
-        title={"Delete"}
-        disabled={checkedRows.length === 0}
-        onClick={deleteRow}
-        id={"view_btn"}
-        size={"bg"}
-      />
 
       <Modal
         open={modalOpen}
@@ -219,4 +252,4 @@ function StudentView() {
   );
 }
 
-export default StudentView;
+export default ClassInfo;
