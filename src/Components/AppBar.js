@@ -40,7 +40,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Button from "@mui/material/Button";
 import { useEffect, useState } from "react";
 
-export default function AppBar() {
+function AppBar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -819,3 +819,5 @@ export default function AppBar() {
     </div>
   );
 }
+
+export default AppBar;
