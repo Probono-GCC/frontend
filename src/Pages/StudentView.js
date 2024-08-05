@@ -197,6 +197,7 @@ function StudentView() {
           rows={rows}
           onRowSelection={handleRowSelection}
           onRowDoubleClick={(params) => handleModalOpen(params.row)}
+          getRowId={(row) => row.sn}
         />
       </div>
       <Button

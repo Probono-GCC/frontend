@@ -182,6 +182,7 @@ function CreateClass() {
             columns={columns}
             rows={rows}
             onRowSelection={handleRowSelection}
+            getRowId={(row) => row.id}
           />
           <Box
             sx={{ display: "flex", justifyContent: "flex-end", marginTop: 3 }}

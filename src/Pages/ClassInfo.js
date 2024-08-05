@@ -40,7 +40,7 @@ const courseColumns = [
 
 const courseRows = [
   {
-    sn: 1,
+    id: 1,
     batch: 2084,
     grade: "Class 10",
     section: "A",
@@ -48,7 +48,7 @@ const courseRows = [
     subject: "Nepali",
   },
   {
-    sn: 2,
+    id: 2,
     batch: 2084,
     grade: "Class 10",
     section: "A",
@@ -211,6 +211,7 @@ function ClassInfo() {
           rows={courseRows}
           onRowSelection={handleRowSelection}
           onRowDoubleClick={(params) => handleModalOpen(params.row)}
+          getRowId={(row) => row.id}
         />
 
         <Box
@@ -236,6 +237,7 @@ function ClassInfo() {
           rows={rows}
           onRowSelection={handleRowSelection}
           onRowDoubleClick={(params) => handleModalOpen(params.row)}
+          getRowId={(row) => row.sn}
         />
       </div>
 

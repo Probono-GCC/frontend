@@ -1,7 +1,7 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
 import styles from "../Styles/css/Table.module.css";
-function Table({ columns, rows, onRowSelection, onRowDoubleClick }) {
+function Table({ columns, rows, onRowSelection, onRowDoubleClick, getRowId }) {
   return (
     <div id={styles.table_body}>
       <DataGrid
@@ -25,7 +25,7 @@ function Table({ columns, rows, onRowSelection, onRowDoubleClick }) {
         }}
         pageSizeOptions={[5, 10, 15]}
         onRowDoubleClick={onRowDoubleClick}
-        getRowId={(row) => row.sn} // ClassInfo.js에서 테이블 두 개 생성 시 고유 ID 필요해서 임시로 생성!
+        getRowId={getRowId} // ClassInfo.js에서 테이블 두 개 생성 시 고유 ID 필요해서 임시로 생성!
       />
     </div>
   );
