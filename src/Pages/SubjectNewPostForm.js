@@ -13,37 +13,20 @@ import AppBar from "../Components/AppBar";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
-const grades = [
-  { value: "PlayGroup", label: "PlayGroup" },
-  { value: "Nursery", label: "Nursery" },
-  { value: "LowerKG", label: "LowerKG" },
-  { value: "UpperKG", label: "UpperKG" },
-  { value: "Class1", label: "Class 1" },
-  { value: "Class2", label: "Class 2" },
-  { value: "Class3", label: "Class 3" },
-  { value: "Class4", label: "Class 4" },
-  { value: "Class5", label: "Class 5" },
-  { value: "Class6", label: "Class 6" },
-  { value: "Class7", label: "Class 7" },
-  { value: "Class8", label: "Class 8" },
-  { value: "Class9", label: "Class 9" },
-  { value: "Class10", label: "Class 10" },
-];
-
-function NoticeNewPostForm() {
+function SubjectNewPostForm() {
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
-  const [grade, setGrade] = useState("All");
+  const [type, setType] = useState("All");
   const [content, setContent] = useState("");
 
   const handleSave = () => {
     // 저장 시 새로운 페이지 생성하는 코드 필요!
 
-    navigate("/notice-board");
+    navigate("/subject-board");
   };
 
   const handleCancel = () => {
-    navigate("/notice-board");
+    navigate("/subject-board");
   };
 
   const modules = {
@@ -70,7 +53,7 @@ function NoticeNewPostForm() {
           component="div"
           sx={{ fontFamily: "Copperplate" }}
         >
-          Notice Board
+          Class Board
         </Typography>
       </Box>
       <Box
@@ -95,22 +78,7 @@ function NoticeNewPostForm() {
               onChange={(e) => setTitle(e.target.value)}
             />
           </Grid>
-          <Grid item xs={12}>
-            <TextField
-              select
-              fullWidth
-              label="Grade"
-              variant="outlined"
-              value={grade}
-              onChange={(e) => setGrade(e.target.value)}
-            >
-              {grades.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid>
+
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -169,4 +137,4 @@ function NoticeNewPostForm() {
   );
 }
 
-export default NoticeNewPostForm;
+export default SubjectNewPostForm;

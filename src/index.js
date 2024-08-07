@@ -21,6 +21,9 @@ import CreateClass from "./Pages/CreateClass.js";
 import ClassBoard from "./Pages/ClassBoard.js";
 import ClassNewPostForm from "./Pages/ClassNewPostForm.js";
 import ClassInfo from "./Pages/ClassInfo.js";
+import SubjectBoard from "./Pages/SubjectBoard.js";
+import SubjectInfo from "./Pages/SubjectInfo.js";
+import SubjectNewPostForm from "./Pages/SubjectNewPostForm.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -47,6 +50,12 @@ root.render(
           <Route path="/create-class" element={<CreateClass />} />
           <Route path="/class-board" element={<ClassBoard />} />
           <Route path="/class-info" element={<ClassInfo />} />
+          <Route path="/subject-board" element={<SubjectBoard />} />
+          <Route path="/subject-info" element={<SubjectInfo />} />
+          <Route
+            path="/subject-new-post-form"
+            element={<SubjectNewPostForm />}
+          />
         </Routes>
       </BrowserRouter>
     </React.StrictMode>

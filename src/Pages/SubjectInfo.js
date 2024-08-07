@@ -30,33 +30,6 @@ const columns = [
   { field: "grade", headerName: "Grade", flex: 0.3 },
 ];
 
-const courseColumns = [
-  { field: "batch", headerName: "Batch", flex: 0.1 },
-  { field: "grade", headerName: "Grade", flex: 0.2 },
-  { field: "section", headerName: "Section", flex: 0.1 },
-  { field: "teacher", headerName: "Teacher", flex: 0.3 },
-  { field: "subject", headerName: "Subject", flex: 0.2 },
-];
-
-const courseRows = [
-  {
-    id: 1,
-    batch: 2084,
-    grade: "Class 10",
-    section: "A",
-    teacher: "Mozart",
-    subject: "Nepali",
-  },
-  {
-    id: 2,
-    batch: 2084,
-    grade: "Class 10",
-    section: "A",
-    teacher: "Fermat",
-    subject: "Math",
-  },
-];
-
 const rows = [
   {
     sn: 1,
@@ -132,7 +105,7 @@ const rows = [
   },
 ];
 
-function ClassInfo() {
+function SubjectInfo() {
   // const [selectedRows, setSelectedRows] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalRowData, setModalRowData] = useState("default row data");
@@ -190,34 +163,10 @@ function ClassInfo() {
         </Box>
         <InfoBox
           batch={2084}
-          grade={1}
-          section={"A"}
-          teacher={"Mozart"}
-          studentCount={9}
-        />
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "left",
-            marginTop: 10,
-            marginBottom: 3,
-            paddingLeft: "5%",
-          }}
-        >
-          <Typography
-            variant="h4"
-            component="div"
-            sx={{ fontFamily: "Copperplate" }}
-          >
-            Course Info
-          </Typography>
-        </Box>
-        <Table
-          columns={courseColumns}
-          rows={courseRows}
-          onRowSelection={handleRowSelection}
-          onRowDoubleClick={(params) => handleModalOpen(params.row)}
-          getRowId={(row) => row.id}
+          grade={10}
+          section={"Physics I"}
+          teacher={"Einstein"}
+          studentCount={12}
         />
 
         <Box
@@ -258,4 +207,4 @@ function ClassInfo() {
   );
 }
 
-export default ClassInfo;
+export default SubjectInfo;

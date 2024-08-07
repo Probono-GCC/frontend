@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography, Button, Paper } from "@mui/material";
+import { Box, Typography, Button, Paper, Divider, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AppBar from "../Components/AppBar";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -9,7 +9,7 @@ function Post() {
   const navigate = useNavigate();
 
   const handleEdit = () => {
-    navigate("/new-post-form");
+    navigate("/notice-new-post-form");
   };
 
   const handleDelete = () => {
@@ -30,53 +30,61 @@ function Post() {
           Notice Board
         </Typography>
         <Paper sx={{ padding: 3, marginTop: 2 }}>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Typography
-              sx={{
-                backgroundColor: "#d8edff",
-                padding: "4px 8px",
-                borderRadius: "8px",
-                color: "#1976d2",
-                fontSize: "16px",
-              }}
+          <Grid container alignItems="center" sx={{ marginBottom: 1 }}>
+            <Grid item xs={6}>
+              <Typography
+                sx={{
+                  backgroundColor: "#d8edff",
+                  padding: "4px 8px",
+                  borderRadius: "8px",
+                  color: "#1976d2",
+                  fontSize: "16px",
+                  display: "inline-block",
+                  marginBottom: 1,
+                }}
+              >
+                All
+              </Typography>
+              <Typography variant="h4">2024 Session Start</Typography>
+              <Typography variant="subtitle2" sx={{ color: "#999" }}>
+                2024. 04. 24. 19:25:42
+              </Typography>
+            </Grid>
+            <Grid
+              item
+              xs={6}
+              container
+              direction="column"
+              justifyContent="flex-end"
+              alignItems="flex-end"
             >
-              All
-            </Typography>
-            <Box
-              sx={{
-                textAlign: "right",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-end",
-              }}
-            >
-              <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "flex-end",
+                }}
+              >
                 <Typography variant="subtitle1" sx={{ marginRight: 0.5 }}>
                   Administrator
                 </Typography>
                 <PersonIcon fontSize="small" />
               </Box>
-              <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "flex-end",
+                }}
+              >
                 <Typography variant="subtitle1" sx={{ marginRight: 0.5 }}>
                   1024
                 </Typography>
                 <VisibilityIcon fontSize="small" />
               </Box>
-            </Box>
-          </Box>
-          <Typography variant="h4">2024 Session Start</Typography>
-          <Typography
-            variant="subtitle2"
-            sx={{ color: "#999", marginBottom: 3 }}
-          >
-            2024. 04. 24. 19:25:42
-          </Typography>
+            </Grid>
+          </Grid>
+          <Divider sx={{ marginBottom: 5 }} />
           <Box sx={{ textAlign: "center", marginBottom: 3 }}>
             <img
               src="./images/profile_temp.png"

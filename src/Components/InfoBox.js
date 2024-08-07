@@ -1,13 +1,13 @@
 import React from "react";
 import { Grid, TextField, Box } from "@mui/material";
 
-const ClassInfoBox = () => {
+const ClassInfoBox = ({ batch, grade, section, teacher, studentCount }) => {
   const classInfo = {
-    batch: "2084",
-    grade: "10",
-    section: "A",
-    homeroomTeacher: "Mozart",
-    studentCount: 2,
+    batch: batch,
+    grade: grade,
+    section: section,
+    homeroomTeacher: teacher,
+    studentCount: studentCount,
   };
 
   return (

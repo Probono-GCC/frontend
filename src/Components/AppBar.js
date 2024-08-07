@@ -83,6 +83,14 @@ function AppBar() {
     navigate("/class-info");
   };
 
+  const goSubjectBoard = () => {
+    navigate("/subject-board");
+  };
+
+  const goSubjectInfo = () => {
+    navigate("/subject-info");
+  };
+
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -246,6 +254,7 @@ function AppBar() {
     classes: false,
     class1A: false,
     class1B: false,
+    class10Physics: false,
   });
 
   const handleAccordionChange = (panel) => (event, isExpanded) => {
@@ -768,6 +777,46 @@ function AppBar() {
                     </ListItem>
                     <ListItem key={"Class 1-B Board"} disablePadding>
                       <ListItemButton sx={{ pl: 10 }} onClick={goClassBoard}>
+                        <ListItemText primary={"Class Board"} />
+                      </ListItemButton>
+                    </ListItem>
+                  </AccordionDetails>
+                </Accordion>
+                <Accordion
+                  sx={{
+                    boxShadow: "none",
+                    "&::before": { display: "none" },
+                    marginBottom: "0px",
+                  }}
+                  expanded={expanded.class10Physics}
+                  onChange={handleAccordionChange("class10Physics")}
+                >
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    sx={{
+                      padding: "0 16px",
+                      height: "48px",
+                      "&:hover": {
+                        backgroundColor: "#f5f5f5",
+                      },
+                      ...(expanded.class1B && {
+                        backgroundColor: "#e0e0e0",
+                      }),
+                      ...(expanded && {
+                        minHeight: "48px !important",
+                      }),
+                    }}
+                  >
+                    <ListItemText primary={"Class 10-Physics"} />
+                  </AccordionSummary>
+                  <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
+                    <ListItem key={"Class 10-Physics Info"} disablePadding>
+                      <ListItemButton sx={{ pl: 10 }} onClick={goSubjectInfo}>
+                        <ListItemText primary={"Class Info"} />
+                      </ListItemButton>
+                    </ListItem>
+                    <ListItem key={"Class 10-Physics Board"} disablePadding>
+                      <ListItemButton sx={{ pl: 10 }} onClick={goSubjectBoard}>
                         <ListItemText primary={"Class Board"} />
                       </ListItemButton>
                     </ListItem>
