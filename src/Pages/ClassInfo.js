@@ -218,6 +218,7 @@ function ClassInfo() {
           onRowSelection={handleRowSelection}
           onRowDoubleClick={(params) => handleModalOpen(params.row)}
           getRowId={(row) => row.id}
+          id={"table_body"}
         />
 
         <Box
@@ -244,6 +245,7 @@ function ClassInfo() {
           onRowSelection={handleRowSelection}
           onRowDoubleClick={(params) => handleModalOpen(params.row)}
           getRowId={(row) => row.sn}
+          id={"table_body"}
         />
       </div>
 

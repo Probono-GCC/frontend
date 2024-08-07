@@ -1,9 +1,16 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
 import styles from "../Styles/css/Table.module.css";
-function Table({ columns, rows, onRowSelection, onRowDoubleClick, getRowId }) {
+function Table({
+  columns,
+  rows,
+  onRowSelection,
+  onRowDoubleClick,
+  getRowId,
+  id,
+}) {
   return (
-    <div id={styles.table_body}>
+    <div id={id ? styles[id] : ""}>
       <DataGrid
         sx={{
           "& .MuiDataGrid-columnHeader": {
