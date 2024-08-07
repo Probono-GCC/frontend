@@ -28,79 +28,20 @@ const columns = [
   { field: "grade", headerName: "Grade", flex: 0.3 },
 ];
 
+function createData(sn, gender, name, birth, id, grade) {
+  return { sn, gender, name, birth, id, grade };
+}
+
 const rows = [
-  {
-    sn: 1,
-    gender: "Male",
-    name: "Jon",
-    birth: "20.02.24",
-    id: "a0000",
-    grade: "PlayGroup",
-  },
-  {
-    sn: 2,
-    gender: "Female",
-    name: "Cersei",
-    birth: "20.01.04",
-    id: "a0001",
-    grade: "PlayGroup",
-  },
-  {
-    sn: 3,
-    gender: "Male",
-    name: "Jaime",
-    birth: "20.12.24",
-    id: "a0002",
-    grade: "PlayGroup",
-  },
-  {
-    sn: 4,
-    gender: "Male",
-    name: "Arya",
-    birth: "20.05.27",
-    id: "a0003",
-    grade: "PlayGroup",
-  },
-  {
-    sn: 5,
-    gender: "Male",
-    name: "Daenerys",
-    birth: "20.08.14",
-    id: "a0004",
-    grade: "PlayGroup",
-  },
-  {
-    sn: 6,
-    gender: "Male",
-    name: "nell",
-    birth: "20.12.24",
-    id: "a0005",
-    grade: "PlayGroup",
-  },
-  {
-    sn: 7,
-    gender: "Female",
-    name: "Ferrara",
-    birth: "19.07.05",
-    id: "b0006",
-    grade: "UnderKG",
-  },
-  {
-    sn: 8,
-    gender: "Female",
-    name: "Rossini",
-    birth: "19.07.25",
-    id: "b0007",
-    grade: "UnderKG",
-  },
-  {
-    sn: 9,
-    gender: "Female",
-    name: "Harvey",
-    birth: "19.07.04",
-    id: "b0008",
-    grade: "UnderKG",
-  },
+  createData(1, "Male", "Jon", "20.02.24", "a0000", "PlayGroup"),
+  createData(2, "Female", "Cersei", "20.01.04", "a0001", "PlayGroup"),
+  createData(3, "Male", "Jaime", "20.12.24", "a0002", "PlayGroup"),
+  createData(4, "Male", "Arya", "20.05.27", "a0003", "PlayGroup"),
+  createData(5, "Male", "Daenerys", "20.08.14", "a0004", "PlayGroup"),
+  createData(6, "Male", "nell", "20.12.24", "a0005", "PlayGroup"),
+  createData(7, "Female", "Ferrara", "19.07.05", "b0006", "UnderKG"),
+  createData(8, "Female", "Rossini", "19.07.25", "b0007", "UnderKG"),
+  createData(9, "Female", "Harvey", "19.07.04", "b0008", "UnderKG"),
 ];
 
 function StudentView() {
@@ -147,20 +88,8 @@ function StudentView() {
       ),
     },
     ...columns,
-    // {
-    //   field: "Detail",
-    //   headerName: "Detail",
-    //   flex: 0.1,
-    //   renderCell: (params) => (
-    //     <IconButton
-    //       aria-label="info"
-    //       onClick={() => handleModalOpen(params.row)}
-    //     >
-    //       <InfoIcon />
-    //     </IconButton>
-    //   ),
-    // },
   ];
+
   return (
     <div id="page_content">
       <AppBar />

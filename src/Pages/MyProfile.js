@@ -97,7 +97,7 @@ function MyProfile() {
             <Avatar
               alt="Profile Image"
               src={profileImage}
-              sx={{ width: 100, height: 100, margin: "0 auto" }}
+              sx={{ width: 150, height: 150, margin: "0 auto" }}
             />
             <Button
               variant="outlined"

@@ -91,6 +91,9 @@ function AppBar() {
     navigate("/subject-info");
   };
 
+  const goAssignHomeroom = () => {
+    navigate("/assign-homeroom");
+  };
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -626,7 +629,7 @@ function AppBar() {
                   </ListItemButton>
                 </ListItem>
                 <ListItem key={"Assign Homeroom"} disablePadding>
-                  <ListItemButton sx={{ pl: 10 }}>
+                  <ListItemButton onClick={goAssignHomeroom} sx={{ pl: 10 }}>
                     <ListItemText
                       primary={"Assign Homeroom"}
                       sx={{

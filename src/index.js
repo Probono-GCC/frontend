@@ -24,6 +24,7 @@ import ClassInfo from "./Pages/ClassInfo.js";
 import SubjectBoard from "./Pages/SubjectBoard.js";
 import SubjectInfo from "./Pages/SubjectInfo.js";
 import SubjectNewPostForm from "./Pages/SubjectNewPostForm.js";
+import AssignHomeroom from "./Pages/AssignHomeroom.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -56,6 +57,7 @@ root.render(
             path="/subject-new-post-form"
             element={<SubjectNewPostForm />}
           />
+          <Route path="/assign-homeroom" element={<AssignHomeroom />} />
         </Routes>
       </BrowserRouter>
     </React.StrictMode>
