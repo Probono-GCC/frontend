@@ -38,7 +38,7 @@ const grades = [
 const sections = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"];
 
 const batchYears = [];
-for (let year = 2020 + 57; year <= 2030 + 57; year++) {
+for (let year = 2024 + 57; year <= 2030 + 57; year++) {
   // 네팔력
   batchYears.push(year);
 }
@@ -50,6 +50,10 @@ function CreateClass() {
   const [section, setSection] = useState("");
   const [alert, setAlert] = useState(false);
   const [checkedRows, setCheckedRows] = useState([]);
+
+  useEffect(() => {
+    setBatch(batchYears[0]);
+  }, [batchYears]);
 
   const handleCreate = () => {
     // Implement the create functionality here

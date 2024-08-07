@@ -188,7 +188,13 @@ function ClassInfo() {
             Class Info
           </Typography>
         </Box>
-        <InfoBox />
+        <InfoBox
+          batch={2084}
+          grade={1}
+          section={"A"}
+          teacher={"Mozart"}
+          studentCount={9}
+        />
         <Box
           sx={{
             display: "flex",

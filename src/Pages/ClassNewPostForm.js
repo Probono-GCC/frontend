@@ -52,7 +52,7 @@ function ClassNewPostForm() {
         { indent: "-1" },
         { indent: "+1" },
       ],
-      ["link", "image"],
+      ["link", "image", "video"],
       ["clean"],
     ],
   };
