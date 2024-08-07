@@ -2,13 +2,12 @@ import styles from "../Styles/css/Login.module.css";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { TextField, Typography } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
-import Button from "../Components/Button";
-
+import LoginContainer from "../Components/LoginContainer";
+import ForgotPassword from "../Components/ForgotPassword";
 import BackImage1 from "../Assets/img/BackgroundSample/sample_images_00.png";
 import BackImage2 from "../Assets/img/BackgroundSample/sample_images_01.png";
 import BackImage3 from "../Assets/img/BackgroundSample/sample_images_02.png";
@@ -28,6 +27,9 @@ function Login({ type }) {
 
   const handleChange = (event) => {
     setAge(event.target.value);
+  };
+  const moveForgotPassword = () => {
+    navigate("/forgot-password");
   };
   /**언어 선택 임시 선택상자 */
   const BackgroundSample = [
@@ -65,10 +67,9 @@ function Login({ type }) {
   return (
     <div id={styles.page_container}>
       {type == "default" ? (
-        <div id={styles.login_container}>
-          <div>
-            {" "}
-            <FormControl sx={{ m: 1, minWidth: 120, marginLeft: "30vw" }}>
+        <div>
+          <div id={styles.right_align}>
+            <FormControl sx={{ m: 1, minWidth: 120 }}>
               <Select
                 value={age}
                 onChange={handleChange}
@@ -82,61 +83,11 @@ function Login({ type }) {
               </Select>
             </FormControl>
           </div>
-          <Typography
-            variant="h5"
-            sx={{
-              fontFamily: "Copperplate",
-              textAlign: "center",
-              marginTop: "3vh",
-              fontWeight: "bold",
-            }}
-          >
-            Welcome to visit
-          </Typography>
-          <Typography
-            variant="h4"
-            component="div"
-            sx={{
-              fontFamily: "Copperplate",
-              textAlign: "center",
-              fontWeight: "bold",
-            }}
-          >
-            Creative Learners' Academy
-          </Typography>
-          <div id={styles.logoImg} />
-          <TextField
-            sx={{ margin: "1vw 5vh", width: "30vw" }}
-            label="ID"
-            variant="outlined"
-            onChange={(event) => {
-              setUserID(event.target.value);
-            }}
-            //   InputProps={{
-            //     readOnly: true,
-            //   }}
-          />
-          <TextField
-            sx={{ margin: "1vw 5vh", width: "30vw" }}
-            label="Password"
-            variant="outlined"
-            type="password"
-            autoComplete="current-password"
-            onChange={(event) => {
-              setUserPW(event.target.value);
-            }}
-          />
-          <Button
-            id={"login_btn"}
-            title={"login"}
-            disabled={userPW.length === 0 || userID.length === 0}
-            onClick={login}
-            size={"bg"}
-          />
+          <LoginContainer />
         </div>
       ) : (
         <div>
-          <div>
+          <div id={styles.right_align}>
             <FormControl sx={{ m: 1, minWidth: 120, marginLeft: "30vw" }}>
               <Select
                 value={age}
@@ -151,57 +102,7 @@ function Login({ type }) {
               </Select>
             </FormControl>
           </div>
-          <div className={styles.titleText} style={{ fontWeight: "bold" }}>
-            Forgot your password?
-          </div>
-          <p className={styles.questionText}>1.Enter your ID</p>
-          <TextField
-            sx={{ margin: "1vw 5vh", width: "30vw" }}
-            label="ID"
-            variant="outlined"
-            onChange={(event) => {
-              setUserID(event.target.value);
-            }}
-          />
-          <Button size={"md"} title={"check"} disabled={userID.length === 0} />
-          <p className={styles.questionText}>
-            2. What is your most favorite food?
-          </p>
-          <TextField
-            sx={{ margin: "1vw 5vh", width: "30vw" }}
-            label="Answer"
-            variant="outlined"
-            onChange={(event) => {
-              setAnswer(event.target.value);
-            }}
-          />
-          <Button size={"md"} title={"check"} disabled={answer.length === 0} />
-          <p className={styles.questionText}>3. Reset Password</p>
-          <TextField
-            sx={{ margin: "1vw 5vh", width: "30vw" }}
-            label="Password"
-            variant="outlined"
-            type="password"
-            autoComplete="current-password"
-            onChange={(event) => {
-              setUserPW(event.target.value);
-            }}
-          />
-          <TextField
-            sx={{ margin: "1vw 5vh", width: "30vw" }}
-            label="Re-type PW"
-            variant="outlined"
-            type="password"
-            value={rePassword}
-            onChange={handleRePasswordChange}
-            error={rePasswordError}
-            helperText={rePasswordError ? "Passwords do not match" : ""}
-          />
-          <Button
-            size={"md"}
-            title={"change"}
-            disabled={userPW.length === 0 || rePassword.length === 0}
-          />
+          <ForgotPassword />
         </div>
       )}
 
