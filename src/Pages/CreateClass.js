@@ -187,6 +187,7 @@ function CreateClass() {
             rows={rows}
             onRowSelection={handleRowSelection}
             getRowId={(row) => row.id}
+            id={"table_body"}
           />
           <Box
             sx={{ display: "flex", justifyContent: "flex-end", marginTop: 3 }}
