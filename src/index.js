@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { MediaQueryProvider } from "./store/MediaQueryContext.js";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import store from "./store";
@@ -29,8 +30,8 @@ import AssignHomeroom from "./Pages/AssignHomeroom.js";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   // 하위 주소는 /class-board/* -> navigate('/class-board/%{newPage})
-
-  <Provider store={store}>
+  <MediaQueryProvider>
+    {/* <Provider store={store}> */}
     <React.StrictMode>
       <BrowserRouter>
         <Routes>
@@ -61,7 +62,8 @@ root.render(
         </Routes>
       </BrowserRouter>
     </React.StrictMode>
-  </Provider>
+    {/* </Provider> */}
+  </MediaQueryProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function
