@@ -2,13 +2,15 @@ import styles from "../Styles/css/Login.module.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { TextField, Typography, Box, useMediaQuery } from "@mui/material";
+import { TextField, Typography, Box } from "@mui/material";
 
 import Button from "../Components/Button";
+import { useMediaQueryContext } from "../store/MediaQueryContext";
 function LoginContainer() {
   const navigate = useNavigate();
   const [userID, setUserID] = useState("");
   const [userPW, setUserPW] = useState("");
+  const { isSmallScreen, isSmallWidth } = useMediaQueryContext();
 
   const moveForgotPassword = () => {
     navigate("/forgot-password");
@@ -16,8 +18,6 @@ function LoginContainer() {
   const login = () => {
     navigate("/");
   };
-  const isSmallScreen = useMediaQuery("(max-width:769px)");
-  const isSmallWidth = useMediaQuery("(max-width:367px)");
 
   return (
     <div id={styles.login_container}>

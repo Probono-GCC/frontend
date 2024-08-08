@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Box, Typography, Button, Paper, Divider, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AppBar from "../Components/AppBar";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import PersonIcon from "@mui/icons-material/Person";
-
+import { useMediaQueryContext } from "../store/MediaQueryContext";
 function Post() {
   const navigate = useNavigate();
+  const { isSmallScreen } = useMediaQueryContext();
 
   const handleEdit = () => {
     navigate("/notice-new-post-form");
@@ -22,37 +23,78 @@ function Post() {
   return (
     <div>
       <AppBar />
-      <Box sx={{ padding: 3 }}>
-        <Typography
-          variant="h3"
-          sx={{ textAlign: "center", fontFamily: "Copperplate", marginTop: 2 }}
+      <Box>
+        <Paper
+          sx={{
+            paddingTop: 1,
+            paddingBottom: 2,
+            paddingLeft: 3,
+            paddingRight: 3,
+          }}
+          elevation={0}
         >
-          Notice Board
-        </Typography>
-        <Paper sx={{ padding: 3, marginTop: 2 }}>
-          <Grid container alignItems="center" sx={{ marginBottom: 1 }}>
-            <Grid item xs={6}>
-              <Typography
+          <Typography
+            sx={{
+              backgroundColor: "#d8edff",
+              padding: "4px 8px",
+              borderRadius: "8px",
+              color: "#1976d2",
+              fontSize: "16px",
+              display: "inline-block",
+              marginBottom: 1,
+            }}
+          >
+            All
+          </Typography>
+          <Grid
+            container
+            alignItems="flex-end"
+            sx={{ marginBottom: isSmallScreen ? 0 : 1 }}
+          >
+            <Grid item xs={12} sm={12} md={6} lg={8}>
+              <Typography variant={isSmallScreen ? "h5" : "h4"}>
+                2024 Session Start
+              </Typography>
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={6}
+              lg={4}
+              container
+              direction="column"
+            >
+              <Box
                 sx={{
-                  backgroundColor: "#d8edff",
-                  padding: "4px 8px",
-                  borderRadius: "8px",
-                  color: "#1976d2",
-                  fontSize: "16px",
-                  display: "inline-block",
-                  marginBottom: 1,
+                  display: "flex",
+                  justifyContent: isSmallScreen ? "flex-start" : "flex-end",
                 }}
               >
-                All
-              </Typography>
-              <Typography variant="h4">2024 Session Start</Typography>
+                <Typography
+                  sx={{ marginRight: 0.5, color: isSmallScreen ? "grey" : "" }}
+                >
+                  Administrator
+                </Typography>
+
+                <PersonIcon
+                  sx={{ color: isSmallScreen ? "grey" : "" }}
+                  fontSize="small"
+                />
+              </Box>
+            </Grid>
+          </Grid>
+
+          <Grid container>
+            <Grid item xs={8} lg={8}>
               <Typography variant="subtitle2" sx={{ color: "#999" }}>
                 2024. 04. 24. 19:25:42
               </Typography>
             </Grid>
             <Grid
               item
-              xs={6}
+              xs={4}
+              lg={4}
               container
               direction="column"
               justifyContent="flex-end"
@@ -62,25 +104,18 @@ function Post() {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "flex-end",
+                  justifyContent: isSmallScreen ? "flex-start" : "flex-end",
                 }}
               >
-                <Typography variant="subtitle1" sx={{ marginRight: 0.5 }}>
-                  Administrator
-                </Typography>
-                <PersonIcon fontSize="small" />
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "flex-end",
-                }}
-              >
-                <Typography variant="subtitle1" sx={{ marginRight: 0.5 }}>
+                <Typography
+                  sx={{ marginRight: 0.5, color: isSmallScreen ? "grey" : "" }}
+                >
                   1024
                 </Typography>
-                <VisibilityIcon fontSize="small" />
+                <VisibilityIcon
+                  sx={{ color: isSmallScreen ? "grey" : "" }}
+                  fontSize="small"
+                />
               </Box>
             </Grid>
           </Grid>
