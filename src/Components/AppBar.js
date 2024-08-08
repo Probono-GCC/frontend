@@ -94,6 +94,11 @@ function AppBar() {
   const goAssignHomeroom = () => {
     navigate("/assign-homeroom");
   };
+
+  const goCommonCourseManagement = () => {
+    navigate("/common-course-management");
+  };
+
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -644,7 +649,10 @@ function AppBar() {
                   </ListItemButton>
                 </ListItem>
                 <ListItem key={"Common Course Management"} disablePadding>
-                  <ListItemButton sx={{ pl: 10 }}>
+                  <ListItemButton
+                    onClick={goCommonCourseManagement}
+                    sx={{ pl: 10 }}
+                  >
                     <ListItemText
                       primary={"Common Course Management"}
                       sx={{

@@ -5,7 +5,8 @@ import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
 import styles from "../Styles/css/Button.module.css";
-function CostomButton({ title, disabled, onClick, id, size }) {
+
+function CustomButton({ title, disabled, onClick, id, size }) {
   return (
     <Stack id={id ? styles[id] : ""} direction="row" spacing={2}>
       <Button
@@ -21,4 +22,4 @@ function CostomButton({ title, disabled, onClick, id, size }) {
   );
 }
 
-export default CostomButton;
+export default CustomButton;

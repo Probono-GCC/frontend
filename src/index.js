@@ -25,6 +25,7 @@ import SubjectBoard from "./Pages/SubjectBoard.js";
 import SubjectInfo from "./Pages/SubjectInfo.js";
 import SubjectNewPostForm from "./Pages/SubjectNewPostForm.js";
 import AssignHomeroom from "./Pages/AssignHomeroom.js";
+import CommonCourseManagement from "./Pages/CommonCourseManagement.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -58,6 +59,11 @@ root.render(
             element={<SubjectNewPostForm />}
           />
           <Route path="/assign-homeroom" element={<AssignHomeroom />} />
+
+          <Route
+            path="/common-course-management"
+            element={<CommonCourseManagement />}
+          />
         </Routes>
       </BrowserRouter>
     </React.StrictMode>

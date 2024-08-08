@@ -1,11 +1,13 @@
 .bg_button {
-  width: 13vw;
+  min-width: 13vw;
   height: 5vh;
   margin-top: 3vh;
+  max-height: 50px;
 }
 .md_button {
-  width: 100px;
+  min-width: 100px;
   height: 5vh;
+  max-height: 50px;
 }
 
 #view_btn {
