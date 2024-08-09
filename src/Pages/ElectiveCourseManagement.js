@@ -15,10 +15,12 @@ import {
   ListItem,
   ListItemText,
   ListItemButton,
+  Checkbox,
 } from "@mui/material";
 import AppBar from "../Components/AppBar";
 import Table from "../Components/Table";
 import CustomButton from "../Components/Button";
+const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 const modalStyle = {
   position: "absolute",
@@ -57,9 +59,9 @@ const subjects = [
 const columns = [
   { field: "batch", headerName: "Batch", flex: 0.2 },
   { field: "grade", headerName: "Grade", flex: 0.2 },
-  { field: "section", headerName: "Section", flex: 0.2 },
   { field: "teacher", headerName: "Teacher", flex: 0.2 },
   { field: "subject", headerName: "Subject", flex: 0.2 },
+  { field: "enrollment", headerName: "Enrollment", flex: 0.2 },
 ];
 
 const classColumns = [
@@ -74,42 +76,34 @@ const initialRows = [
   {
     id: 1,
     batch: 2084,
-    grade: "Class 1",
-    section: "A",
+    grade: "Grade 9",
+    subject: "Physics I",
     teacher: "Jin",
-    subject: "English",
+    enrollment: 12,
   },
   {
     id: 2,
     batch: 2084,
-    grade: "Class 1",
-    section: "A",
-    teacher: "Sunny",
-    subject: "Math",
+    grade: "Grade 9",
+    subject: "Chemistry I",
+    teacher: "June",
+    enrollment: 18,
   },
   {
     id: 3,
     batch: 2084,
-    grade: "Class 2",
-    section: "A",
-    teacher: "Jin",
-    subject: "English",
+    grade: "Grade 10",
+    subject: "Chemistry II",
+    teacher: "Jay",
+    enrollment: 10,
   },
   {
     id: 4,
     batch: 2084,
-    grade: "Class 2",
-    section: "B",
-    teacher: "Jin",
-    subject: "English",
-  },
-  {
-    id: 5,
-    batch: 2084,
-    grade: "Class 2",
-    section: "B",
-    teacher: "Sunny",
-    subject: "Math",
+    grade: "Grade 10",
+    subject: "Biology II",
+    teacher: "Amy",
+    enrollment: 4,
   },
 ];
 
@@ -156,7 +150,32 @@ const initialClassRows = [
   },
 ];
 
-function CommonCourseManagement() {
+function createData(sn, gender, name, birth, id, grade) {
+  return { sn, gender, name, birth, id, grade };
+}
+
+const students = [
+  createData(1, "Male", "Jon", "20.02.24", "a0000", "PlayGroup"),
+  createData(2, "Female", "Cersei", "20.01.04", "a0001", "PlayGroup"),
+  createData(3, "Male", "Jaime", "20.12.24", "a0002", "PlayGroup"),
+  createData(4, "Male", "Arya", "20.05.27", "a0003", "PlayGroup"),
+  createData(5, "Male", "Daenerys", "20.08.14", "a0004", "PlayGroup"),
+  createData(6, "Male", "nell", "20.12.24", "a0005", "PlayGroup"),
+  createData(7, "Female", "Ferrara", "19.07.05", "b0006", "UnderKG"),
+  createData(8, "Female", "Rossini", "19.07.25", "b0007", "UnderKG"),
+  createData(9, "Female", "Harvey", "19.07.04", "b0008", "UnderKG"),
+];
+
+const studentColumns = [
+  { field: "sn", headerName: "SN", flex: 0.1 },
+  { field: "name", headerName: "Name", flex: 0.2 },
+  { field: "gender", headerName: "Gender", flex: 0.1 },
+  { field: "birth", headerName: "Birth", flex: 0.2 },
+  { field: "id", headerName: "ID", flex: 0.2 },
+  { field: "grade", headerName: "Grade", flex: 0.2 },
+];
+
+function ElectiveCourseManagement() {
   const [selectedClass, setselectedClass] = useState(null);
   const [selectedCourse, setselectedCourse] = useState(null);
   const [selectedTeachers, setSelectedTeachers] = useState([]);
@@ -166,6 +185,13 @@ function CommonCourseManagement() {
   const [addMode, setAddMode] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [newSubject, setNewSubject] = useState("");
+
+  const [leftStudents, setLeftStudents] = useState(students);
+  const [rightStudents, setRightStudents] = useState([]);
+  const [selectedLeftStudents, setSelectedLeftStudents] = useState([]);
+  const [selectedRightStudents, setSelectedRightStudents] = useState([]);
+  const [checkedRows, setCheckedRows] = useState([]);
+
   const handleOpenModal = () => setModalOpen(true);
   const handleCloseModal = () => setModalOpen(false);
 
@@ -219,8 +245,49 @@ function CommonCourseManagement() {
     ...classColumns,
   ];
 
+  const handleCheckboxChange = (id) => {
+    setCheckedRows((prevCheckedRows) => {
+      if (prevCheckedRows.includes(id)) {
+        return prevCheckedRows.filter((rowId) => rowId !== id);
+      } else {
+        return [...prevCheckedRows, id];
+      }
+    });
+  };
+
+  const updatedStudentColumns = [
+    {
+      field: "check",
+      headerName: "",
+      flex: 0.05,
+      renderCell: (params) => (
+        <Checkbox
+          {...label}
+          checked={checkedRows.includes(params.row.id)}
+          onChange={() => handleCheckboxChange(params.row.id)} // 핸들러 변경
+        />
+      ),
+    },
+    ...studentColumns,
+  ];
+
   const handleDeleteSubjects = () => {
     // Handle the deletion of selected subjects
+  };
+
+  const handleStudentTransfer = (
+    from,
+    to,
+    setFrom,
+    setTo,
+    selected,
+    setSelected
+  ) => {
+    //     const newFrom = from.filter((student) => !selected.includes(student));
+    //     const newTo = [...to, ...selected];
+    //     setFrom(newFrom);
+    //     setTo(newTo);
+    //setSelected([]);
   };
 
   return (
@@ -231,7 +298,7 @@ function CommonCourseManagement() {
           variant="h3"
           sx={{ textAlign: "center", fontFamily: "Copperplate", marginTop: 2 }}
         >
-          Common Course Management
+          Elective Course Management
         </Typography>
         {!addMode && (
           <>
@@ -243,7 +310,7 @@ function CommonCourseManagement() {
               }}
             >
               <CustomButton
-                title="Common Subject Management"
+                title="Elective Subject Management"
                 variant="contained"
                 color="primary"
                 size="bg"
@@ -257,22 +324,37 @@ function CommonCourseManagement() {
               onRowSelection={handleRowSelection}
               id={"table_body"}
             />
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginTop: 2,
-              }}
-            >
-              <CustomButton
-                title={"Add Common Course"}
-                variant="contained"
-                color="primary"
-                onClick={() => setAddMode(true)}
-                size={"bg"}
-              />
-              <CustomButton title={"Delete"} variant="contained" />
-            </Box>
+            <Grid container spacing={2} sx={{ marginTop: 2 }}>
+              <Grid
+                item
+                xs={6}
+                sx={{ display: "flex", justifyContent: "flex-start" }}
+              >
+                <CustomButton
+                  title={"Add Elective Course"}
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setAddMode(true)}
+                  size={"bg"}
+                />
+              </Grid>
+              <Grid
+                item
+                xs={6}
+                sx={{ display: "flex", justifyContent: "flex-end" }}
+              >
+                <CustomButton
+                  title={"Assign Students"}
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setAddMode(true)}
+                  size={"bg"}
+                  disabled={!selectedCourse}
+                />
+                <Box sx={{ marginRight: 3 }} />
+                <CustomButton title={"Delete"} variant="contained" />
+              </Grid>
+            </Grid>
           </>
         )}
         {addMode && (
@@ -318,7 +400,7 @@ function CommonCourseManagement() {
               variant="h4"
               sx={{ fontFamily: "Copperplate", marginTop: 10, marginBottom: 3 }}
             >
-              Select Common Subject
+              Select Elective Subject
             </Typography>
             <Grid container spacing={1} sx={{ marginBottom: 3 }}>
               {subjects.map((subject) => (
@@ -336,6 +418,63 @@ function CommonCourseManagement() {
                   </Button>
                 </Grid>
               ))}
+            </Grid>
+
+            <Typography
+              variant="h4"
+              sx={{ fontFamily: "Copperplate", marginTop: 5, marginBottom: 5 }}
+            >
+              Assign Students
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={5}>
+                <Table
+                  sx={{ width: "100%" }} // 왼쪽 테이블의 너비 설정
+                  columns={updatedStudentColumns}
+                  rows={leftStudents}
+                  onRowSelection={(selection) =>
+                    setSelectedLeftStudents(selection)
+                  }
+                  getRowId={(row) => row.sn}
+                  id={"student_select_body"}
+                />
+              </Grid>
+              <Grid
+                item
+                xs={2}
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <CustomButton
+                  title={">"}
+                  variant="contained"
+                  onClick={() => handleStudentTransfer()}
+                  disabled={selectedLeftStudents.length === 0 ? true : false}
+                />
+                <Box sx={{ marginTop: 2, marginBottom: 2 }} />
+                <CustomButton
+                  title={"<"}
+                  variant="contained"
+                  onClick={() => handleStudentTransfer()}
+                  disabled={selectedRightStudents.length === 0 ? true : false}
+                />
+              </Grid>
+              <Grid item xs={5}>
+                <Table
+                  sx={{ width: "100%" }} // 오른쪽 테이블의 너비 설정
+                  columns={updatedStudentColumns}
+                  rows={rightStudents}
+                  onRowSelection={(selection) =>
+                    setSelectedRightStudents(selection)
+                  }
+                  getRowId={(row) => row.sn}
+                  id={"student_select_body"}
+                />
+              </Grid>
             </Grid>
             <Box
               sx={{ display: "flex", justifyContent: "flex-end", marginTop: 3 }}
@@ -377,7 +516,7 @@ function CommonCourseManagement() {
                 fontFamily: "Copperplate",
               }}
             >
-              Common Subject Management
+              Elective Subject Management
             </Typography>
             <Divider sx={{ marginBottom: 2 }} />
             <Typography
@@ -397,7 +536,7 @@ function CommonCourseManagement() {
                 <TextField
                   fullWidth
                   label="Type"
-                  defaultValue="Common Subject"
+                  defaultValue="Elective Subject"
                   variant="outlined"
                   InputProps={{
                     readOnly: true,
@@ -430,7 +569,7 @@ function CommonCourseManagement() {
               variant="h6"
               sx={{ marginBottom: 1, fontFamily: "Copperplate" }}
             >
-              Common Subject List
+              Elective Subject List
             </Typography>{" "}
             <List sx={{ maxHeight: 150, overflowY: "auto" }}>
               {subjects.map((subject) => (
@@ -495,4 +634,4 @@ function CommonCourseManagement() {
   );
 }
 
-export default CommonCourseManagement;
+export default ElectiveCourseManagement;
