@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { convertDateFormat, convertTimeFormat } from "../Util/DateUtils";
-import dayjs from "dayjs";
-import { DatePicker } from "@mui/x-date-pickers";
-import { TimeField } from "@mui/x-date-pickers/TimeField";
+import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 import TextField from "@mui/material/TextField";
 import Textarea from "@mui/joy/Textarea";
-import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
+import { DemoItem } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
@@ -24,7 +22,6 @@ function CalendarEventModal({ onClose }) {
   const CLIENT_SECRET = process.env.REACT_APP_CLIENT_SECRET;
   const REFRESH_TOKEN = process.env.REACT_APP_REFRESH_TOKEN;
   const API_URL = process.env.REACT_APP_API_URL;
-  // const access_token = process.env.REACT_APP_GOOGLE_ACCESS_TOKEN;
 
   const handleTitleChange = (event) => {
     setTitleValue(event.target.value);
@@ -85,7 +82,6 @@ function CalendarEventModal({ onClose }) {
     };
 
     try {
-      // Google Calendar API에 요청 보내기
       const response = await axios.post(API_URL, event, {
         headers: {
           Authorization: `Bearer ${access_token}`,
@@ -94,7 +90,6 @@ function CalendarEventModal({ onClose }) {
       console.log("Event added successfully:", response);
       onClose(true);
     } catch (error) {
-      // 오류 처리
       console.error("Error adding event:", error.response, event);
     }
   };
@@ -103,31 +98,43 @@ function CalendarEventModal({ onClose }) {
     <div className={styles.modal_container}>
       <div className={styles.modal_content}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DemoItem label="Date *">
+          <DemoItem
+            sx={{ marginBottom: 3 }}
+            className={styles.demoItem}
+            label={<strong>Date *</strong>}
+          >
             <DatePicker
               value={dateValue}
-              onChange={(newValue) => {
-                setDateValue(newValue);
-              }}
+              onChange={(newValue) => setDateValue(newValue)}
             />
           </DemoItem>
-          <DemoItem label="Start Time">
-            <TimeField
+          <DemoItem
+            sx={{ marginBottom: 3 }}
+            className={styles.demoItem}
+            label="Start Time"
+          >
+            <TimePicker
               value={startTimeValue}
-              onChange={(newValue) => {
-                setStartTimeValue(newValue);
-              }}
+              onChange={(newValue) => setStartTimeValue(newValue)}
+              renderInput={(params) => <TextField {...params} />}
             />
           </DemoItem>
-          <DemoItem label="End Time">
-            <TimeField
+          <DemoItem
+            sx={{ marginBottom: 3 }}
+            className={styles.demoItem}
+            label="End Time"
+          >
+            <TimePicker
               value={endTimeValue}
-              onChange={(newValue) => {
-                setEndTimeValue(newValue);
-              }}
+              onChange={(newValue) => setEndTimeValue(newValue)}
+              renderInput={(params) => <TextField {...params} />}
             />
           </DemoItem>
-          <DemoItem label="Title *">
+          <DemoItem
+            sx={{ marginBottom: 3 }}
+            className={styles.demoItem}
+            label={<strong>Title *</strong>}
+          >
             <TextField
               required
               id="outlined-required"
@@ -135,10 +142,15 @@ function CalendarEventModal({ onClose }) {
               onChange={handleTitleChange}
               error={titleError}
               helperText={titleError ? "Title is required" : ""}
+              className={styles.textField}
             />
           </DemoItem>
 
-          <DemoItem label="Contents">
+          <DemoItem
+            sx={{ marginBottom: 3 }}
+            className={styles.demoItem}
+            label="Contents"
+          >
             <Textarea
               className={styles.customTextarea}
               placeholder="Type anything…"
@@ -148,7 +160,7 @@ function CalendarEventModal({ onClose }) {
           </DemoItem>
 
           <button
-            className={`${styles.modal_btn} ${styles.close_btn}`}
+            className={`${styles.modal_btn} ${styles.register_btn}`}
             size="sm"
             color="info"
             onClick={registerEvent}
@@ -159,21 +171,10 @@ function CalendarEventModal({ onClose }) {
             className={`${styles.modal_btn} ${styles.close_btn}`}
             size="sm"
             color="alert"
-            onClick={onClose}
+            onClick={() => onClose(false)}
           >
             Close
           </button>
-
-          <DemoContainer
-            components={[
-              "DateField",
-              "TimeField",
-              "DateTimeField",
-              "MultiInputDateTimeRangeField",
-              "MultiInputTimeRangeField",
-              "MultiInputDateTimeRangeField",
-            ]}
-          ></DemoContainer>
         </LocalizationProvider>
       </div>
     </div>
