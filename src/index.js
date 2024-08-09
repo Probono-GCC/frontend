@@ -26,7 +26,7 @@ import SubjectBoard from "./Pages/SubjectBoard.js";
 import SubjectInfo from "./Pages/SubjectInfo.js";
 import SubjectNewPostForm from "./Pages/SubjectNewPostForm.js";
 import AssignHomeroom from "./Pages/AssignHomeroom.js";
-
+import ChangePassword from "./Pages/ChangePassword.js";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   // 하위 주소는 /class-board/* -> navigate('/class-board/%{newPage})
@@ -43,6 +43,7 @@ root.render(
           <Route path="/" element={<Home />} />
           <Route path="/notice-board" element={<NoticeBoard />} />
           <Route path="/create-account" element={<CreateAccount />} />
+          <Route path="/change-password" element={<ChangePassword />} />
           <Route path="/my-profile" element={<MyProfile />} />
           <Route path="/post" element={<Post />} />
           <Route path="/notice-new-post-form" element={<NoticeNewPostForm />} />
