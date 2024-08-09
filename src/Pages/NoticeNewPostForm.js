@@ -64,7 +64,14 @@ function NoticeNewPostForm() {
   return (
     <div>
       <AppBar />
-      <Box sx={{ display: "flex", justifyContent: "center", marginTop: 1 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          marginTop: 1,
+          marginBottom: 1,
+        }}
+      >
         <Typography
           variant="h4"
           component="div"
