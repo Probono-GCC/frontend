@@ -94,6 +94,10 @@ function AppBar() {
   const goAssignHomeroom = () => {
     navigate("/assign-homeroom");
   };
+
+  const goChangePassword = () => {
+    navigate("/change-password");
+  };
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -546,7 +550,11 @@ function AppBar() {
                     />
                   </ListItemButton>
                 </ListItem>
-                <ListItem key={"Change Password"} disablePadding>
+                <ListItem
+                  onClick={goChangePassword}
+                  key={"Change Password"}
+                  disablePadding
+                >
                   <ListItemButton sx={{ pl: 10 }}>
                     <ListItemText
                       primary={"Change Password"}
