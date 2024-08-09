@@ -19,6 +19,8 @@ import {
 import AppBar from "../Components/AppBar";
 import Table from "../Components/Table";
 import CustomButton from "../Components/Button";
+import SelectButton from "../Components/SelectButton";
+import SelectButtonContainer from "../Components/SelectButtonContatiner";
 
 const modalStyle = {
   position: "absolute",
@@ -41,6 +43,11 @@ const teachers = [
   { id: 6, name: "Mozart", subject: "music123" },
   { id: 7, name: "Gold", subject: "economy123" },
   { id: 8, name: "Sunny", subject: "t1228" },
+  { id: 9, name: "Hello", subject: "t12" },
+  { id: 10, name: "Gcc", subject: "t122" },
+  { id: 11, name: "Sun", subject: "adfs8" },
+  { id: 12, name: "Su", subject: "t1" },
+  { id: 13, name: "Sunny", subject: "t" },
 ];
 
 const subjects = [
@@ -189,21 +196,6 @@ function CommonCourseManagement() {
     setselectedClass(id);
   };
 
-  const updatedColumns = [
-    {
-      field: "select",
-      headerName: "",
-      flex: 0.1,
-      renderCell: (params) => (
-        <Radio
-          checked={selectedCourse === params.row.id}
-          onChange={() => handleRowSelection(params.row.id)}
-        />
-      ),
-    },
-    ...columns,
-  ];
-
   const updatedClassColumns = [
     {
       field: "select",
@@ -221,6 +213,13 @@ function CommonCourseManagement() {
 
   const handleDeleteSubjects = () => {
     // Handle the deletion of selected subjects
+  };
+
+  const handleAddSubject = () => {
+    if (newSubject.trim() !== "") {
+      subjects.push(newSubject); // 새로운 과목을 배열에 추가
+      setNewSubject(""); // 입력창 초기화
+    }
   };
 
   return (
@@ -251,7 +250,7 @@ function CommonCourseManagement() {
               />
             </Box>
             <Table
-              columns={updatedColumns}
+              columns={columns}
               rows={rows}
               getRowId={(row) => row.id}
               onRowSelection={handleRowSelection}
@@ -288,55 +287,47 @@ function CommonCourseManagement() {
               rows={classRows}
               getRowId={(row) => row.id}
               onRowSelection={handleClassRowSelection}
+              isRadioButton={true}
               id={"table_body"}
             />
 
             <Typography
               variant="h4"
-              sx={{ fontFamily: "Copperplate", marginTop: 8, marginBottom: 3 }}
+              sx={{ fontFamily: "Copperplate", marginTop: 3, marginBottom: 3 }}
             >
               Select Teacher
             </Typography>
-            <Grid container spacing={1} sx={{ marginBottom: 5 }}>
+            <SelectButtonContainer>
               {teachers.map((teacher) => (
                 <Grid item xs={2} key={teacher.id}>
-                  <Button
-                    variant={
-                      selectedTeachers.includes(teacher.name)
-                        ? "contained"
-                        : "outlined"
-                    }
-                    onClick={() => handleTeacherClick(teacher.name)}
-                    fullWidth
+                  <SelectButton
+                    selected={selectedTeachers.includes(teacher.id)}
+                    onClick={() => handleTeacherClick(teacher.id)}
                   >
                     {teacher.name} <br /> ({teacher.subject})
-                  </Button>
+                  </SelectButton>
                 </Grid>
               ))}
-            </Grid>
+            </SelectButtonContainer>
+
             <Typography
               variant="h4"
               sx={{ fontFamily: "Copperplate", marginTop: 10, marginBottom: 3 }}
             >
-              Select Common Subject
+              Select Elective Subject
             </Typography>
-            <Grid container spacing={1} sx={{ marginBottom: 3 }}>
+            <SelectButtonContainer>
               {subjects.map((subject) => (
                 <Grid item xs={2} key={subject}>
-                  <Button
-                    variant={
-                      selectedSubjects.includes(subject)
-                        ? "contained"
-                        : "outlined"
-                    }
+                  <SelectButton
+                    selected={selectedSubjects.includes(subject)}
                     onClick={() => handleSubjectClick(subject)}
-                    fullWidth
                   >
                     {subject}
-                  </Button>
+                  </SelectButton>
                 </Grid>
               ))}
-            </Grid>
+            </SelectButtonContainer>
             <Box
               sx={{ display: "flex", justifyContent: "flex-end", marginTop: 3 }}
             >
@@ -408,7 +399,8 @@ function CommonCourseManagement() {
                 <TextField
                   fullWidth
                   label="Name"
-                  defaultValue=""
+                  value={newSubject}
+                  onChange={(e) => setNewSubject(e.target.value)}
                   variant="outlined"
                 />
               </Grid>
@@ -419,9 +411,7 @@ function CommonCourseManagement() {
               <CustomButton
                 title={"Add"}
                 variant="contained"
-                onClick={() => {
-                  setNewSubject("");
-                }}
+                onClick={handleAddSubject}
                 sx={{ marginTop: 20 }}
               />
             </Box>
