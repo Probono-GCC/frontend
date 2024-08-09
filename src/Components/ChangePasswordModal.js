@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { styled, css } from "@mui/system";
 import { grey } from "../Styles/Color"; // 색상 팔레트 임포트
-import { useNavigate } from "react-router-dom";
 
 import {
   Box,
@@ -25,7 +24,10 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
   const [rePasswordError, setRePasswordError] = useState(false);
 
   const handleSave = () => {
-    console.log(JSON.stringify(rowData) + "changing to " + password);
+    // const userData = JSON.stringify(rowData);
+    setCurrentPassword("");
+    setPassword("");
+    setRePassword("");
   };
 
   const handleClickShowCurrentPassword = () => {
@@ -173,6 +175,11 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
                   variant="contained"
                   color="primary"
                   onClick={handleSave}
+                  disabled={
+                    password.length === 0 ||
+                    rePassword.length === 0 ||
+                    currentPassword.length === 0
+                  }
                 >
                   Save
                 </Button>
