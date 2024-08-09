@@ -74,22 +74,6 @@ function StudentView() {
     setCheckedRows([]);
   };
 
-  const updatedColumns = [
-    {
-      field: "check",
-      headerName: "",
-      flex: 0.05,
-      renderCell: (params) => (
-        <Checkbox
-          {...label}
-          checked={checkedRows.includes(params.row.id)}
-          onChange={() => handleRowSelection(params.row.id)}
-        />
-      ),
-    },
-    ...columns,
-  ];
-
   return (
     <div id="page_content">
       <AppBar />
@@ -122,7 +106,7 @@ function StudentView() {
           </Typography>
         </Box>
         <Table
-          columns={updatedColumns}
+          columns={columns}
           rows={rows}
           onRowSelection={handleRowSelection}
           onRowDoubleClick={(params) => handleModalOpen(params.row)}

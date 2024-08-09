@@ -1,7 +1,14 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
 import styles from "../Styles/css/Table.module.css";
-function Table({ columns, rows, onRowSelection, onRowDoubleClick, getRowId }) {
+function Table({
+  columns,
+  rows,
+  onRowSelection,
+  onRowDoubleClick,
+  getRowId,
+  isRadioButton,
+}) {
   return (
     <div id={styles.table_body}>
       <DataGrid
@@ -15,9 +22,15 @@ function Table({ columns, rows, onRowSelection, onRowDoubleClick, getRowId }) {
         }}
         rows={rows}
         columns={columns}
-        onRowSelectionModelChange={(newSelection) =>
-          onRowSelection(newSelection)
+        onRowClick={
+          isRadioButton ? (params) => onRowSelection(params.row.id) : undefined
+        } // 여기에 추가
+        onRowSelectionModelChange={
+          isRadioButton
+            ? undefined
+            : (newSelection) => onRowSelection(newSelection)
         }
+        checkboxSelection={isRadioButton ? false : true}
         initialState={{
           pagination: {
             paginationModel: { page: 0, pageSize: 10 },
