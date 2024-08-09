@@ -1,32 +1,18 @@
-import React, { useState, useNavigate } from "react";
+import React, { useState } from "react";
 
 import AppBar from "../Components/AppBar";
 import Table from "../Components/Table";
 import Button from "../Components/Button";
 import styles from "../Styles/css/Table.module.css";
-import IconButton from "@mui/material/IconButton";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
-
-import InfoIcon from "@mui/icons-material/Info";
-import Modal from "../Components/Modal";
 import Checkbox from "@mui/material/Checkbox";
-import { textAlign } from "@mui/system";
+
+import Modal from "../Components/Modal";
 import { Typography, Box } from "@mui/material";
+import { useMediaQueryContext } from "../store/MediaQueryContext";
+
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
-const columns = [
-  {
-    field: "sn",
-    headerName: "SN",
-    flex: 0.05,
-    cellClassName: styles.centerAlign,
-  },
-  { field: "name", headerName: "Name", flex: 0.2 },
-  { field: "gender", headerName: "Gender", flex: 0.1 },
-  { field: "birth", headerName: "Birth", flex: 0.1 },
-  { field: "id", headerName: "ID", flex: 0.2 },
-  { field: "grade", headerName: "Grade", flex: 0.3 },
-];
 
 function createData(sn, gender, name, birth, id, grade) {
   return { sn, gender, name, birth, id, grade };
@@ -45,17 +31,60 @@ const rows = [
 ];
 
 function StudentView() {
-  // const [selectedRows, setSelectedRows] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalRowData, setModalRowData] = useState("default row data");
   const [alert, setAlert] = useState(false);
   const [checkedRows, setCheckedRows] = useState([]);
+  const { isSmallScreen } = useMediaQueryContext();
+
+  const columns = isSmallScreen
+    ? [
+        {
+          field: "sn",
+          headerName: "SN",
+          flex: 0.25,
+          cellClassName: styles.centerAlign,
+        },
+        { field: "name", headerName: "Name", flex: 0.4 },
+
+        { field: "id", headerName: "ID", flex: 0.35 },
+      ]
+    : [
+        {
+          field: "sn",
+          headerName: "SN",
+          flex: 0.05,
+          cellClassName: styles.centerAlign,
+        },
+        { field: "name", headerName: "Name", flex: 0.2 },
+        { field: "gender", headerName: "Gender", flex: 0.1 },
+        { field: "birth", headerName: "Birth", flex: 0.1 },
+        { field: "id", headerName: "ID", flex: 0.2 },
+        { field: "grade", headerName: "Grade", flex: 0.3 },
+      ];
+  const updatedColumns = [
+    {
+      field: "check",
+      headerName: "",
+      flex: 0.05,
+      renderCell: (params) => (
+        <Checkbox
+          {...label}
+          checked={checkedRows.includes(params.row.sn)}
+          onChange={() => handleRowSelection(params.row.sn)}
+        />
+      ),
+    },
+    ...columns,
+  ];
   const handleRowSelection = (id) => {
-    setCheckedRows((prevCheckedRows) =>
-      prevCheckedRows.includes(id)
+    setCheckedRows((prevCheckedRows) => {
+      const newCheckedRows = prevCheckedRows.includes(id)
         ? prevCheckedRows.filter((rowId) => rowId !== id)
-        : [...prevCheckedRows, id]
-    );
+        : [...prevCheckedRows, id];
+      console.log("업데이트된 선택된 행:", newCheckedRows);
+      return newCheckedRows;
+    });
   };
   const handleModalOpen = (row) => {
     setModalRowData(row);
@@ -65,6 +94,10 @@ function StudentView() {
   const handleModalClose = () => {
     setModalOpen(false);
     setModalRowData(null);
+  };
+
+  const handleRowDoubleClick = (params) => {
+    handleModalOpen(params.row);
   };
   const deleteRow = () => {
     setAlert(true);
@@ -106,12 +139,15 @@ function StudentView() {
           </Typography>
         </Box>
         <Table
-          columns={columns}
+          columns={updatedColumns}
           rows={rows}
           onRowSelection={handleRowSelection}
-          onRowDoubleClick={(params) => handleModalOpen(params.row)}
+          onRowDoubleClick={handleRowDoubleClick}
           getRowId={(row) => row.sn}
-          id={"table_body"}
+          id={isSmallScreen ? "" : "table_body"}
+          isRadioButton={false}
+          isStudentTable={true} //row클릭시 체크박스 활성화 안되게 하기위해 커스텀
+          checkedRows={checkedRows} // 체크된 행 상태 전달
         />
       </div>
       <Button

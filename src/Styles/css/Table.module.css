@@ -18,3 +18,10 @@
 #centerAlign {
   text-align: center;
 }
+
+/* Table.module.css */
+
+.checkedRow {
+  background-color: blue !important; /* 기본 스타일을 덮어쓰기 위해 중요하게 설정 */
+  color: white; /* 텍스트 색상도 조정하여 가독성 향상 */
+}

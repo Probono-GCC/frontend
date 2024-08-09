@@ -1,4 +1,4 @@
-import React, { useState, useNavigate } from "react";
+import React, { useState } from "react";
 
 import AppBar from "../Components/AppBar";
 import Table from "../Components/Table";
@@ -10,22 +10,9 @@ import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 import Radio from "@mui/material/Radio";
 import { Typography, Box } from "@mui/material";
+import { useMediaQueryContext } from "../store/MediaQueryContext";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
-
-const columns = [
-  {
-    field: "sn",
-    headerName: "SN",
-    flex: 0.05,
-    cellClassName: styles.centerAlign,
-  },
-  { field: "name", headerName: "Name", flex: 0.2 },
-  { field: "gender", headerName: "Gender", flex: 0.1 },
-  { field: "birth", headerName: "Birth", flex: 0.1 },
-  { field: "id", headerName: "ID", flex: 0.2 },
-  { field: "grade", headerName: "Grade", flex: 0.3 },
-];
 
 function createData(sn, gender, name, birth, id, grade) {
   return { sn, gender, name, birth, id, grade };
@@ -49,6 +36,34 @@ function ChangePassword() {
   const [modalRowData, setModalRowData] = useState("default row data");
   const [alert, setAlert] = useState(false);
   const [checkedRow, setCheckedRow] = useState(null); // 단일 값으로 변경
+
+  const { isSmallScreen } = useMediaQueryContext();
+
+  const columns = isSmallScreen
+    ? [
+        {
+          field: "sn",
+          headerName: "SN",
+          flex: 0.25,
+          cellClassName: styles.centerAlign,
+        },
+        { field: "name", headerName: "Name", flex: 0.4 },
+
+        { field: "id", headerName: "ID", flex: 0.35 },
+      ]
+    : [
+        {
+          field: "sn",
+          headerName: "SN",
+          flex: 0.05,
+          cellClassName: styles.centerAlign,
+        },
+        { field: "name", headerName: "Name", flex: 0.2 },
+        { field: "gender", headerName: "Gender", flex: 0.1 },
+        { field: "birth", headerName: "Birth", flex: 0.1 },
+        { field: "id", headerName: "ID", flex: 0.2 },
+        { field: "grade", headerName: "Grade", flex: 0.3 },
+      ];
   const handleRowSelection = (id) => {
     setCheckedRow(id);
   };
@@ -115,6 +130,7 @@ function ChangePassword() {
           columns={updatedColumns}
           rows={rows}
           onRowSelection={handleRowSelection}
+          id={isSmallScreen ? "" : "table_body"}
           onRowClick={(params) => handleRowSelection(params.row.id)}
           onRowDoubleClick={(params) => handleModalOpen(params.row)}
           getRowId={(row) => row.sn}
