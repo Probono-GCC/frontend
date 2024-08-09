@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { MediaQueryProvider } from "./store/MediaQueryContext.js";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import store from "./store";
@@ -25,14 +26,16 @@ import SubjectBoard from "./Pages/SubjectBoard.js";
 import SubjectInfo from "./Pages/SubjectInfo.js";
 import SubjectNewPostForm from "./Pages/SubjectNewPostForm.js";
 import AssignHomeroom from "./Pages/AssignHomeroom.js";
+import ChangePassword from "./Pages/ChangePassword.js";
 import CommonCourseManagement from "./Pages/CommonCourseManagement.js";
 import ElectiveCourseManagement from "./Pages/ElectiveCourseManagement.js";
+
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   // 하위 주소는 /class-board/* -> navigate('/class-board/%{newPage})
-
-  <Provider store={store}>
+  <MediaQueryProvider>
+    {/* <Provider store={store}> */}
     <React.StrictMode>
       <BrowserRouter>
         <Routes>
@@ -44,6 +47,7 @@ root.render(
           <Route path="/" element={<Home />} />
           <Route path="/notice-board" element={<NoticeBoard />} />
           <Route path="/create-account" element={<CreateAccount />} />
+          <Route path="/change-password" element={<ChangePassword />} />
           <Route path="/my-profile" element={<MyProfile />} />
           <Route path="/post" element={<Post />} />
           <Route path="/notice-new-post-form" element={<NoticeNewPostForm />} />
@@ -72,7 +76,8 @@ root.render(
         </Routes>
       </BrowserRouter>
     </React.StrictMode>
-  </Provider>
+    {/* </Provider> */}
+  </MediaQueryProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

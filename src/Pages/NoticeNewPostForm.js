@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import AppBar from "../Components/AppBar";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-
+import { useMediaQueryContext } from "../store/MediaQueryContext";
 const grades = [
   { value: "PlayGroup", label: "PlayGroup" },
   { value: "Nursery", label: "Nursery" },
@@ -35,7 +35,7 @@ function NoticeNewPostForm() {
   const [title, setTitle] = useState("");
   const [grade, setGrade] = useState("All");
   const [content, setContent] = useState("");
-
+  const { isSmallScreen } = useMediaQueryContext();
   const handleSave = () => {
     // 저장 시 새로운 페이지 생성하는 코드 필요!
 
@@ -64,9 +64,16 @@ function NoticeNewPostForm() {
   return (
     <div>
       <AppBar />
-      <Box sx={{ display: "flex", justifyContent: "center", marginTop: 4 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          marginTop: 1,
+          marginBottom: 1,
+        }}
+      >
         <Typography
-          variant="h3"
+          variant="h4"
           component="div"
           sx={{ fontFamily: "Copperplate" }}
         >
@@ -74,14 +81,13 @@ function NoticeNewPostForm() {
         </Typography>
       </Box>
       <Box
-        component={Paper}
+        component={isSmallScreen ? "" : Paper}
         sx={{
           display: "flex",
           justifyContent: "center",
           padding: 2,
-          maxWidth: "80%",
+          maxWidth: isSmallScreen ? "100%" : "80%",
           margin: "0 auto",
-          marginTop: 5,
           marginBottom: 5,
         }}
       >
@@ -142,7 +148,7 @@ function NoticeNewPostForm() {
               placeholder="Write your content here..."
               style={{
                 height: "300px",
-                marginBottom: "40px",
+                marginBottom: "90px",
               }}
             />
           </Grid>

@@ -18,6 +18,7 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import { useMediaQueryContext } from "../store/MediaQueryContext";
 
 function createData(title, date, grade, author, viewCount) {
   return { title, date, grade, author, viewCount };
@@ -29,7 +30,7 @@ const rows = [
   createData("Library Open", "2023. 04. 04.", "All", "Admin", 7890),
   createData("Summer Camp", "2023. 03. 03.", "All", "Admin", 456),
   createData("Parent Meeting", "2023. 02. 02.", "All", "Admin", 678),
-  createData("Event Notice", "2023. 11. 11.", "All", "Admin", 345),
+  createData("Event Notice", "2023. 11. 1x1.", "All", "Admin", 345),
   createData("Holiday Announcement", "2023. 10. 10.", "All", "Admin", 567),
   createData("New Curriculum", "2023. 09. 09.", "All", "Admin", 789),
   createData("Exam Schedule", "2023. 08. 08.", "All", "Admin", 890),
@@ -89,6 +90,7 @@ function NoticeBoard() {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const itemsPerPage = 10;
+  const { isSmallScreen } = useMediaQueryContext();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -137,7 +139,7 @@ function NoticeBoard() {
           sx={{
             textAlign: "center",
             fontFamily: "Copperplate",
-            marginTop: "20px",
+            marginTop: "10px",
             marginBottom: "30px",
           }}
         >
@@ -147,7 +149,7 @@ function NoticeBoard() {
       <TableContainer
         component={Paper}
         sx={{
-          width: "80%",
+          width: isSmallScreen ? "100%" : "80%",
           margin: "0 auto",
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
         }}
@@ -156,30 +158,48 @@ function NoticeBoard() {
           <TableHead sx={{ backgroundColor: "#d8edff" }}>
             <TableRow>
               <TableCell
-                sx={{ textAlign: "left", fontWeight: "bold", width: "5%" }}
+                sx={{
+                  textAlign: "left",
+                  fontWeight: "bold",
+                  width: "15%",
+                  padding: isSmallScreen ? "16px" : "16px 16px 16px 30px",
+                }}
               >
                 No
               </TableCell>
               <TableCell
-                sx={{ textAlign: "left", fontWeight: "bold", width: "45%" }}
+                sx={{
+                  textAlign: "left",
+                  fontWeight: "bold",
+                  width: isSmallScreen ? "65%" : "40%",
+                }}
               >
                 Title
               </TableCell>
               <TableCell
-                sx={{ textAlign: "left", fontWeight: "bold", width: "15%" }}
+                sx={{
+                  textAlign: "left",
+                  fontWeight: "bold",
+                  width: "20%",
+                  padding: "5px",
+                }}
               >
                 Grade
               </TableCell>
-              <TableCell
-                sx={{ textAlign: "left", fontWeight: "bold", width: "20%" }}
-              >
-                Author
-              </TableCell>
-              <TableCell
-                sx={{ textAlign: "left", fontWeight: "bold", width: "15%" }}
-              >
-                View Count
-              </TableCell>
+              {isSmallScreen ? (
+                <div></div>
+              ) : (
+                <TableCell
+                  sx={{
+                    textAlign: "right",
+                    fontWeight: "bold",
+                    width: "12%",
+                    padding: "16px 30px 16px 16px",
+                  }}
+                >
+                  View
+                </TableCell>
+              )}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -195,7 +215,7 @@ function NoticeBoard() {
               >
                 <TableCell
                   sx={{
-                    padding: "16px",
+                    padding: isSmallScreen ? "16px" : "16px 16px 16px 30px",
                     textAlign: "left",
                     borderBottom: "1px solid #e0e0e0",
                     overflow: "hidden",
@@ -235,30 +255,22 @@ function NoticeBoard() {
                 >
                   {row.grade}
                 </TableCell>
-                <TableCell
-                  sx={{
-                    padding: "16px",
-                    textAlign: "left",
-                    borderBottom: "1px solid #e0e0e0",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {row.author}
-                </TableCell>
-                <TableCell
-                  sx={{
-                    padding: "16px",
-                    textAlign: "left",
-                    borderBottom: "1px solid #e0e0e0",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {row.viewCount}
-                </TableCell>
+                {isSmallScreen ? (
+                  <div></div>
+                ) : (
+                  <TableCell
+                    sx={{
+                      padding: "16px 30px 16px 16px",
+                      textAlign: "right",
+                      borderBottom: "1px solid #e0e0e0",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {row.viewCount}
+                  </TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>

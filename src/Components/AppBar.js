@@ -95,6 +95,11 @@ function AppBar() {
     navigate("/assign-homeroom");
   };
 
+
+  const goChangePassword = () => {
+    navigate("/change-password");
+  };
+
   const goCommonCourseManagement = () => {
     navigate("/common-course-management");
   };
@@ -555,7 +560,11 @@ function AppBar() {
                     />
                   </ListItemButton>
                 </ListItem>
-                <ListItem key={"Change Password"} disablePadding>
+                <ListItem
+                  onClick={goChangePassword}
+                  key={"Change Password"}
+                  disablePadding
+                >
                   <ListItemButton sx={{ pl: 10 }}>
                     <ListItemText
                       primary={"Change Password"}

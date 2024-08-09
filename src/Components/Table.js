@@ -7,6 +7,7 @@ function Table({
   onRowSelection,
   onRowDoubleClick,
   getRowId,
+  isRadioButton,
   id,
 }) {
   return (
@@ -22,9 +23,15 @@ function Table({
         }}
         rows={rows}
         columns={columns}
-        onRowSelectionModelChange={(newSelection) =>
-          onRowSelection(newSelection)
+        onRowClick={
+          isRadioButton ? (params) => onRowSelection(params.row.id) : undefined
+        } // 여기에 추가
+        onRowSelectionModelChange={
+          isRadioButton
+            ? undefined
+            : (newSelection) => onRowSelection(newSelection)
         }
+        checkboxSelection={isRadioButton ? false : true}
         initialState={{
           pagination: {
             paginationModel: { page: 0, pageSize: 10 },

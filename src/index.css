@@ -11,6 +11,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+/* top공간 차지를 많이해서 상단 앱바 패딩 조정 */
+.css-8ksggj {
+  padding: 5px !important;
+}
 /* home calendar 토요일 글자 색 변경 */
 .fc-day-sat a {
   color: red;

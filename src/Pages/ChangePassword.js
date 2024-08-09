@@ -4,16 +4,15 @@ import AppBar from "../Components/AppBar";
 import Table from "../Components/Table";
 import Button from "../Components/Button";
 import styles from "../Styles/css/Table.module.css";
-import IconButton from "@mui/material/IconButton";
+import Modal from "../Components/ChangePasswordModal";
+
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
-
-import InfoIcon from "@mui/icons-material/Info";
-import Modal from "../Components/Modal";
-import Checkbox from "@mui/material/Checkbox";
-import { textAlign } from "@mui/system";
+import Radio from "@mui/material/Radio";
 import { Typography, Box } from "@mui/material";
+
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
+
 const columns = [
   {
     field: "sn",
@@ -44,18 +43,14 @@ const rows = [
   createData(9, "Female", "Harvey", "19.07.04", "b0008", "UnderKG"),
 ];
 
-function StudentView() {
+function ChangePassword() {
   // const [selectedRows, setSelectedRows] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalRowData, setModalRowData] = useState("default row data");
   const [alert, setAlert] = useState(false);
-  const [checkedRows, setCheckedRows] = useState([]);
+  const [checkedRow, setCheckedRow] = useState(null); // 단일 값으로 변경
   const handleRowSelection = (id) => {
-    setCheckedRows((prevCheckedRows) =>
-      prevCheckedRows.includes(id)
-        ? prevCheckedRows.filter((rowId) => rowId !== id)
-        : [...prevCheckedRows, id]
-    );
+    setCheckedRow(id);
   };
   const handleModalOpen = (row) => {
     setModalRowData(row);
@@ -66,13 +61,24 @@ function StudentView() {
     setModalOpen(false);
     setModalRowData(null);
   };
-  const deleteRow = () => {
-    setAlert(true);
-    setTimeout(() => setAlert(false), 2000); // Hide the alert after 3 seconds
-
-    console.log("Deleting rows:", checkedRows);
-    setCheckedRows([]);
+  const goChangePasswordView = (rowData) => {
+    handleModalOpen(rowData);
   };
+  const updatedColumns = [
+    {
+      field: "check",
+      headerName: "",
+      flex: 0.05,
+      renderCell: (params) => (
+        <Radio
+          {...label}
+          checked={checkedRow === params.row.id}
+          onChange={() => handleRowSelection(params.row.id)}
+        />
+      ),
+    },
+    ...columns,
+  ];
 
   return (
     <div id="page_content">
@@ -106,18 +112,19 @@ function StudentView() {
           </Typography>
         </Box>
         <Table
-          columns={columns}
+          columns={updatedColumns}
           rows={rows}
           onRowSelection={handleRowSelection}
+          onRowClick={(params) => handleRowSelection(params.row.id)}
           onRowDoubleClick={(params) => handleModalOpen(params.row)}
           getRowId={(row) => row.sn}
-          id={"table_body"}
+          isRadioButton={true}
         />
       </div>
       <Button
-        title={"Delete"}
-        disabled={checkedRows.length === 0}
-        onClick={deleteRow}
+        title={"Change"}
+        onClick={goChangePasswordView}
+        disabled={checkedRow == null}
         id={"view_btn"}
         size={"bg"}
       />
@@ -133,4 +140,4 @@ function StudentView() {
   );
 }
 
-export default StudentView;
+export default ChangePassword;
