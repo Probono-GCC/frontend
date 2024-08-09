@@ -20,6 +20,9 @@ import {
 import AppBar from "../Components/AppBar";
 import Table from "../Components/Table";
 import CustomButton from "../Components/Button";
+import SelectButton from "../Components/SelectButton";
+import SelectButtonContainer from "../Components/SelectButtonContatiner";
+
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 const modalStyle = {
@@ -45,16 +48,7 @@ const teachers = [
   { id: 8, name: "Sunny", subject: "t1228" },
 ];
 
-const subjects = [
-  "English",
-  "Math",
-  "Nepali",
-  "Music",
-  "Science",
-  "History",
-  "Society",
-  "Sports",
-];
+const subjects = ["Physics I", "Chemistry I", "Biology I"];
 
 const columns = [
   { field: "batch", headerName: "Batch", flex: 0.2 },
@@ -176,13 +170,14 @@ const studentColumns = [
 ];
 
 function ElectiveCourseManagement() {
-  const [selectedClass, setselectedClass] = useState(null);
-  const [selectedCourse, setselectedCourse] = useState(null);
+  const [selectedClass, setselectedClass] = useState([]);
+  const [selectedCourse, setselectedCourse] = useState([]);
   const [selectedTeachers, setSelectedTeachers] = useState([]);
   const [selectedSubjects, setSelectedSubjects] = useState([]);
   const [rows, setRows] = useState(initialRows);
   const [classRows, setClassRows] = useState(initialClassRows);
   const [addMode, setAddMode] = useState(false);
+  const [assignMode, setAssignMode] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [newSubject, setNewSubject] = useState("");
 
@@ -190,7 +185,6 @@ function ElectiveCourseManagement() {
   const [rightStudents, setRightStudents] = useState([]);
   const [selectedLeftStudents, setSelectedLeftStudents] = useState([]);
   const [selectedRightStudents, setSelectedRightStudents] = useState([]);
-  const [checkedRows, setCheckedRows] = useState([]);
 
   const handleOpenModal = () => setModalOpen(true);
   const handleCloseModal = () => setModalOpen(false);
@@ -215,20 +209,12 @@ function ElectiveCourseManagement() {
     setselectedClass(id);
   };
 
-  const updatedColumns = [
-    {
-      field: "select",
-      headerName: "",
-      flex: 0.1,
-      renderCell: (params) => (
-        <Radio
-          checked={selectedCourse === params.row.id}
-          onChange={() => handleRowSelection(params.row.id)}
-        />
-      ),
-    },
-    ...columns,
-  ];
+  const handleAddSubject = () => {
+    if (newSubject.trim() !== "") {
+      subjects.push(newSubject); // 새로운 과목을 배열에 추가
+      setNewSubject(""); // 입력창 초기화
+    }
+  };
 
   const updatedClassColumns = [
     {
@@ -243,32 +229,6 @@ function ElectiveCourseManagement() {
       ),
     },
     ...classColumns,
-  ];
-
-  const handleCheckboxChange = (id) => {
-    setCheckedRows((prevCheckedRows) => {
-      if (prevCheckedRows.includes(id)) {
-        return prevCheckedRows.filter((rowId) => rowId !== id);
-      } else {
-        return [...prevCheckedRows, id];
-      }
-    });
-  };
-
-  const updatedStudentColumns = [
-    {
-      field: "check",
-      headerName: "",
-      flex: 0.05,
-      renderCell: (params) => (
-        <Checkbox
-          {...label}
-          checked={checkedRows.includes(params.row.id)}
-          onChange={() => handleCheckboxChange(params.row.id)} // 핸들러 변경
-        />
-      ),
-    },
-    ...studentColumns,
   ];
 
   const handleDeleteSubjects = () => {
@@ -300,7 +260,7 @@ function ElectiveCourseManagement() {
         >
           Elective Course Management
         </Typography>
-        {!addMode && (
+        {!addMode && !assignMode && (
           <>
             <Box
               sx={{
@@ -318,7 +278,7 @@ function ElectiveCourseManagement() {
               />
             </Box>
             <Table
-              columns={updatedColumns}
+              columns={columns}
               rows={rows}
               getRowId={(row) => row.id}
               onRowSelection={handleRowSelection}
@@ -347,9 +307,9 @@ function ElectiveCourseManagement() {
                   title={"Assign Students"}
                   variant="contained"
                   color="primary"
-                  onClick={() => setAddMode(true)}
+                  onClick={() => setAssignMode(true)}
                   size={"bg"}
-                  disabled={!selectedCourse}
+                  disabled={selectedCourse.length !== 1}
                 />
                 <Box sx={{ marginRight: 3 }} />
                 <CustomButton title={"Delete"} variant="contained" />
@@ -357,69 +317,10 @@ function ElectiveCourseManagement() {
             </Grid>
           </>
         )}
-        {addMode && (
+
+        {/* Assign Student 모드 */}
+        {assignMode && (
           <>
-            <Typography
-              variant="h4"
-              sx={{ fontFamily: "Copperplate", marginTop: 3, marginBottom: 3 }}
-            >
-              Select Class
-            </Typography>
-            <Table
-              columns={updatedClassColumns}
-              rows={classRows}
-              getRowId={(row) => row.id}
-              onRowSelection={handleClassRowSelection}
-              id={"table_body"}
-            />
-
-            <Typography
-              variant="h4"
-              sx={{ fontFamily: "Copperplate", marginTop: 8, marginBottom: 3 }}
-            >
-              Select Teacher
-            </Typography>
-            <Grid container spacing={1} sx={{ marginBottom: 5 }}>
-              {teachers.map((teacher) => (
-                <Grid item xs={2} key={teacher.id}>
-                  <Button
-                    variant={
-                      selectedTeachers.includes(teacher.name)
-                        ? "contained"
-                        : "outlined"
-                    }
-                    onClick={() => handleTeacherClick(teacher.name)}
-                    fullWidth
-                  >
-                    {teacher.name} <br /> ({teacher.subject})
-                  </Button>
-                </Grid>
-              ))}
-            </Grid>
-            <Typography
-              variant="h4"
-              sx={{ fontFamily: "Copperplate", marginTop: 10, marginBottom: 3 }}
-            >
-              Select Elective Subject
-            </Typography>
-            <Grid container spacing={1} sx={{ marginBottom: 3 }}>
-              {subjects.map((subject) => (
-                <Grid item xs={2} key={subject}>
-                  <Button
-                    variant={
-                      selectedSubjects.includes(subject)
-                        ? "contained"
-                        : "outlined"
-                    }
-                    onClick={() => handleSubjectClick(subject)}
-                    fullWidth
-                  >
-                    {subject}
-                  </Button>
-                </Grid>
-              ))}
-            </Grid>
-
             <Typography
               variant="h4"
               sx={{ fontFamily: "Copperplate", marginTop: 5, marginBottom: 5 }}
@@ -430,7 +331,7 @@ function ElectiveCourseManagement() {
               <Grid item xs={5}>
                 <Table
                   sx={{ width: "100%" }} // 왼쪽 테이블의 너비 설정
-                  columns={updatedStudentColumns}
+                  columns={studentColumns}
                   rows={leftStudents}
                   onRowSelection={(selection) =>
                     setSelectedLeftStudents(selection)
@@ -466,7 +367,146 @@ function ElectiveCourseManagement() {
               <Grid item xs={5}>
                 <Table
                   sx={{ width: "100%" }} // 오른쪽 테이블의 너비 설정
-                  columns={updatedStudentColumns}
+                  columns={studentColumns}
+                  rows={rightStudents}
+                  onRowSelection={(selection) =>
+                    setSelectedRightStudents(selection)
+                  }
+                  getRowId={(row) => row.sn}
+                  id={"student_select_body"}
+                />
+              </Grid>
+            </Grid>
+            <Box
+              sx={{ display: "flex", justifyContent: "flex-end", marginTop: 3 }}
+            >
+              <CustomButton
+                title={"Cancel"}
+                variant="outlined"
+                onClick={() => {
+                  setAssignMode(false);
+                  setselectedCourse([]);
+                }}
+                sx={{ marginRight: 2 }}
+              />
+              <Box marginRight={2}></Box>
+              <CustomButton
+                title={"Save"}
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  handleAddCourse();
+                  setAssignMode(false);
+                  setselectedCourse([]);
+                }}
+              />
+            </Box>
+          </>
+        )}
+
+        {/* Add Course 모드 */}
+        {addMode && (
+          <>
+            <Typography
+              variant="h4"
+              sx={{ fontFamily: "Copperplate", marginTop: 3, marginBottom: 3 }}
+            >
+              Select Class
+            </Typography>
+            <Table
+              columns={updatedClassColumns}
+              rows={classRows}
+              getRowId={(row) => row.id}
+              onRowSelection={handleClassRowSelection}
+              isRadioButton={true}
+              id={"table_body"}
+            />
+
+            <Typography
+              variant="h4"
+              sx={{ fontFamily: "Copperplate", marginTop: 3, marginBottom: 3 }}
+            >
+              Select Teacher
+            </Typography>
+            <SelectButtonContainer>
+              {teachers.map((teacher) => (
+                <Grid item xs={2} key={teacher.id}>
+                  <SelectButton
+                    selected={selectedTeachers.includes(teacher.id)}
+                    onClick={() => handleTeacherClick(teacher.id)}
+                  >
+                    {teacher.name} <br /> ({teacher.subject})
+                  </SelectButton>
+                </Grid>
+              ))}
+            </SelectButtonContainer>
+
+            <Typography
+              variant="h4"
+              sx={{ fontFamily: "Copperplate", marginTop: 10, marginBottom: 3 }}
+            >
+              Select Elective Subject
+            </Typography>
+            <SelectButtonContainer>
+              {subjects.map((subject) => (
+                <Grid item xs={2} key={subject}>
+                  <SelectButton
+                    selected={selectedSubjects.includes(subject)}
+                    onClick={() => handleSubjectClick(subject)}
+                  >
+                    {subject}
+                  </SelectButton>
+                </Grid>
+              ))}
+            </SelectButtonContainer>
+
+            <Typography
+              variant="h4"
+              sx={{ fontFamily: "Copperplate", marginTop: 5, marginBottom: 5 }}
+            >
+              Assign Students
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={5}>
+                <Table
+                  sx={{ width: "100%" }} // 왼쪽 테이블의 너비 설정
+                  columns={studentColumns}
+                  rows={leftStudents}
+                  onRowSelection={(selection) =>
+                    setSelectedLeftStudents(selection)
+                  }
+                  getRowId={(row) => row.sn}
+                  id={"student_select_body"}
+                />
+              </Grid>
+              <Grid
+                item
+                xs={2}
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <CustomButton
+                  title={">"}
+                  variant="contained"
+                  onClick={() => handleStudentTransfer()}
+                  disabled={selectedLeftStudents.length === 0 ? true : false}
+                />
+                <Box sx={{ marginTop: 2, marginBottom: 2 }} />
+                <CustomButton
+                  title={"<"}
+                  variant="contained"
+                  onClick={() => handleStudentTransfer()}
+                  disabled={selectedRightStudents.length === 0 ? true : false}
+                />
+              </Grid>
+              <Grid item xs={5}>
+                <Table
+                  sx={{ width: "100%" }} // 오른쪽 테이블의 너비 설정
+                  columns={studentColumns}
                   rows={rightStudents}
                   onRowSelection={(selection) =>
                     setSelectedRightStudents(selection)
@@ -547,7 +587,8 @@ function ElectiveCourseManagement() {
                 <TextField
                   fullWidth
                   label="Name"
-                  defaultValue=""
+                  value={newSubject}
+                  onChange={(e) => setNewSubject(e.target.value)}
                   variant="outlined"
                 />
               </Grid>
@@ -558,9 +599,7 @@ function ElectiveCourseManagement() {
               <CustomButton
                 title={"Add"}
                 variant="contained"
-                onClick={() => {
-                  setNewSubject("");
-                }}
+                onClick={handleAddSubject}
                 sx={{ marginTop: 20 }}
               />
             </Box>

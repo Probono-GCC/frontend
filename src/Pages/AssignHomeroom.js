@@ -13,6 +13,8 @@ import AppBar from "../Components/AppBar";
 import Table from "../Components/Table";
 import Radio from "@mui/material/Radio";
 import CustomButton from "../Components/Button";
+import SelectButton from "../Components/SelectButton";
+import SelectButtonContainer from "../Components/SelectButtonContatiner";
 
 const label = { inputProps: { "aria-label": "Radio button demo" } };
 const checkLabel = { inputProps: { "aria-label": "Checkbox demo" } };
@@ -183,6 +185,7 @@ function AssignHomeroom() {
           rows={classes}
           onRowSelection={(selection) => handleRowSelection(selection[0])}
           getRowId={(row) => row.id}
+          isRadioButton={true}
           id={"table_body"}
         />
         {selectedClass && (
@@ -193,23 +196,18 @@ function AssignHomeroom() {
             >
               Assign Teacher
             </Typography>
-            <Grid container spacing={1} sx={{ marginBottom: 3 }}>
+            <SelectButtonContainer>
               {teachers.map((teacher) => (
                 <Grid item xs={2} key={teacher.id}>
-                  <Button
-                    variant={
-                      selectedTeachers.includes(teacher)
-                        ? "contained"
-                        : "outlined"
-                    }
-                    onClick={() => handleTeacherClick(teacher)}
-                    fullWidth
+                  <SelectButton
+                    selected={selectedTeachers.includes(teacher.id)}
+                    onClick={() => handleTeacherClick(teacher.id)}
                   >
                     {teacher.name} <br /> ({teacher.subject})
-                  </Button>
+                  </SelectButton>
                 </Grid>
               ))}
-            </Grid>
+            </SelectButtonContainer>
             <Divider sx={{ marginBottom: 3 }} />
             <Typography
               variant="h4"
