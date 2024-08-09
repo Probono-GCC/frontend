@@ -8,9 +8,10 @@ function Table({
   onRowDoubleClick,
   getRowId,
   isRadioButton,
+  id,
 }) {
   return (
-    <div id={styles.table_body}>
+    <div id={id ? styles[id] : ""}>
       <DataGrid
         sx={{
           "& .MuiDataGrid-columnHeader": {

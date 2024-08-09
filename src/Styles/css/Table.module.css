@@ -4,6 +4,13 @@
   /* margin: 2%; */
   margin: auto;
 }
+
+#student_select_body {
+  height: 60vh;
+  /* margin: 2%; */
+  margin: auto;
+}
+
 #table_container {
   width: 100vw;
 }

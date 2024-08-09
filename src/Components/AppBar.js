@@ -95,9 +95,19 @@ function AppBar() {
     navigate("/assign-homeroom");
   };
 
+
   const goChangePassword = () => {
     navigate("/change-password");
   };
+
+  const goCommonCourseManagement = () => {
+    navigate("/common-course-management");
+  };
+
+  const goElectiveCourseManagement = () => {
+    navigate("/elective-course-management");
+  };
+
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -652,7 +662,10 @@ function AppBar() {
                   </ListItemButton>
                 </ListItem>
                 <ListItem key={"Common Course Management"} disablePadding>
-                  <ListItemButton sx={{ pl: 10 }}>
+                  <ListItemButton
+                    onClick={goCommonCourseManagement}
+                    sx={{ pl: 10 }}
+                  >
                     <ListItemText
                       primary={"Common Course Management"}
                       sx={{
@@ -669,7 +682,10 @@ function AppBar() {
               </AccordionDetails>
             </Accordion>
             <ListItem key={"Elective Course Management"} disablePadding>
-              <ListItemButton sx={{ paddingLeft: "16px" }}>
+              <ListItemButton
+                onClick={goElectiveCourseManagement}
+                sx={{ paddingLeft: "16px" }}
+              >
                 <ListItemIcon sx={{ minWidth: "40px" }}>
                   <BookIcon />
                 </ListItemIcon>

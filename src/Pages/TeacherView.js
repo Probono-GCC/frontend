@@ -144,6 +144,7 @@ function TeacherView() {
           onRowSelection={handleRowSelection}
           onRowDoubleClick={(params) => handleModalOpen(params.row)}
           getRowId={(row) => row.id}
+          id={"table_body"}
         />
       </div>
       <Button

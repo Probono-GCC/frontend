@@ -27,6 +27,10 @@ import SubjectInfo from "./Pages/SubjectInfo.js";
 import SubjectNewPostForm from "./Pages/SubjectNewPostForm.js";
 import AssignHomeroom from "./Pages/AssignHomeroom.js";
 import ChangePassword from "./Pages/ChangePassword.js";
+import CommonCourseManagement from "./Pages/CommonCourseManagement.js";
+import ElectiveCourseManagement from "./Pages/ElectiveCourseManagement.js";
+
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   // 하위 주소는 /class-board/* -> navigate('/class-board/%{newPage})
@@ -60,6 +64,15 @@ root.render(
             element={<SubjectNewPostForm />}
           />
           <Route path="/assign-homeroom" element={<AssignHomeroom />} />
+
+          <Route
+            path="/common-course-management"
+            element={<CommonCourseManagement />}
+          />
+          <Route
+            path="/elective-course-management"
+            element={<ElectiveCourseManagement />}
+          />
         </Routes>
       </BrowserRouter>
     </React.StrictMode>

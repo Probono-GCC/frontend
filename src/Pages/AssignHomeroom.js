@@ -2,17 +2,20 @@ import React, { useState } from "react";
 import {
   Box,
   Typography,
-  Button,
   Divider,
   Grid,
   Snackbar,
   Alert,
+  Button,
+  Checkbox,
 } from "@mui/material";
 import AppBar from "../Components/AppBar";
 import Table from "../Components/Table";
 import Radio from "@mui/material/Radio";
+import CustomButton from "../Components/Button";
 
 const label = { inputProps: { "aria-label": "Radio button demo" } };
+const checkLabel = { inputProps: { "aria-label": "Checkbox demo" } };
 
 const classes = [
   {
@@ -43,24 +46,20 @@ const teachers = [
   { id: 7, name: "Gold", subject: "economy123" },
   { id: 8, name: "Sunny", subject: "t1228" },
 ];
+function createData(sn, gender, name, birth, id, grade) {
+  return { sn, gender, name, birth, id, grade };
+}
 
 const students = [
-  {
-    sn: 1,
-    name: "Jenny",
-    gender: "Female",
-    birth: "19.03.18",
-    id: "a0318",
-    grade: "LowerKG",
-  },
-  {
-    sn: 2,
-    name: "Jun",
-    gender: "Male",
-    birth: "19.10.28",
-    id: "a1028",
-    grade: "LowerKG",
-  },
+  createData(1, "Male", "Jon", "20.02.24", "a0000", "PlayGroup"),
+  createData(2, "Female", "Cersei", "20.01.04", "a0001", "PlayGroup"),
+  createData(3, "Male", "Jaime", "20.12.24", "a0002", "PlayGroup"),
+  createData(4, "Male", "Arya", "20.05.27", "a0003", "PlayGroup"),
+  createData(5, "Male", "Daenerys", "20.08.14", "a0004", "PlayGroup"),
+  createData(6, "Male", "nell", "20.12.24", "a0005", "PlayGroup"),
+  createData(7, "Female", "Ferrara", "19.07.05", "b0006", "UnderKG"),
+  createData(8, "Female", "Rossini", "19.07.25", "b0007", "UnderKG"),
+  createData(9, "Female", "Harvey", "19.07.04", "b0008", "UnderKG"),
 ];
 
 const classColumns = [
@@ -79,6 +78,7 @@ const studentColumns = [
   { field: "id", headerName: "ID", flex: 0.2 },
   { field: "grade", headerName: "Grade", flex: 0.2 },
 ];
+
 function AssignHomeroom() {
   const [selectedClass, setSelectedClass] = useState(null);
   const [selectedTeachers, setSelectedTeachers] = useState([]);
@@ -87,12 +87,19 @@ function AssignHomeroom() {
   const [selectedLeftStudents, setSelectedLeftStudents] = useState([]);
   const [selectedRightStudents, setSelectedRightStudents] = useState([]);
   const [alertOpen, setAlertOpen] = useState(false);
-
+  const [checkedRows, setCheckedRows] = useState([]);
   const handleRowSelection = (id) => {
+    setCheckedRows((prevCheckedRows) =>
+      prevCheckedRows.includes(id)
+        ? prevCheckedRows.filter((rowId) => rowId !== id)
+        : [...prevCheckedRows, id]
+    );
+  };
+  const handleClassRowSelection = (id) => {
     setSelectedClass(id);
   };
 
-  const updatedColumns = [
+  const updatedClassColumns = [
     {
       field: "radio",
       headerName: "",
@@ -101,11 +108,27 @@ function AssignHomeroom() {
         <Radio
           {...label}
           checked={selectedClass === params.row.id}
-          onChange={() => handleRowSelection(params.row.id)}
+          onChange={() => handleClassRowSelection(params.row.id)}
         />
       ),
     },
     ...classColumns,
+  ];
+
+  const updatedStudentColumns = [
+    {
+      field: "check",
+      headerName: "",
+      flex: 0.05,
+      renderCell: (params) => (
+        <Checkbox
+          {...label}
+          checked={checkedRows.includes(params.row.id)}
+          onChange={() => handleRowSelection(params.row.id)}
+        />
+      ),
+    },
+    ...studentColumns,
   ];
 
   const handleTeacherClick = (teacher) => {
@@ -129,11 +152,11 @@ function AssignHomeroom() {
     selected,
     setSelected
   ) => {
-    const newFrom = from.filter((student) => !selected.includes(student));
-    const newTo = [...to, ...selected];
-    setFrom(newFrom);
-    setTo(newTo);
-    setSelected([]);
+    //     const newFrom = from.filter((student) => !selected.includes(student));
+    //     const newTo = [...to, ...selected];
+    //     setFrom(newFrom);
+    //     setTo(newTo);
+    //setSelected([]);
   };
 
   const handleCloseAlert = () => {
@@ -156,10 +179,11 @@ function AssignHomeroom() {
           Assign Homeroom
         </Typography>
         <Table
-          columns={updatedColumns}
+          columns={updatedClassColumns}
           rows={classes}
           onRowSelection={(selection) => handleRowSelection(selection[0])}
           getRowId={(row) => row.id}
+          id={"table_body"}
         />
         {selectedClass && (
           <Box sx={{ maxWidth: "90%", margin: "0 auto" }}>
@@ -196,17 +220,19 @@ function AssignHomeroom() {
             <Grid container spacing={2}>
               <Grid item xs={5}>
                 <Table
-                  columns={studentColumns}
+                  sx={{ width: "100%" }} // 왼쪽 테이블의 너비 설정
+                  columns={updatedStudentColumns}
                   rows={leftStudents}
                   onRowSelection={(selection) =>
                     setSelectedLeftStudents(selection)
                   }
                   getRowId={(row) => row.sn}
+                  id={"student_select_body"}
                 />
               </Grid>
               <Grid
                 item
-                xs={3}
+                xs={2}
                 sx={{
                   display: "flex",
                   flexDirection: "column",
@@ -214,65 +240,47 @@ function AssignHomeroom() {
                   alignItems: "center",
                 }}
               >
-                <Button
+                <CustomButton
+                  title={">"}
                   variant="contained"
-                  onClick={() =>
-                    handleStudentTransfer(
-                      leftStudents,
-                      rightStudents,
-                      setLeftStudents,
-                      setRightStudents,
-                      selectedLeftStudents,
-                      setSelectedLeftStudents
-                    )
-                  }
-                  sx={{ marginBottom: 2 }}
-                >
-                  &gt;
-                </Button>
-                <Button
+                  onClick={() => handleStudentTransfer()}
+                  disabled={selectedLeftStudents.length === 0 ? true : false}
+                />
+                <Box sx={{ marginTop: 2, marginBottom: 2 }} />
+                <CustomButton
+                  title={"<"}
                   variant="contained"
-                  onClick={() =>
-                    handleStudentTransfer(
-                      rightStudents,
-                      leftStudents,
-                      setRightStudents,
-                      setLeftStudents,
-                      selectedRightStudents,
-                      setSelectedRightStudents
-                    )
-                  }
-                >
-                  &lt;
-                </Button>
+                  onClick={() => handleStudentTransfer()}
+                  disabled={selectedRightStudents.length === 0 ? true : false}
+                />
               </Grid>
               <Grid item xs={5}>
                 <Table
-                  columns={studentColumns}
+                  sx={{ width: "100%" }} // 오른쪽 테이블의 너비 설정
+                  columns={updatedStudentColumns}
                   rows={rightStudents}
                   onRowSelection={(selection) =>
                     setSelectedRightStudents(selection)
                   }
                   getRowId={(row) => row.sn}
+                  id={"student_select_body"}
                 />
               </Grid>
             </Grid>
             <Box
               sx={{ display: "flex", justifyContent: "flex-end", marginTop: 3 }}
             >
-              <Button variant="outlined" sx={{ marginRight: 2 }}>
-                Cancel
-              </Button>
-              <Button variant="contained" color="primary">
-                Save
-              </Button>
+              <Box sx={{ marginRight: 2 }}>
+                <CustomButton title="Cancel" />{" "}
+              </Box>
+              <CustomButton title="Save" />
             </Box>
           </Box>
         )}
       </Box>
       <Snackbar
         open={alertOpen}
-        autoHideDuration={6000}
+        autoHideDuration={1000}
         onClose={handleCloseAlert}
       >
         <Alert onClose={handleCloseAlert} severity="warning">
