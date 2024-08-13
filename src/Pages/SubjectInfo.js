@@ -7,6 +7,7 @@ import styles from "../Styles/css/Table.module.css";
 import IconButton from "@mui/material/IconButton";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
+import { Paper, TableContainer } from "@mui/material";
 
 import InfoIcon from "@mui/icons-material/Info";
 import Modal from "../Components/Modal";
@@ -14,9 +15,11 @@ import Checkbox from "@mui/material/Checkbox";
 import { maxWidth, textAlign } from "@mui/system";
 import { Typography, Box } from "@mui/material";
 import InfoBox from "../Components/InfoBox";
+import { useMediaQueryContext } from "../store/MediaQueryContext";
+
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
-const columns = [
+const fullColumns = [
   {
     field: "sn",
     headerName: "SN",
@@ -112,6 +115,22 @@ function SubjectInfo() {
   const [alert, setAlert] = useState(false);
   const [checkedRows, setCheckedRows] = useState([]);
 
+  const { isSmallScreen } = useMediaQueryContext();
+
+  const columns = [
+    {
+      field: "sn",
+      headerName: "SN",
+      flex: 0.05,
+      cellClassName: styles.centerAlign,
+    },
+    { field: "name", headerName: "Name", flex: 0.2 },
+    { field: "id", headerName: "ID", flex: 0.2 },
+    !isSmallScreen && { field: "gender", headerName: "Gender", flex: 0.1 },
+    !isSmallScreen && { field: "birth", headerName: "Birth", flex: 0.1 },
+    !isSmallScreen && { field: "grade", headerName: "Grade", flex: 0.3 },
+  ].filter(Boolean);
+
   const handleRowSelection = (id) => {
     setCheckedRows((prevCheckedRows) =>
       prevCheckedRows.includes(id)
@@ -175,7 +194,6 @@ function SubjectInfo() {
             justifyContent: "left",
             marginTop: 10,
             marginBottom: 3,
-            paddingLeft: "5%",
           }}
         >
           <Typography
@@ -186,15 +204,24 @@ function SubjectInfo() {
             Student Info
           </Typography>
         </Box>
-
-        <Table
-          columns={columns}
-          rows={rows}
-          onRowSelection={handleRowSelection}
-          onRowDoubleClick={(params) => handleModalOpen(params.row)}
-          getRowId={(row) => row.sn}
-          id={"table_body"}
-        />
+        <TableContainer
+          component={Paper}
+          sx={{
+            width: isSmallScreen ? "100%" : "80%",
+            margin: "0 auto",
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+          }}
+        >
+          <Table
+            columns={columns}
+            rows={rows}
+            onRowSelection={handleRowSelection}
+            onRowDoubleClick={(params) => handleModalOpen(params.row)}
+            getRowId={(row) => row.sn}
+            isStudentTable={true}
+            id={"table_container"}
+          />
+        </TableContainer>
       </div>
 
       <Modal
@@ -202,7 +229,7 @@ function SubjectInfo() {
         handleClose={handleModalClose}
         title={"Detail Information"}
         rowData={modalRowData}
-        rowsHeader={columns}
+        rowsHeader={fullColumns}
       />
     </div>
   );

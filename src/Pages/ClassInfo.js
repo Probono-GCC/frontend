@@ -14,29 +14,9 @@ import Checkbox from "@mui/material/Checkbox";
 import { maxWidth, textAlign } from "@mui/system";
 import { Typography, Box } from "@mui/material";
 import InfoBox from "../Components/InfoBox";
+import { useMediaQueryContext } from "../store/MediaQueryContext";
+
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
-
-const columns = [
-  {
-    field: "sn",
-    headerName: "SN",
-    flex: 0.05,
-    cellClassName: styles.centerAlign,
-  },
-  { field: "name", headerName: "Name", flex: 0.2 },
-  { field: "gender", headerName: "Gender", flex: 0.1 },
-  { field: "birth", headerName: "Birth", flex: 0.1 },
-  { field: "id", headerName: "ID", flex: 0.2 },
-  { field: "grade", headerName: "Grade", flex: 0.3 },
-];
-
-const courseColumns = [
-  { field: "batch", headerName: "Batch", flex: 0.1 },
-  { field: "grade", headerName: "Grade", flex: 0.2 },
-  { field: "section", headerName: "Section", flex: 0.1 },
-  { field: "teacher", headerName: "Teacher", flex: 0.3 },
-  { field: "subject", headerName: "Subject", flex: 0.2 },
-];
 
 const courseRows = [
   {
@@ -132,12 +112,63 @@ const rows = [
   },
 ];
 
+const fullColumns = [
+  {
+    field: "sn",
+    headerName: "SN",
+    flex: 0.05,
+    cellClassName: styles.centerAlign,
+  },
+  { field: "name", headerName: "Name", flex: 0.2 },
+  { field: "id", headerName: "ID", flex: 0.2 },
+  { field: "gender", headerName: "Gender", flex: 0.1 },
+  { field: "birth", headerName: "Birth", flex: 0.1 },
+  { field: "grade", headerName: "Grade", flex: 0.3 },
+];
+
 function ClassInfo() {
   // const [selectedRows, setSelectedRows] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalRowData, setModalRowData] = useState("default row data");
   const [alert, setAlert] = useState(false);
   const [checkedRows, setCheckedRows] = useState([]);
+  const { isSmallScreen } = useMediaQueryContext();
+
+  const columns = [
+    {
+      field: "sn",
+      headerName: "SN",
+      flex: 0.05,
+      cellClassName: styles.centerAlign,
+    },
+    { field: "name", headerName: "Name", flex: 0.2 },
+    { field: "id", headerName: "ID", flex: 0.2 },
+    !isSmallScreen && { field: "gender", headerName: "Gender", flex: 0.1 },
+    !isSmallScreen && { field: "birth", headerName: "Birth", flex: 0.1 },
+    !isSmallScreen && { field: "grade", headerName: "Grade", flex: 0.3 },
+  ].filter(Boolean);
+
+  const courseColumns = [
+    !isSmallScreen && { field: "batch", headerName: "Batch", flex: 0.1 },
+    !isSmallScreen && { field: "grade", headerName: "Grade", flex: 0.2 },
+    !isSmallScreen && { field: "section", headerName: "Section", flex: 0.1 },
+    {
+      field: "teacher",
+      headerName: "Teacher",
+      flex: isSmallScreen ? 0.5 : 0.3,
+      sx: {
+        textAlign: "left",
+      },
+    },
+    {
+      field: "subject",
+      headerName: "Subject",
+      flex: isSmallScreen ? 0.5 : 0.1,
+      sx: {
+        textAlign: "left",
+      },
+    },
+  ].filter(Boolean); // 배열에서 false, null, undefined 제거
 
   const handleRowSelection = (id) => {
     setCheckedRows((prevCheckedRows) =>
@@ -160,16 +191,6 @@ function ClassInfo() {
   return (
     <div id="page_content">
       <AppBar />
-      {alert ? (
-        <Stack
-          sx={{ width: "100%", position: "fixed", top: "65px" }}
-          spacing={2}
-        >
-          <Alert severity="success">This is a success Alert.</Alert>
-        </Stack>
-      ) : (
-        <div></div>
-      )}
 
       <div id={styles.table_container}>
         <Box
@@ -216,7 +237,7 @@ function ClassInfo() {
           columns={courseColumns}
           rows={courseRows}
           onRowSelection={handleRowSelection}
-          onRowDoubleClick={(params) => handleModalOpen(params.row)}
+          isReadOnly={true}
           getRowId={(row) => row.id}
           id={"table_body"}
         />
@@ -245,6 +266,7 @@ function ClassInfo() {
           onRowSelection={handleRowSelection}
           onRowDoubleClick={(params) => handleModalOpen(params.row)}
           getRowId={(row) => row.sn}
+          isStudentTable={true}
           id={"table_body"}
         />
       </div>
@@ -254,7 +276,7 @@ function ClassInfo() {
         handleClose={handleModalClose}
         title={"Detail Information"}
         rowData={modalRowData}
-        rowsHeader={columns}
+        rowsHeader={fullColumns}
       />
     </div>
   );

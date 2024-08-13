@@ -13,6 +13,7 @@ const Table = memo(
     id,
     isStudentTable,
     checkedRows,
+    isReadOnly,
   }) => {
     const handleRowClick = (params) => {
       console.log("table:", checkedRows);
@@ -61,7 +62,7 @@ const Table = memo(
               ? (newSelection) => onRowSelection(newSelection)
               : undefined
           }
-          checkboxSelection={!(isRadioButton || isStudentTable)} // 라디오 버튼 모드에 따라 체크박스 선택 여부 조절
+          checkboxSelection={!(isRadioButton || isStudentTable || isReadOnly)} // 라디오 버튼 모드에 따라 체크박스 선택 여부 조절
           initialState={{
             pagination: {
               paginationModel: { page: 0, pageSize: 10 },
