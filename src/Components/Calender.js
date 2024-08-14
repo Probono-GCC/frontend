@@ -41,7 +41,7 @@ function Calender() {
           eventTextColor={"#fff"}
           eventColor={"#0343CB"}
           height={"auto"}
-          width={"100%"}
+          width={"80%"}
           // Toolbar
           headerToolbar={{
             left: "prev,next", // Display today, prev, and next buttons

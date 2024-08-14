@@ -2,14 +2,14 @@ import React, { useState } from "react";
 
 import AppBar from "../Components/AppBar";
 import Table from "../Components/ViewTable";
-import Button from "../Components/Button";
+import CustomButton from "../Components/Button";
 import styles from "../Styles/css/Table.module.css";
-import Modal from "../Components/ChangePasswordModal";
+import Modal from "../Components/ChangeGradeModal";
 
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 import Radio from "@mui/material/Radio";
-import { Typography, Box } from "@mui/material";
+import { Typography, Box, Grid } from "@mui/material";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
@@ -30,12 +30,12 @@ const rows = [
   createData(9, "Female", "Harvey", "19.07.04", "b0008", "UnderKG"),
 ];
 
-function ChangePassword() {
+function ChangeGrade() {
   // const [selectedRows, setSelectedRows] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalRowData, setModalRowData] = useState("default row data");
   const [alert, setAlert] = useState(false);
-  const [checkedRowId, setCheckedRowId] = useState(null);
+  const [checkedRowId, setCheckedRowId] = useState(null); // 단일 값으로 변경
   const [checkedRowData, setCheckedRowData] = useState(null);
   const { isSmallScreen } = useMediaQueryContext();
 
@@ -64,28 +64,35 @@ function ChangePassword() {
         { field: "id", headerName: "ID", flex: 0.2 },
         { field: "grade", headerName: "Grade", flex: 0.3 },
       ];
-  const handleRowSelection = (id) => {
+  //table의 선택된 row id를 checkedRowId 변수에 저장
+  const handleSelectedRowId = (id) => {
+    console.log("id", id);
     setCheckedRowId(id);
   };
+
+  //table의 선택된 row data를 checkedRowData 변수에 저장
+  const handleSelectedRowData = (params) => {
+    console.log(params, "data");
+    setCheckedRowData(params);
+  };
+  //change grade 모달 open함수 호출
   const handleModalOpen = () => {
+    setModalRowData(checkedRowId);
     setModalOpen(true);
   };
 
+  //모달 닫기 함수
   const handleModalClose = () => {
     setModalOpen(false);
+    setModalRowData(null);
   };
-
   const updatedColumns = [
     {
       field: "check",
       headerName: "",
       flex: 0.05,
       renderCell: (params) => (
-        <Radio
-          {...label}
-          checked={checkedRowId === params.row.id}
-          onChange={() => handleRowSelection(params.row.id)}
-        />
+        <Radio {...label} checked={checkedRowId === params.row.id} />
       ),
     },
     ...columns,
@@ -117,32 +124,54 @@ function ChangePassword() {
               marginLeft: isSmallScreen ? "10px" : "",
             }}
           >
-            Change Password
+            Change Grade
           </Typography>
         </Box>
+
         <Table
           columns={updatedColumns}
           rows={rows}
-          onRowSelection={handleRowSelection}
+          onRowSelection={handleSelectedRowId} //라디오 버튼과 같은 선택 상자가 클릭 될 때의 event
+          // onRowSelectionData={handleSelectedRowData}
           id={isSmallScreen ? "" : "table_body"}
-          onRowClick={(params) => handleRowSelection(params.row.id)}
-          onRowDoubleClick={(params) => handleModalOpen(params.row)}
           getRowId={(row) => row.sn}
           isRadioButton={true}
           checkedRows={(params) => setCheckedRowData(params)}
         />
+        <Grid container spacing={2} id={styles.table_body}>
+          <Grid
+            xs={6}
+            marginTop="16px"
+            sx={{ display: "flex", justifyContent: "flex-start" }}
+          >
+            <CustomButton
+              title={"Change All Grade"}
+              variant="contained"
+              color="primary"
+              size={"bg"}
+            />
+          </Grid>
+          <Grid
+            item
+            xs={6}
+            sx={{ display: "flex", justifyContent: "flex-end" }}
+          >
+            <CustomButton title={"Delete"} variant="contained" />
+          </Grid>
+        </Grid>
+        <CustomButton
+          title={"Change Grade"}
+          onClick={handleModalOpen}
+          disabled={checkedRowId == null}
+          id={"view_btn"}
+          size={"bg"}
+        />
       </div>
-      <Button
-        title={"Change"}
-        onClick={handleModalOpen}
-        disabled={checkedRowId == null}
-        id={"view_btn"}
-        size={"bg"}
-      />
+
       <Modal
         open={modalOpen}
         handleClose={handleModalClose}
-        title={"Change Password"}
+        title={"Change Grade"}
         rowData={checkedRowData}
         rowsHeader={columns}
       />
@@ -150,4 +179,4 @@ function ChangePassword() {
   );
 }
 
-export default ChangePassword;
+export default ChangeGrade;

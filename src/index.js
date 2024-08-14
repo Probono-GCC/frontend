@@ -29,7 +29,7 @@ import AssignHomeroom from "./Pages/AssignHomeroom.js";
 import ChangePassword from "./Pages/ChangePassword.js";
 import CommonCourseManagement from "./Pages/CommonCourseManagement.js";
 import ElectiveCourseManagement from "./Pages/ElectiveCourseManagement.js";
-
+import ChangeGrade from "./Pages/ChangeGrade.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -48,6 +48,7 @@ root.render(
           <Route path="/notice-board" element={<NoticeBoard />} />
           <Route path="/create-account" element={<CreateAccount />} />
           <Route path="/change-password" element={<ChangePassword />} />
+          <Route path="/change-grade" element={<ChangeGrade />} />
           <Route path="/my-profile" element={<MyProfile />} />
           <Route path="/post" element={<Post />} />
           <Route path="/notice-new-post-form" element={<NoticeNewPostForm />} />

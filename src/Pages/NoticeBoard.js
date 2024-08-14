@@ -135,12 +135,13 @@ function NoticeBoard() {
       <AppBar />
       <Box>
         <Typography
-          variant="h3"
+          variant={isSmallScreen ? "h6" : "h3"}
           sx={{
-            textAlign: "center",
+            textAlign: isSmallScreen ? "left" : "center",
             fontFamily: "Copperplate",
-            marginTop: "10px",
-            marginBottom: "30px",
+            marginTop: isSmallScreen ? "5px" : "10px",
+            marginBottom: isSmallScreen ? "10px" : "30px",
+            marginLeft: isSmallScreen ? "10px" : "",
           }}
         >
           Notice Board
@@ -161,7 +162,7 @@ function NoticeBoard() {
                 sx={{
                   textAlign: "left",
                   fontWeight: "bold",
-                  width: "15%",
+                  width: isSmallScreen ? "15%" : "4%",
                   padding: isSmallScreen ? "16px" : "16px 16px 16px 30px",
                 }}
               >

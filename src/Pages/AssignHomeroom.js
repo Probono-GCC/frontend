@@ -118,18 +118,18 @@ function AssignHomeroom() {
   ];
 
   const updatedStudentColumns = [
-    {
-      field: "check",
-      headerName: "",
-      flex: 0.05,
-      renderCell: (params) => (
-        <Checkbox
-          {...label}
-          checked={checkedRows.includes(params.row.id)}
-          onChange={() => handleRowSelection(params.row.id)}
-        />
-      ),
-    },
+    // {
+    //   field: "check",
+    //   headerName: "",
+    //   flex: 0.05,
+    //   renderCell: (params) => (
+    //     <Checkbox
+    //       {...label}
+    //       checked={checkedRows.includes(params.row.id)}
+    //       onChange={() => handleRowSelection(params.row.id)}
+    //     />
+    //   ),
+    // },
     ...studentColumns,
   ];
 

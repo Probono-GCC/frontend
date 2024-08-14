@@ -2,14 +2,13 @@ import React from "react";
 import { styled, css } from "@mui/system";
 import { Modal as BaseModal, Backdrop } from "@mui/material";
 import { grey } from "../Styles/Color"; // 색상 팔레트 임포트
+import { useMediaQueryContext } from "../store/MediaQueryContext";
 
 import DetailTable from "./DetailTable";
 import ProfileImg from "../Assets/img/profile_temp.png";
 
 function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
-  // const [open, setOpen] = useState(false);
-  // const handleOpen = () => setOpen(true);
-  // const handleClose = () => setOpen(false);
+  const { isSmallScreen } = useMediaQueryContext();
 
   return (
     <div>
@@ -23,7 +22,6 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
       >
         <ModalContent
           sx={{
-            width: 400,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -33,7 +31,10 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
             {title}
           </h2>
           <img src={ProfileImg} width="120px" height="120px" />
-          <DetailTable data={rowData} rowsHeader={rowsHeader} />
+          <TableContainer sx={{ width: isSmallScreen ? "280px" : "400" }}>
+            <DetailTable data={rowData} rowsHeader={rowsHeader} />
+          </TableContainer>
+
           {/* <p id="keep-mounted-modal-description" className="modal-description">
             {JSON.stringify(rowData)}
           </p> */}
@@ -43,6 +44,13 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
   );
 }
 
+const TableContainer = styled("div")(
+  ({ theme }) => css`
+    height: auto;
+    overflow-y: scroll;
+    padding: 24px;
+  `
+);
 const Modal = styled(BaseModal)(`
   position: fixed;
   z-index: 1300;

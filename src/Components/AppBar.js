@@ -95,7 +95,6 @@ function AppBar() {
     navigate("/assign-homeroom");
   };
 
-
   const goChangePassword = () => {
     navigate("/change-password");
   };
@@ -108,6 +107,9 @@ function AppBar() {
     navigate("/elective-course-management");
   };
 
+  const goChangeGrade = () => {
+    navigate("/change-grade");
+  };
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -178,14 +180,14 @@ function AppBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
+      {/* <MenuItem>
         <IconButton size="large" aria-label="show 4 new mails" color="inherit">
           <Badge badgeContent={4} color="error">
             <MailIcon />
           </Badge>
         </IconButton>
         <p>Messages</p>
-      </MenuItem>
+      </MenuItem> */}
       <MenuItem>
         <IconButton
           size="large"
@@ -327,7 +329,7 @@ function AppBar() {
             <Typography variant="h6" noWrap component="div"></Typography>
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: { xs: "none", md: "flex" } }}>
-              <IconButton
+              {/* <IconButton
                 size="large"
                 aria-label="show 4 new mails"
                 color="inherit"
@@ -335,7 +337,7 @@ function AppBar() {
                 <Badge badgeContent={4} color="error">
                   <MailIcon />
                 </Badge>
-              </IconButton>
+              </IconButton> */}
               <IconButton
                 size="large"
                 aria-label="show 17 new notifications"
@@ -579,7 +581,11 @@ function AppBar() {
                     />
                   </ListItemButton>
                 </ListItem>
-                <ListItem key={"Change Grade"} disablePadding>
+                <ListItem
+                  onClick={goChangeGrade}
+                  key={"Change Grade"}
+                  disablePadding
+                >
                   <ListItemButton sx={{ pl: 10 }}>
                     <ListItemText
                       primary={"Change Grade"}

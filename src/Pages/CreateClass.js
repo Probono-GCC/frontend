@@ -74,18 +74,18 @@ function CreateClass() {
   };
 
   const columns = [
-    {
-      field: "check",
-      headerName: "",
-      flex: 0.05,
-      renderCell: (params) => (
-        <Checkbox
-          {...label}
-          checked={checkedRows.includes(params.row.id)}
-          onChange={() => handleRowSelection(params.row.id)}
-        />
-      ),
-    },
+    // {
+    //   field: "check",
+    //   headerName: "",
+    //   flex: 0.05,
+    //   renderCell: (params) => (
+    //     <Checkbox
+    //       {...label}
+    //       checked={checkedRows.includes(params.row.id)}
+    //       onChange={() => handleRowSelection(params.row.id)}
+    //     />
+    //   ),
+    // },
     { field: "batch", headerName: "Batch", flex: 0.33 },
     { field: "grade", headerName: "Grade", flex: 0.33 },
     { field: "section", headerName: "Section", flex: 0.33 },
