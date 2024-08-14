@@ -8,8 +8,8 @@ import Select from "@mui/material/Select";
 
 import LoginContainer from "../Components/LoginContainer";
 import ForgotPassword from "../Components/ForgotPassword";
-import BackImage1 from "../Assets/img/BackgroundSample/sample_images_00.png";
-import BackImage2 from "../Assets/img/BackgroundSample/sample_images_01.png";
+import BackImage1 from "../Assets/img/BackgroundSample/CLA_back1.png";
+import BackImage2 from "../Assets/img/BackgroundSample/CLA_back2.png";
 import BackImage3 from "../Assets/img/BackgroundSample/sample_images_02.png";
 import BackImage4 from "../Assets/img/BackgroundSample/sample_images_03.png";
 import BackImage5 from "../Assets/img/BackgroundSample/sample_images_04.png";
@@ -35,9 +35,9 @@ function Login({ type }) {
   const BackgroundSample = [
     { img: BackImage1, key: 1 },
     { img: BackImage2, key: 2 },
-    { img: BackImage3, key: 3 },
-    { img: BackImage4, key: 4 },
-    { img: BackImage5, key: 5 },
+    // { img: BackImage3, key: 3 },
+    // { img: BackImage4, key: 4 },
+    // { img: BackImage5, key: 5 },
   ];
 
   const login = () => {
