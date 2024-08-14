@@ -91,8 +91,22 @@ function MyProfile() {
           My Profile
         </Typography>
       </Box>
-      <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
-        <Grid container spacing={3} sx={{ maxWidth: 600 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          marginTop: 2,
+          width: "100%",
+        }}
+      >
+        <Grid
+          container
+          spacing={3}
+          sx={{
+            width: "90%",
+            maxWidth: { xs: "90%", sm: 600 },
+          }}
+        >
           <Grid item xs={12} sx={{ textAlign: "center" }}>
             <Avatar
               alt="Profile Image"

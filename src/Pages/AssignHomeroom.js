@@ -117,22 +117,6 @@ function AssignHomeroom() {
     ...classColumns,
   ];
 
-  const updatedStudentColumns = [
-    // {
-    //   field: "check",
-    //   headerName: "",
-    //   flex: 0.05,
-    //   renderCell: (params) => (
-    //     <Checkbox
-    //       {...label}
-    //       checked={checkedRows.includes(params.row.id)}
-    //       onChange={() => handleRowSelection(params.row.id)}
-    //     />
-    //   ),
-    // },
-    ...studentColumns,
-  ];
-
   const handleTeacherClick = (teacher) => {
     setSelectedTeachers((prev) => {
       if (prev.includes(teacher)) {
@@ -219,7 +203,7 @@ function AssignHomeroom() {
               <Grid item xs={5}>
                 <Table
                   sx={{ width: "100%" }} // 왼쪽 테이블의 너비 설정
-                  columns={updatedStudentColumns}
+                  columns={studentColumns}
                   rows={leftStudents}
                   onRowSelection={(selection) =>
                     setSelectedLeftStudents(selection)
@@ -255,7 +239,7 @@ function AssignHomeroom() {
               <Grid item xs={5}>
                 <Table
                   sx={{ width: "100%" }} // 오른쪽 테이블의 너비 설정
-                  columns={updatedStudentColumns}
+                  columns={studentColumns}
                   rows={rightStudents}
                   onRowSelection={(selection) =>
                     setSelectedRightStudents(selection)

@@ -18,6 +18,7 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import { useMediaQueryContext } from "../store/MediaQueryContext";
 
 function createData(title, date, author, viewCount) {
   return { title, date, author, viewCount };
@@ -35,6 +36,7 @@ function SubjectBoard() {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const itemsPerPage = 10;
+  const { isSmallScreen } = useMediaQueryContext();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -87,13 +89,13 @@ function SubjectBoard() {
             marginBottom: "30px",
           }}
         >
-          Class Board
+          Subject Board
         </Typography>
       </Box>
       <TableContainer
         component={Paper}
         sx={{
-          width: "80%",
+          width: isSmallScreen ? "100%" : "80%", // 반응형 설정
           margin: "0 auto",
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
         }}
@@ -102,26 +104,45 @@ function SubjectBoard() {
           <TableHead sx={{ backgroundColor: "#d8edff" }}>
             <TableRow>
               <TableCell
-                sx={{ textAlign: "left", fontWeight: "bold", width: "5%" }}
+                sx={{
+                  textAlign: "left",
+                  fontWeight: "bold",
+                  width: "15%",
+                  padding: isSmallScreen ? "16px" : "16px 16px 16px 30px",
+                }}
               >
                 No
               </TableCell>
               <TableCell
-                sx={{ textAlign: "left", fontWeight: "bold", width: "50%" }}
+                sx={{
+                  textAlign: "left",
+                  fontWeight: "bold",
+                  width: isSmallScreen ? "50%" : "50%",
+                }}
               >
                 Title
               </TableCell>
-
               <TableCell
-                sx={{ textAlign: "left", fontWeight: "bold", width: "25%" }}
+                sx={{
+                  textAlign: "left",
+                  fontWeight: "bold",
+                  width: isSmallScreen ? "35%" : "25%",
+                }}
               >
                 Author
               </TableCell>
-              <TableCell
-                sx={{ textAlign: "left", fontWeight: "bold", width: "20%" }}
-              >
-                View Count
-              </TableCell>
+              {!isSmallScreen && (
+                <TableCell
+                  sx={{
+                    textAlign: "right",
+                    fontWeight: "bold",
+                    width: "20%",
+                    padding: "16px 30px 16px 16px",
+                  }}
+                >
+                  View Count
+                </TableCell>
+              )}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -137,7 +158,7 @@ function SubjectBoard() {
               >
                 <TableCell
                   sx={{
-                    padding: "16px",
+                    padding: isSmallScreen ? "16px" : "16px 16px 16px 30px",
                     textAlign: "left",
                     borderBottom: "1px solid #e0e0e0",
                     overflow: "hidden",
@@ -177,18 +198,20 @@ function SubjectBoard() {
                 >
                   {row.author}
                 </TableCell>
-                <TableCell
-                  sx={{
-                    padding: "16px",
-                    textAlign: "left",
-                    borderBottom: "1px solid #e0e0e0",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {row.viewCount}
-                </TableCell>
+                {!isSmallScreen && (
+                  <TableCell
+                    sx={{
+                      padding: "16px 30px 16px 16px",
+                      textAlign: "right",
+                      borderBottom: "1px solid #e0e0e0",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {row.viewCount}
+                  </TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>

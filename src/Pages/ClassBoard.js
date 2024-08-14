@@ -18,6 +18,7 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import { useMediaQueryContext } from "../store/MediaQueryContext";
 
 function createData(title, date, type, author, viewCount) {
   return { title, date, type, author, viewCount };
@@ -35,6 +36,7 @@ function ClassBoard() {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const itemsPerPage = 10;
+  const { isSmallScreen } = useMediaQueryContext();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -93,7 +95,7 @@ function ClassBoard() {
       <TableContainer
         component={Paper}
         sx={{
-          width: "80%",
+          width: isSmallScreen ? "100%" : "80%", // 반응형 설정
           margin: "0 auto",
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
         }}
@@ -102,30 +104,60 @@ function ClassBoard() {
           <TableHead sx={{ backgroundColor: "#d8edff" }}>
             <TableRow>
               <TableCell
-                sx={{ textAlign: "left", fontWeight: "bold", width: "5%" }}
+                sx={{
+                  textAlign: "left",
+                  fontWeight: "bold",
+                  width: "15%",
+                  padding: isSmallScreen ? "16px" : "16px 16px 16px 30px",
+                }}
               >
                 No
               </TableCell>
               <TableCell
-                sx={{ textAlign: "left", fontWeight: "bold", width: "45%" }}
+                sx={{
+                  textAlign: "left",
+                  fontWeight: "bold",
+                  width: isSmallScreen ? "65%" : "40%",
+                }}
               >
                 Title
               </TableCell>
               <TableCell
-                sx={{ textAlign: "left", fontWeight: "bold", width: "15%" }}
+                sx={{
+                  textAlign: "left",
+                  fontWeight: "bold",
+                  width: "20%",
+                  padding: "5px",
+                }}
               >
                 Type
               </TableCell>
-              <TableCell
-                sx={{ textAlign: "left", fontWeight: "bold", width: "20%" }}
-              >
-                Author
-              </TableCell>
-              <TableCell
-                sx={{ textAlign: "left", fontWeight: "bold", width: "15%" }}
-              >
-                View Count
-              </TableCell>
+              {isSmallScreen ? (
+                <div></div>
+              ) : (
+                <>
+                  <TableCell
+                    sx={{
+                      textAlign: "left",
+                      fontWeight: "bold",
+                      width: "20%",
+                      padding: "16px 30px 16px 16px",
+                    }}
+                  >
+                    Author
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      textAlign: "right",
+                      fontWeight: "bold",
+                      width: "12%",
+                      padding: "16px 30px 16px 16px",
+                    }}
+                  >
+                    View Count
+                  </TableCell>
+                </>
+              )}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -141,7 +173,7 @@ function ClassBoard() {
               >
                 <TableCell
                   sx={{
-                    padding: "16px",
+                    padding: isSmallScreen ? "16px" : "16px 16px 16px 30px",
                     textAlign: "left",
                     borderBottom: "1px solid #e0e0e0",
                     overflow: "hidden",
@@ -181,30 +213,36 @@ function ClassBoard() {
                 >
                   {row.type}
                 </TableCell>
-                <TableCell
-                  sx={{
-                    padding: "16px",
-                    textAlign: "left",
-                    borderBottom: "1px solid #e0e0e0",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {row.author}
-                </TableCell>
-                <TableCell
-                  sx={{
-                    padding: "16px",
-                    textAlign: "left",
-                    borderBottom: "1px solid #e0e0e0",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {row.viewCount}
-                </TableCell>
+                {isSmallScreen ? (
+                  <div></div>
+                ) : (
+                  <>
+                    <TableCell
+                      sx={{
+                        padding: "16px 30px 16px 16px",
+                        textAlign: "left",
+                        borderBottom: "1px solid #e0e0e0",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {row.author}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        padding: "16px 30px 16px 16px",
+                        textAlign: "right",
+                        borderBottom: "1px solid #e0e0e0",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {row.viewCount}
+                    </TableCell>
+                  </>
+                )}
               </TableRow>
             ))}
           </TableBody>
