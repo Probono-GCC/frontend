@@ -194,6 +194,7 @@ function SubjectInfo() {
             justifyContent: "left",
             marginTop: 10,
             marginBottom: 3,
+            paddingLeft: "5%",
           }}
         >
           <Typography
@@ -207,7 +208,7 @@ function SubjectInfo() {
         <TableContainer
           component={Paper}
           sx={{
-            width: isSmallScreen ? "100%" : "80%",
+            width: isSmallScreen ? "100%" : "90%",
             margin: "0 auto",
             boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
           }}
