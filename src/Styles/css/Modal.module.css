@@ -19,6 +19,7 @@
   max-width: 500px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   text-align: center;
+  margin-top: 45px;
 }
 
 .modal_btn {
@@ -63,4 +64,8 @@
 
 .demoItem {
   margin-bottom: 50px;
+}
+
+#table_cont {
+  height: auto;
 }
