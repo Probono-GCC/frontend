@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import AppBar from "../Components/AppBar";
-import Table from "../Components/Table";
+import Table from "../Components/ViewTable";
 import Button from "../Components/Button";
 import styles from "../Styles/css/Table.module.css";
 import Modal from "../Components/ChangePasswordModal";
@@ -35,8 +35,8 @@ function ChangePassword() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalRowData, setModalRowData] = useState("default row data");
   const [alert, setAlert] = useState(false);
-  const [checkedRow, setCheckedRow] = useState(null); // 단일 값으로 변경
-
+  const [checkedRowId, setCheckedRowId] = useState(null);
+  const [checkedRowData, setCheckedRowData] = useState(null);
   const { isSmallScreen } = useMediaQueryContext();
 
   const columns = isSmallScreen
@@ -65,20 +65,16 @@ function ChangePassword() {
         { field: "grade", headerName: "Grade", flex: 0.3 },
       ];
   const handleRowSelection = (id) => {
-    setCheckedRow(id);
+    setCheckedRowId(id);
   };
-  const handleModalOpen = (row) => {
-    setModalRowData(row);
+  const handleModalOpen = () => {
     setModalOpen(true);
   };
 
   const handleModalClose = () => {
     setModalOpen(false);
-    setModalRowData(null);
   };
-  const goChangePasswordView = (rowData) => {
-    handleModalOpen(rowData);
-  };
+
   const updatedColumns = [
     {
       field: "check",
@@ -87,7 +83,7 @@ function ChangePassword() {
       renderCell: (params) => (
         <Radio
           {...label}
-          checked={checkedRow === params.row.id}
+          checked={checkedRowId === params.row.id}
           onChange={() => handleRowSelection(params.row.id)}
         />
       ),
@@ -110,20 +106,18 @@ function ChangePassword() {
       )}
 
       <div id={styles.table_container}>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: 0,
-            marginBottom: 3,
-          }}
-        >
+        <Box>
           <Typography
-            variant="h3"
-            component="div"
-            sx={{ fontFamily: "Copperplate" }}
+            variant={isSmallScreen ? "h6" : "h3"}
+            sx={{
+              textAlign: isSmallScreen ? "left" : "center",
+              fontFamily: "Copperplate",
+              marginTop: isSmallScreen ? "" : "10px",
+              marginBottom: isSmallScreen ? "10px" : "30px",
+              marginLeft: isSmallScreen ? "10px" : "",
+            }}
           >
-            Student Board
+            Change Password
           </Typography>
         </Box>
         <Table
@@ -135,21 +129,21 @@ function ChangePassword() {
           onRowDoubleClick={(params) => handleModalOpen(params.row)}
           getRowId={(row) => row.sn}
           isRadioButton={true}
+          checkedRows={(params) => setCheckedRowData(params)}
         />
       </div>
       <Button
         title={"Change"}
-        onClick={goChangePasswordView}
-        disabled={checkedRow == null}
+        onClick={handleModalOpen}
+        disabled={checkedRowId == null}
         id={"view_btn"}
         size={"bg"}
       />
-
       <Modal
         open={modalOpen}
         handleClose={handleModalClose}
-        title={"Detail Information"}
-        rowData={modalRowData}
+        title={"Change Password"}
+        rowData={checkedRowData}
         rowsHeader={columns}
       />
     </div>

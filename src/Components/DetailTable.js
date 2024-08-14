@@ -6,6 +6,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import { useMediaQueryContext } from "../store/MediaQueryContext";
 
 const rowsHeader = [
   { field: "sn", name: "SN", type: "number" },
@@ -17,13 +18,18 @@ const rowsHeader = [
 ];
 
 export default function DetailTable({ data, rowsHeader }) {
+  const { isSmallScreen } = useMediaQueryContext();
+
   useEffect(() => {
     console.log(data);
   }, [data]);
 
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+    <TableContainer component={Paper} elevation={0}>
+      <Table
+        sx={{ minWidth: isSmallScreen ? "250px" : 400, minHeight: 240 }}
+        aria-label="simple table"
+      >
         <TableBody>
           {rowsHeader.map((rowHeader, index) => (
             <TableRow key={index}>
@@ -35,7 +41,7 @@ export default function DetailTable({ data, rowsHeader }) {
                   fontWeight: "bold",
                 }}
                 align="left"
-                width="100px"
+                width="115px"
               >
                 {rowHeader.headerName}
               </TableCell>
