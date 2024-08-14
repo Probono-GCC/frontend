@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import AppBar from "../Components/AppBar";
 import Table from "../Components/ViewTable";
@@ -11,6 +11,7 @@ import Checkbox from "@mui/material/Checkbox";
 import Modal from "../Components/Modal";
 import { Typography, Box } from "@mui/material";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
+import { getStudents } from "../Apis/Api/User";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
@@ -43,6 +44,7 @@ function StudentView() {
   const [modalRowData, setModalRowData] = useState("default row data");
   const [alert, setAlert] = useState(false);
   const [checkedRows, setCheckedRows] = useState([]);
+  const [rows, setRows] = useState([]);
   const { isSmallScreen } = useMediaQueryContext();
 
   //student view default table column
@@ -130,6 +132,26 @@ function StudentView() {
     console.log("Deleting rows:", checkedRows);
     setCheckedRows([]);
   };
+
+  useEffect(() => {
+    getStudents().then((result) => {
+      console.log(result);
+
+      const tempRow = result.map((item) =>
+        createData(
+          item.serialNumber,
+          item.sex,
+          item.name,
+          item.birth,
+          item.loginId,
+          item.grade,
+          item.phoneNum
+        )
+      );
+      setRows(tempRow);
+    });
+  }, []);
+  // [] 안에 rows를 넣으면 이 값이 바뀔때마다 useEffect가 실행됨!
 
   return (
     <div id="page_content">

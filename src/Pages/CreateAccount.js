@@ -13,6 +13,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { postStudent } from "../Apis/Api/User";
 
 function CreateAccount() {
   const [tabValue, setTabValue] = useState(0); // 0: Student, 1: Teacher
@@ -69,7 +70,7 @@ function CreateAccount() {
   };
 
   const grades = [
-    { value: "PlayGroup", label: "PlayGroup" },
+    { value: "PLAYGROUP", label: "PlayGroup" },
     { value: "Nursery", label: "Nursery" },
     { value: "LowerKG", label: "LowerKG" },
     { value: "UpperKG", label: "UpperKG" },
@@ -110,6 +111,24 @@ function CreateAccount() {
       );
     } else {
       alert(`[ID] ${id}\n[Name] ${name}\n\nTeacher Register Success!`);
+    }
+
+    // backend 전송
+    const body = {
+      loginId: id,
+      loginPw: password,
+      name: name,
+      serialNumber: sn,
+      grade: grade,
+    };
+
+    console.log(body);
+
+    if (tabValue === 0) {
+      postStudent(body).then((result) => {
+        console.log(result);
+        alert("가입 완료");
+      });
     }
 
     setId("");
