@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import AppBar from "../Components/AppBar";
-import Table from "../Components/Table";
+import Table from "../Components/ViewTable";
 import Button from "../Components/Button";
 import styles from "../Styles/css/Table.module.css";
 import Alert from "@mui/material/Alert";
@@ -14,20 +14,28 @@ import { useMediaQueryContext } from "../store/MediaQueryContext";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
-function createData(sn, gender, name, birth, id, grade) {
-  return { sn, gender, name, birth, id, grade };
+function createData(sn, gender, name, birth, id, grade, phone_num) {
+  return { sn, gender, name, birth, id, grade, phone_num };
 }
 
 const rows = [
-  createData(1, "Male", "Jon", "20.02.24", "a0000", "PlayGroup"),
-  createData(2, "Female", "Cersei", "20.01.04", "a0001", "PlayGroup"),
-  createData(3, "Male", "Jaime", "20.12.24", "a0002", "PlayGroup"),
-  createData(4, "Male", "Arya", "20.05.27", "a0003", "PlayGroup"),
-  createData(5, "Male", "Daenerys", "20.08.14", "a0004", "PlayGroup"),
-  createData(6, "Male", "nell", "20.12.24", "a0005", "PlayGroup"),
-  createData(7, "Female", "Ferrara", "19.07.05", "b0006", "UnderKG"),
-  createData(8, "Female", "Rossini", "19.07.25", "b0007", "UnderKG"),
-  createData(9, "Female", "Harvey", "19.07.04", "b0008", "UnderKG"),
+  createData(
+    1,
+    "Male",
+    "Jon",
+    "20.02.24",
+    "a0000",
+    "PlayGroup",
+    "0112331541354132123asdf0"
+  ),
+  createData(2, "Female", "Cersei", "20.01.04", "a0001", "PlayGroup", "101"),
+  createData(3, "Male", "Jaime", "20.12.24", "a0002", "PlayGroup", "010"),
+  createData(4, "Male", "Arya", "20.05.27", "a0003", "PlayGroup", "010"),
+  createData(5, "Male", "Daenerys", "20.08.14", "a0004", "PlayGroup", "010"),
+  createData(6, "Male", "nell", "20.12.24", "a0005", "PlayGroup", "010"),
+  createData(7, "Female", "Ferrara", "19.07.05", "b0006", "UnderKG", "010"),
+  createData(8, "Female", "Rossini", "19.07.25", "b0007", "UnderKG", "010"),
+  createData(9, "Female", "Harvey", "19.07.04", "b0008", "UnderKG", "010"),
 ];
 
 function StudentView() {
@@ -37,7 +45,8 @@ function StudentView() {
   const [checkedRows, setCheckedRows] = useState([]);
   const { isSmallScreen } = useMediaQueryContext();
 
-  const columns = isSmallScreen
+  //student view default table column
+  const basic_columns = isSmallScreen
     ? [
         {
           field: "sn",
@@ -75,7 +84,22 @@ function StudentView() {
         />
       ),
     },
-    ...columns,
+    ...basic_columns,
+  ];
+  //student detail modal에 들어가는 col
+  const detail_columns = [
+    {
+      field: "sn",
+      headerName: "SN",
+      flex: 0.05,
+      cellClassName: styles.centerAlign,
+    },
+    { field: "name", headerName: "Name", flex: 0.2 },
+    { field: "gender", headerName: "Gender", flex: 0.1 },
+    { field: "birth", headerName: "Birth", flex: 0.1 },
+    { field: "id", headerName: "ID", flex: 0.2 },
+    { field: "grade", headerName: "Grade", flex: 0.3 },
+    { field: "phone_num", headerName: "Phone" },
   ];
   const handleRowSelection = (id) => {
     setCheckedRows((prevCheckedRows) => {
@@ -122,24 +146,22 @@ function StudentView() {
       )}
 
       <div id={styles.table_container}>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: 0,
-            marginBottom: 3,
-          }}
-        >
+        <Box>
           <Typography
-            variant="h3"
-            component="div"
-            sx={{ fontFamily: "Copperplate" }}
+            variant={isSmallScreen ? "h5" : "h3"}
+            sx={{
+              textAlign: isSmallScreen ? "left" : "center",
+              fontFamily: "Copperplate",
+              marginTop: isSmallScreen ? "5px" : "10px",
+              marginBottom: isSmallScreen ? "10px" : "30px",
+              marginLeft: isSmallScreen ? "10px" : "",
+            }}
           >
             Student Board
           </Typography>
         </Box>
         <Table
-          columns={updatedColumns}
+          columns={isSmallScreen ? basic_columns : updatedColumns}
           rows={rows}
           onRowSelection={handleRowSelection}
           onRowDoubleClick={handleRowDoubleClick}
@@ -150,20 +172,24 @@ function StudentView() {
           checkedRows={checkedRows} // 체크된 행 상태 전달
         />
       </div>
-      <Button
-        title={"Delete"}
-        disabled={checkedRows.length === 0}
-        onClick={deleteRow}
-        id={"view_btn"}
-        size={"bg"}
-      />
+      {isSmallScreen ? (
+        <div>&nbsp;</div>
+      ) : (
+        <Button
+          title={"Delete"}
+          disabled={checkedRows.length === 0}
+          onClick={deleteRow}
+          id={"view_btn"}
+          size={"bg"}
+        />
+      )}
 
       <Modal
         open={modalOpen}
         handleClose={handleModalClose}
         title={"Detail Information"}
         rowData={modalRowData}
-        rowsHeader={columns}
+        rowsHeader={detail_columns}
       />
     </div>
   );

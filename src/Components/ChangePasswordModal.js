@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { styled, css } from "@mui/system";
+import { styled, css, color } from "@mui/system";
 import { grey } from "../Styles/Color"; // 색상 팔레트 임포트
 
 import {
@@ -83,6 +83,21 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
           </h2>
           <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
             <Grid container spacing={2} sx={{ maxWidth: 600 }}>
+              <Grid item xs={12} lg={12}>
+                <TextField
+                  disabled
+                  fullWidth
+                  label="name"
+                  variant="outlined"
+                  type="text"
+                  value={rowData ? rowData.name : ""}
+                  InputProps={{
+                    style: {
+                      fontWeight: "bold",
+                    },
+                  }}
+                />
+              </Grid>
               <Grid item xs={12} lg={12}>
                 <TextField
                   fullWidth
@@ -200,6 +215,8 @@ const Modal = styled(BaseModal)(`
   top: 0;
   left: 0;
   display: flex;
+  width: 90vw;
+  margin: auto;
   align-items: center;
   justify-content: center;
   &.base-Modal-hidden {

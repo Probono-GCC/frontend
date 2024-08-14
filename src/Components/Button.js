@@ -14,7 +14,10 @@ function CustomButton({ title, disabled, onClick, id, size }) {
         variant="contained"
         disabled={disabled}
         onClick={onClick}
-        sx={{ backgroundColor: "#889fc8", color: "#F2F2F2" }}
+        sx={{
+          backgroundColor: "#889fc8",
+          color: "#F2F2F2",
+        }}
       >
         {title}
       </Button>
