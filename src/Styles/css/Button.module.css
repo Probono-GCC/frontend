@@ -9,10 +9,17 @@
   height: 5vh;
   max-height: 50px;
 }
-
+/* 오른쪽 정렬 버튼(가장 많이 쓰임) */
 #view_btn {
   position: absolute;
   right: 5vw;
+  margin-top: 3vh;
+  margin-bottom: 3vh;
+}
+
+#left_btn {
+  position: absolute;
+  left: 5vw;
   margin-top: 3vh;
   margin-bottom: 3vh;
 }

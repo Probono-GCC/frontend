@@ -104,7 +104,6 @@ function ChangePassword() {
       ) : (
         <div></div>
       )}
-
       <div id={styles.table_container}>
         <Box>
           <Typography
@@ -131,14 +130,15 @@ function ChangePassword() {
           isRadioButton={true}
           checkedRows={(params) => setCheckedRowData(params)}
         />
+        <Button
+          title={"Change"}
+          onClick={handleModalOpen}
+          disabled={checkedRowId == null}
+          id={"view_btn"}
+          size={"bg"}
+        />
       </div>
-      <Button
-        title={"Change"}
-        onClick={handleModalOpen}
-        disabled={checkedRowId == null}
-        id={"view_btn"}
-        size={"bg"}
-      />
+
       <Modal
         open={modalOpen}
         handleClose={handleModalClose}

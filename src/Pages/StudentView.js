@@ -136,19 +136,20 @@ function StudentView() {
   useEffect(() => {
     getStudents().then((result) => {
       console.log(result);
-
-      const tempRow = result.map((item) =>
-        createData(
-          item.serialNumber,
-          item.sex,
-          item.name,
-          item.birth,
-          item.loginId,
-          item.grade,
-          item.phoneNum
-        )
-      );
-      setRows(tempRow);
+      if (result.length > 0) {
+        const tempRow = result.map((item) =>
+          createData(
+            item.serialNumber,
+            item.sex,
+            item.name,
+            item.birth,
+            item.loginId,
+            item.grade,
+            item.phoneNum
+          )
+        );
+        setRows(tempRow);
+      }
     });
   }, []);
   // [] 안에 rows를 넣으면 이 값이 바뀔때마다 useEffect가 실행됨!

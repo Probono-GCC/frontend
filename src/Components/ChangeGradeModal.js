@@ -150,7 +150,7 @@ const StyledBackdrop = styled(Backdrop)`
 
 const ModalContent = styled("div")(
   ({ theme }) => css`
-    height: 70vh;
+    height: 50vh;
     font-family: "IBM Plex Sans", sans-serif;
     font-weight: 500;
     text-align: start;

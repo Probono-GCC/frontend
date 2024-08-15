@@ -5,10 +5,15 @@ import Table from "../Components/ViewTable";
 import CustomButton from "../Components/Button";
 import styles from "../Styles/css/Table.module.css";
 import Modal from "../Components/ChangeGradeModal";
-
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 import Radio from "@mui/material/Radio";
+import Button from "@mui/material/Button";
 import { Typography, Box, Grid } from "@mui/material";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
 
@@ -33,6 +38,7 @@ const rows = [
 function ChangeGrade() {
   // const [selectedRows, setSelectedRows] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [warningModalOpen, setWarningModalOpen] = useState(false);
   const [modalRowData, setModalRowData] = useState("default row data");
   const [alert, setAlert] = useState(false);
   const [checkedRowId, setCheckedRowId] = useState(null); // 단일 값으로 변경
@@ -86,6 +92,16 @@ function ChangeGrade() {
     setModalOpen(false);
     setModalRowData(null);
   };
+
+  //change all grade 경고 모달 open
+
+  const handleClickOpen = () => {
+    setWarningModalOpen(true);
+  };
+
+  const handleClose = () => {
+    setWarningModalOpen(false);
+  };
   const updatedColumns = [
     {
       field: "check",
@@ -138,36 +154,62 @@ function ChangeGrade() {
           isRadioButton={true}
           checkedRows={(params) => setCheckedRowData(params)}
         />
-        <Grid container spacing={2} id={styles.table_body}>
-          <Grid
-            xs={6}
-            marginTop="16px"
-            sx={{ display: "flex", justifyContent: "flex-start" }}
-          >
-            <CustomButton
-              title={"Change All Grade"}
-              variant="contained"
-              color="primary"
-              size={"bg"}
-            />
+        <Grid container>
+          <Grid xs={6} sx={{ display: "flex", justifyContent: "flex-start" }}>
+            {isSmallScreen ? (
+              <div></div>
+            ) : (
+              <CustomButton
+                title={"Change All Grade"}
+                variant="contained"
+                color="primary"
+                size={"bg"}
+                onClick={handleClickOpen}
+                id={"left_btn"}
+              />
+            )}
           </Grid>
           <Grid
             item
             xs={6}
             sx={{ display: "flex", justifyContent: "flex-end" }}
           >
-            <CustomButton title={"Delete"} variant="contained" />
+            <CustomButton
+              title={"Change"}
+              onClick={handleModalOpen}
+              disabled={checkedRowId == null}
+              id={"view_btn"}
+              size={"bg"}
+            />
           </Grid>
         </Grid>
-        <CustomButton
-          title={"Change Grade"}
-          onClick={handleModalOpen}
-          disabled={checkedRowId == null}
-          id={"view_btn"}
-          size={"bg"}
-        />
       </div>
-
+      <Dialog
+        open={warningModalOpen}
+        keepMounted
+        onClose={handleClose}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>{"⚠️WARNING"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            All of section, course information will be deleted. If current grade
+            is final grade, the grade value will be “Graduated”.
+          </DialogContentText>
+          <br />
+          <DialogContentText
+            id="alert-dialog-slide-description"
+            sx={{ color: "red" }}
+          >
+            If you really want to increase all students’ grade, press the “Yes”
+            button.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Disagree</Button>
+          <Button onClick={handleClose}>Agree</Button>
+        </DialogActions>
+      </Dialog>
       <Modal
         open={modalOpen}
         handleClose={handleModalClose}
