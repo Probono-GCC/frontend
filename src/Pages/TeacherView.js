@@ -26,74 +26,29 @@ const detail_columns = [
   { field: "course", headerName: "Course", flex: 0.3 },
 ];
 function createData(
-  id,
   gender,
   name,
-  login_id,
   birth,
+  login_id,
   phone_num,
   home_room,
   course
 ) {
-  return { id, gender, name, login_id, birth, phone_num, home_room, course };
+  return { gender, name, login_id, birth, phone_num, home_room, course };
 }
-
-const initialRows = [
-  createData(
-    0,
-    "Male",
-    "Jon",
-    "92.02.24",
-    "b0000",
-    "01021143454",
-    "Class1",
-    "Class1 Math, Class1 Nepali"
-  ),
-  createData(
-    1,
-    "Female",
-    "Cersei",
-    "92.01.04",
-    "b0001",
-    "01021143454",
-    "Class2",
-    "Class2 Science, Class2 English"
-  ),
-  createData(
-    2,
-    "Male",
-    "Jaime",
-    "92.12.24",
-    "b0002",
-    "01021143454",
-    "Class3",
-    "Class3 History, Class3 Math"
-  ),
-  createData(
-    3,
-    "Male",
-    "Arya",
-    "92.05.27",
-    "b0003",
-    "01021143454",
-    "Class4",
-    "Class4 Nepali, Class4 Art"
-  ),
-];
 
 function TeacherView() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalRowData, setModalRowData] = useState("default row data");
   const [alert, setAlert] = useState(false);
   const [checkedRows, setCheckedRows] = useState([]);
-  const [rows, setRows] = useState(initialRows);
+  const [rows, setRows] = useState([]);
   const { isSmallScreen } = useMediaQueryContext();
 
   const basic_columns = isSmallScreen
     ? [
-        { field: "name", headerName: "Name", flex: 0.35 },
-
         { field: "login_id", headerName: "ID", flex: 0.35 },
+        { field: "name", headerName: "Name", flex: 0.35 },
         {
           field: "home_room",
           headerName: "Home room",
@@ -101,12 +56,13 @@ function TeacherView() {
         },
       ]
     : [
+        { field: "login_id", headerName: "ID", flex: 0.2 },
         { field: "name", headerName: "Name", flex: 0.2 },
         { field: "gender", headerName: "Gender", flex: 0.1 },
         { field: "birth", headerName: "Birth", flex: 0.1 },
-        { field: "login_id", headerName: "ID", flex: 0.2 },
         { field: "phone_num", headerName: "Phone", flex: 0.3 },
       ];
+
   const handleRowSelection = (id) => {
     setCheckedRows((prevCheckedRows) =>
       prevCheckedRows.includes(id)
@@ -134,24 +90,23 @@ function TeacherView() {
   };
 
   useEffect(() => {
-    // getTeachers()
-    //   .then((result) => {
-    //     console.log(result); // 결과값은 배열로 저장됨
-    //     const formattedRows = result.map((teacher, index) =>
-    //       createData(
-    //         index,
-    //         teacher.sex,
-    //         teacher.name,
-    //         teacher.birth,
-    //         teacher.login_id,
-    //         teacher.phone_num
-    //       )
-    //     );
-    //     setRows(formattedRows);
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error fetching teachers:", error);
-    //   });
+    getTeachers().then((result) => {
+      console.log(result);
+      if (result.length > 0) {
+        const tempRow = result.map((item) =>
+          createData(
+            item.sex,
+            item.name,
+            item.birth,
+            item.loginId,
+            item.phoneNum,
+            item.home_room,
+            item.course
+          )
+        );
+        setRows(tempRow);
+      }
+    });
   }, []);
 
   return (
@@ -185,10 +140,10 @@ function TeacherView() {
         </Box>
         <Table
           columns={basic_columns}
-          rows={initialRows}
+          rows={rows}
           onRowSelection={handleRowSelection}
           onRowDoubleClick={(params) => handleModalOpen(params.row)}
-          getRowId={(row) => row.id}
+          getRowId={(row) => row.login_id}
           id={"table_body"}
         />
       </div>
