@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import AppBar from "../Components/AppBar";
 import Table from "../Components/ViewTable";
@@ -16,24 +16,13 @@ import Radio from "@mui/material/Radio";
 import Button from "@mui/material/Button";
 import { Typography, Box, Grid } from "@mui/material";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
+import { getStudents } from "../Apis/Api/User";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 function createData(sn, gender, name, birth, id, grade) {
   return { sn, gender, name, birth, id, grade };
 }
-
-const rows = [
-  createData(1, "Male", "Jon", "20.02.24", "a0000", "PlayGroup"),
-  createData(2, "Female", "Cersei", "20.01.04", "a0001", "PlayGroup"),
-  createData(3, "Male", "Jaime", "20.12.24", "a0002", "PlayGroup"),
-  createData(4, "Male", "Arya", "20.05.27", "a0003", "PlayGroup"),
-  createData(5, "Male", "Daenerys", "20.08.14", "a0004", "PlayGroup"),
-  createData(6, "Male", "nell", "20.12.24", "a0005", "PlayGroup"),
-  createData(7, "Female", "Ferrara", "19.07.05", "b0006", "UnderKG"),
-  createData(8, "Female", "Rossini", "19.07.25", "b0007", "UnderKG"),
-  createData(9, "Female", "Harvey", "19.07.04", "b0008", "UnderKG"),
-];
 
 function ChangeGrade() {
   // const [selectedRows, setSelectedRows] = useState([]);
@@ -43,6 +32,8 @@ function ChangeGrade() {
   const [alert, setAlert] = useState(false);
   const [checkedRowId, setCheckedRowId] = useState(null); // 단일 값으로 변경
   const [checkedRowData, setCheckedRowData] = useState(null);
+  const [rows, setRows] = useState([]);
+  const [allStudentData, setAllStudentDatas] = useState([]);
   const { isSmallScreen } = useMediaQueryContext();
 
   const columns = isSmallScreen
@@ -71,26 +62,28 @@ function ChangeGrade() {
         { field: "grade", headerName: "Grade", flex: 0.3 },
       ];
   //table의 선택된 row id를 checkedRowId 변수에 저장
-  const handleSelectedRowId = (id) => {
-    console.log("id", id);
-    setCheckedRowId(id);
+  const handleSelectedRowId = (_loginId) => {
+    setCheckedRowId(_loginId);
+    setCheckedRowData(
+      allStudentData.filter((item) => item.loginId === _loginId)[0]
+    );
   };
 
-  //table의 선택된 row data를 checkedRowData 변수에 저장
-  const handleSelectedRowData = (params) => {
-    console.log(params, "data");
-    setCheckedRowData(params);
-  };
+  // //table의 선택된 row data를 checkedRowData 변수에 저장
+  // const handleSelectedRowData = (params) => {
+  //   console.log(params, "data");
+  //   setCheckedRowData(params);
+  // };
   //change grade 모달 open함수 호출
   const handleModalOpen = () => {
-    setModalRowData(checkedRowId);
+    // setModalRowData(checkedRowId);
+    console.log("OPENING: ", checkedRowData);
     setModalOpen(true);
   };
 
   //모달 닫기 함수
   const handleModalClose = () => {
     setModalOpen(false);
-    setModalRowData(null);
   };
 
   //change all grade 경고 모달 open
@@ -113,6 +106,27 @@ function ChangeGrade() {
     },
     ...columns,
   ];
+
+  useEffect(() => {
+    getStudents().then((result) => {
+      console.log(result);
+      setAllStudentDatas(result);
+      if (result.length > 0) {
+        const tempRow = result.map((item) =>
+          createData(
+            item.serialNumber,
+            item.sex,
+            item.name,
+            item.birth,
+            item.loginId,
+            item.grade,
+            item.phoneNum
+          )
+        );
+        setRows(tempRow);
+      }
+    });
+  }, []);
 
   return (
     <div id="page_content">
@@ -152,7 +166,7 @@ function ChangeGrade() {
           id={isSmallScreen ? "" : "table_body"}
           getRowId={(row) => row.sn}
           isRadioButton={true}
-          checkedRows={(params) => setCheckedRowData(params)}
+          checkedRows={(params) => null}
         />
         <Grid container>
           <Grid xs={6} sx={{ display: "flex", justifyContent: "flex-start" }}>
@@ -215,7 +229,6 @@ function ChangeGrade() {
         handleClose={handleModalClose}
         title={"Change Grade"}
         rowData={checkedRowData}
-        rowsHeader={columns}
       />
     </div>
   );

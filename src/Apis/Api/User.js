@@ -39,3 +39,16 @@ export async function getStudents() {
     console.log(err);
   }
 }
+
+export async function putStudent(userData) {
+  try {
+    const response = await axiosInstance.put(
+      `/students/${userData.loginId}`,
+      userData
+    );
+    console.log(response);
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+}
