@@ -16,23 +16,17 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
   const [password, setPassword] = useState("");
-  const [currentPassword, setCurrentPassword] = useState("");
   const [rePassword, setRePassword] = useState("");
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showRePassword, setShowRePassword] = useState(false);
   const [rePasswordError, setRePasswordError] = useState(false);
 
   const handleSave = () => {
     // const userData = JSON.stringify(rowData);
-    setCurrentPassword("");
     setPassword("");
     setRePassword("");
   };
 
-  const handleClickShowCurrentPassword = () => {
-    setShowCurrentPassword(!showCurrentPassword);
-  };
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -45,9 +39,7 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
     setPassword(event.target.value);
     checkPasswords(event.target.value, rePassword);
   };
-  const handleCurrentPasswordChange = (event) => {
-    setCurrentPassword(event.target.value);
-  };
+
   const handleRePasswordChange = (event) => {
     setRePassword(event.target.value);
     checkPasswords(password, event.target.value);
@@ -98,33 +90,7 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
                   }}
                 />
               </Grid>
-              <Grid item xs={12} lg={12}>
-                <TextField
-                  fullWidth
-                  label="Current PW"
-                  variant="outlined"
-                  type={showCurrentPassword ? "text" : "password"}
-                  value={currentPassword}
-                  onChange={handleCurrentPasswordChange}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowCurrentPassword}
-                          edge="end"
-                        >
-                          {showCurrentPassword ? (
-                            <VisibilityOff />
-                          ) : (
-                            <Visibility />
-                          )}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
+
               <Grid item xs={12} lg={12}>
                 <TextField
                   fullWidth
@@ -190,11 +156,7 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
                   variant="contained"
                   color="primary"
                   onClick={handleSave}
-                  disabled={
-                    password.length === 0 ||
-                    rePassword.length === 0 ||
-                    currentPassword.length === 0
-                  }
+                  disabled={password.length === 0 || rePassword.length === 0}
                 >
                   Save
                 </Button>
