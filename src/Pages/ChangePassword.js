@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import AppBar from "../Components/AppBar";
 import Table from "../Components/ViewTable";
@@ -11,24 +11,13 @@ import Stack from "@mui/material/Stack";
 import Radio from "@mui/material/Radio";
 import { Typography, Box } from "@mui/material";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
+import { putStudent, getStudents } from "../Apis/Api/User";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 function createData(sn, gender, name, birth, id, grade) {
   return { sn, gender, name, birth, id, grade };
 }
-
-const rows = [
-  createData(1, "Male", "Jon", "20.02.24", "a0000", "PlayGroup"),
-  createData(2, "Female", "Cersei", "20.01.04", "a0001", "PlayGroup"),
-  createData(3, "Male", "Jaime", "20.12.24", "a0002", "PlayGroup"),
-  createData(4, "Male", "Arya", "20.05.27", "a0003", "PlayGroup"),
-  createData(5, "Male", "Daenerys", "20.08.14", "a0004", "PlayGroup"),
-  createData(6, "Male", "nell", "20.12.24", "a0005", "PlayGroup"),
-  createData(7, "Female", "Ferrara", "19.07.05", "b0006", "UnderKG"),
-  createData(8, "Female", "Rossini", "19.07.25", "b0007", "UnderKG"),
-  createData(9, "Female", "Harvey", "19.07.04", "b0008", "UnderKG"),
-];
 
 function ChangePassword() {
   // const [selectedRows, setSelectedRows] = useState([]);
@@ -37,7 +26,29 @@ function ChangePassword() {
   const [alert, setAlert] = useState(false);
   const [checkedRowId, setCheckedRowId] = useState(null);
   const [checkedRowData, setCheckedRowData] = useState(null);
+  const [allStudentData, setAllStudentDatas] = useState([]);
+  const [rows, setRows] = useState([]);
   const { isSmallScreen } = useMediaQueryContext();
+
+  useEffect(() => {
+    getStudents().then((result) => {
+      setAllStudentDatas(result);
+      if (result.length > 0) {
+        const tempRow = result.map((item) =>
+          createData(
+            item.serialNumber,
+            item.sex,
+            item.name,
+            item.birth,
+            item.loginId,
+            item.grade,
+            item.phoneNum
+          )
+        );
+        setRows(tempRow);
+      }
+    });
+  }, []);
 
   const columns = isSmallScreen
     ? [
@@ -64,9 +75,15 @@ function ChangePassword() {
         { field: "id", headerName: "ID", flex: 0.2 },
         { field: "grade", headerName: "Grade", flex: 0.3 },
       ];
-  const handleRowSelection = (id) => {
-    setCheckedRowId(id);
+
+  const handleRowSelection = (_loginId) => {
+    setCheckedRowId(_loginId);
+    setCheckedRowData(
+      allStudentData.filter((item) => item.loginId === _loginId)[0]
+    );
+    console.log("CHECKED: ", checkedRowData);
   };
+
   const handleModalOpen = () => {
     setModalOpen(true);
   };
@@ -124,11 +141,11 @@ function ChangePassword() {
           rows={rows}
           onRowSelection={handleRowSelection}
           id={isSmallScreen ? "" : "table_body"}
-          onRowClick={(params) => handleRowSelection(params.row.id)}
+          onRowClick={handleRowSelection}
           onRowDoubleClick={(params) => handleModalOpen(params.row)}
           getRowId={(row) => row.sn}
           isRadioButton={true}
-          checkedRows={(params) => setCheckedRowData(params)}
+          checkedRows={(params) => null}
         />
         <Button
           title={"Change"}

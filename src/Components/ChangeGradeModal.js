@@ -36,9 +36,7 @@ function CustomModal({ open, handleClose, title, rowData }) {
 
   useEffect(() => {
     if (open && rowData) {
-      // Modal이 열리고 rowData가 있을 때 실행
-      setStudentData(rowData);
-      setNewGrade(rowData[0].grade);
+      setNewGrade(rowData.grade);
     }
   }, [open, rowData]);
 

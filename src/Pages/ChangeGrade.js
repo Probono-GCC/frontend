@@ -63,8 +63,6 @@ function ChangeGrade() {
       ];
   //table의 선택된 row id를 checkedRowId 변수에 저장
   const handleSelectedRowId = (_loginId) => {
-    console.log("id", _loginId);
-
     setCheckedRowId(_loginId);
     setCheckedRowData(
       allStudentData.filter((item) => item.loginId === _loginId)[0]
