@@ -13,20 +13,17 @@ import BackImage2 from "../Assets/img/BackgroundSample/CLA_back2.png";
 import BackImage3 from "../Assets/img/BackgroundSample/sample_images_02.png";
 import BackImage4 from "../Assets/img/BackgroundSample/sample_images_03.png";
 import BackImage5 from "../Assets/img/BackgroundSample/sample_images_04.png";
+import { Password } from "@mui/icons-material";
 
 function Login({ type }) {
   const navigate = useNavigate();
-  const [userID, setUserID] = useState("");
-  const [answer, setAnswer] = useState("");
-  const [userPW, setUserPW] = useState("");
-  const [rePassword, setRePassword] = useState("");
   const [currentIndex, setCurrentIndex] = useState(1);
-  const [rePasswordError, setRePasswordError] = useState(false);
+
   /**언어 선택 임시 선택상자 */
-  const [age, setAge] = useState(10);
+  const [lang, setLang] = useState(10);
 
   const handleChange = (event) => {
-    setAge(event.target.value);
+    setLang(event.target.value);
   };
   const moveForgotPassword = () => {
     navigate("/forgot-password");
@@ -40,22 +37,6 @@ function Login({ type }) {
     // { img: BackImage5, key: 5 },
   ];
 
-  const login = () => {
-    navigate("/");
-  };
-
-  const handleRePasswordChange = (event) => {
-    setRePassword(event.target.value);
-    checkPasswords(userPW, event.target.value);
-  };
-
-  const checkPasswords = (pw, rePw) => {
-    if (pw.length > 0 && rePw.length > 0 && pw !== rePw) {
-      setRePasswordError(true);
-    } else {
-      setRePasswordError(false);
-    }
-  };
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % BackgroundSample.length);
@@ -71,7 +52,7 @@ function Login({ type }) {
           <div id={styles.right_align}>
             <FormControl sx={{ m: 1, minWidth: 120 }}>
               <Select
-                value={age}
+                value={lang}
                 onChange={handleChange}
                 displayEmpty
                 inputProps={{ "aria-label": "Without label" }}
@@ -90,7 +71,7 @@ function Login({ type }) {
           <div id={styles.right_align}>
             <FormControl sx={{ m: 1, minWidth: 120, marginLeft: "30vw" }}>
               <Select
-                value={age}
+                value={lang}
                 onChange={handleChange}
                 displayEmpty
                 inputProps={{ "aria-label": "Without label" }}
