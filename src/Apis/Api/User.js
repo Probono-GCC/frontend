@@ -39,3 +39,12 @@ export async function getStudents() {
     console.log(err);
   }
 }
+
+export async function loginApi(userData) {
+  try {
+    const response = await axiosInstance.post(`/login`, userData);
+    return response;
+  } catch (err) {
+    console.log(err);
+  }
+}
