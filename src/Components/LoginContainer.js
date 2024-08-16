@@ -6,6 +6,9 @@ import { TextField, Typography, Box } from "@mui/material";
 
 import Button from "../Components/Button";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
+
+//api
+import { loginApi } from "../Apis/Api/User";
 function LoginContainer() {
   const navigate = useNavigate();
   const [userID, setUserID] = useState("");
@@ -15,8 +18,28 @@ function LoginContainer() {
   const moveForgotPassword = () => {
     navigate("/forgot-password");
   };
+
   const login = () => {
-    navigate("/");
+    // FormData 객체 생성
+    const formData = new FormData();
+
+    // formData에 username과 password 추가
+    formData.append("username", userID);
+    formData.append("password", userPW);
+
+    loginApi(formData).then((response) => {
+      console.log(response);
+      if (response.status === 200) {
+        const authorizationHeader = response.headers["authorization"];
+        const token = authorizationHeader && authorizationHeader.split(" ")[1]; // Bearer 이후의 토큰만 추출
+        sessionStorage.setItem("jwt", token);
+
+        console.log("Token:", token);
+        navigate("/home");
+      } else {
+        console.error("Login failed:", response.statusText);
+      }
+    });
   };
 
   return (
