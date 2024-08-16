@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import {
   Box,
   Typography,
@@ -13,6 +13,9 @@ import AppBar from "../Components/AppBar";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
+
+//API
+import { postNewNotice, postImage } from "../Apis/Api/Notice";
 const grades = [
   { value: "PlayGroup", label: "PlayGroup" },
   { value: "Nursery", label: "Nursery" },
@@ -33,12 +36,25 @@ const grades = [
 function NoticeNewPostForm() {
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
-  const [grade, setGrade] = useState("All");
+  // const [grade, setGrade] = useState("All");
   const [content, setContent] = useState("");
+  const [imgURL, setimgURL] = useState("");
   const { isSmallScreen } = useMediaQueryContext();
+  const quillRef = useRef();
   const handleSave = () => {
     // 저장 시 새로운 페이지 생성하는 코드 필요!
-
+    const postingData = {
+      title: title,
+      content: content.replace(/<\/?[^>]+(>|$)/g, ""),
+      type: "SCHOOL",
+    };
+    // console.log("postingData", postingData);
+    postNewNotice(postingData).then((result) => {
+      if (result.noticeId && imgURL) {
+        console.log(result.noticeId, "+", imgURL);
+      }
+      alert("게시글 포스팅 완료");
+    });
     navigate("/notice-board");
   };
 
@@ -46,21 +62,66 @@ function NoticeNewPostForm() {
     navigate("/notice-board");
   };
 
-  const modules = {
-    toolbar: [
-      [{ header: "1" }, { header: "2" }, { font: [] }],
-      [{ size: [] }],
-      ["bold", "italic", "underline", "strike", "blockquote"],
-      [
-        { list: "ordered" },
-        { list: "bullet" },
-        { indent: "-1" },
-        { indent: "+1" },
-      ],
-      ["link", "image", "video"],
-      ["clean"],
-    ],
+  const imageHandler = async (e) => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+          // URL.createObjectURL 대신 FileReader 사용
+          setimgURL(reader.result);
+        };
+
+        reader.readAsDataURL(file); // 이미지 파일을 Data URL로 읽어들임
+      }
+    };
+
+    input.click();
   };
+
+  const checkImage = (file) => {
+    let err = "";
+
+    if (!file) return (err = "File does not exist.");
+    if (file.size > 1024 * 1024) {
+      err = "The largest image size is 1mb.";
+    }
+    if (file.type !== "image/jpeg" && file.type !== "image/png") {
+      err = "Image format is incorrect.";
+    }
+
+    return err;
+  };
+  const modules = useMemo(() => {
+    return {
+      toolbar: {
+        container: [
+          ["image"],
+          [{ header: [1, 2, 3, false] }, { font: [] }],
+          ["bold", "italic", "underline", "strike", "blockquote"],
+        ],
+        handlers: {
+          // 이미지 처리는 imageHandler라는 함수로 처리할 것이다.
+          image: imageHandler,
+        },
+      },
+    };
+  }, []);
+
+  const formats = [
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "image",
+  ];
   return (
     <div>
       <AppBar />
@@ -101,7 +162,7 @@ function NoticeNewPostForm() {
               onChange={(e) => setTitle(e.target.value)}
             />
           </Grid>
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <TextField
               select
               fullWidth
@@ -116,7 +177,7 @@ function NoticeNewPostForm() {
                 </MenuItem>
               ))}
             </TextField>
-          </Grid>
+          </Grid> */}
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -142,15 +203,42 @@ function NoticeNewPostForm() {
           <Grid item xs={12}>
             <ReactQuill
               theme="snow"
+              ref={quillRef}
               modules={modules}
               value={content}
               onChange={setContent}
               placeholder="Write your content here..."
               style={{
                 height: "300px",
-                marginBottom: "90px",
+                marginBottom: "50px",
               }}
             />
+            <Typography sx={{ marginBottom: "8px" }}>Attached Image</Typography>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "start",
+                minHeight: "50px", // 기본 높이 설정
+                height: "auto", // 이미지에 따라 자동 조정
+                border: "1px solid #ddd",
+                borderRadius: "8px",
+                padding: "8px",
+              }}
+            >
+              {imgURL && (
+                <img
+                  src={imgURL}
+                  alt="Selected"
+                  style={{
+                    maxWidth: "100%",
+                    maxHeight: "200px",
+                    borderRadius: "8px",
+                    objectFit: "cover",
+                  }}
+                />
+              )}
+            </Box>
           </Grid>
           <Grid
             item
