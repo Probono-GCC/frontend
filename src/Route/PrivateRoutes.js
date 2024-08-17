@@ -2,39 +2,31 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import PrivateRoute from "../Pages/PrivateRoute";
-import NoticeBoard from "../Pages/NoticeBoard";
 import ChangePassword from "../Pages/ChangePassword";
 import ChangeGrade from "../Pages/ChangeGrade";
-import MyProfile from "../Pages/MyProfile";
-import Post from "../Pages/Post";
+
 import NoticeNewPostForm from "../Pages/NoticeNewPostForm";
 import ClassNewPostForm from "../Pages/ClassNewPostForm";
 import StudentView from "../Pages/StudentView";
 import TeacherView from "../Pages/TeacherView";
 import CreateClass from "../Pages/CreateClass";
-import ClassBoard from "../Pages/ClassBoard";
 import ClassInfo from "../Pages/ClassInfo";
-import SubjectBoard from "../Pages/SubjectBoard";
+
 import SubjectInfo from "../Pages/SubjectInfo";
 import SubjectNewPostForm from "../Pages/SubjectNewPostForm";
 import AssignHomeroom from "../Pages/AssignHomeroom";
 import CommonCourseManagement from "../Pages/CommonCourseManagement";
 import ElectiveCourseManagement from "../Pages/ElectiveCourseManagement";
 
+//requiredRole 변수
+const role = ["ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"];
+
 const PrivateRoutes = () => (
   <Routes>
     <Route
-      path="/notice-board"
-      element={
-        <PrivateRoute>
-          <NoticeBoard />
-        </PrivateRoute>
-      }
-    />
-    <Route
       path="/change-password"
       element={
-        <PrivateRoute>
+        <PrivateRoute requiredRole={role[0]}>
           <ChangePassword />
         </PrivateRoute>
       }
@@ -42,31 +34,16 @@ const PrivateRoutes = () => (
     <Route
       path="/change-grade"
       element={
-        <PrivateRoute>
+        <PrivateRoute requiredRole={role[0]}>
           <ChangeGrade />
         </PrivateRoute>
       }
     />
-    <Route
-      path="/my-profile"
-      element={
-        <PrivateRoute>
-          <MyProfile />
-        </PrivateRoute>
-      }
-    />
-    <Route
-      path="/post/*"
-      element={
-        <PrivateRoute>
-          <Post />
-        </PrivateRoute>
-      }
-    />
+
     <Route
       path="/notice-new-post-form"
       element={
-        <PrivateRoute>
+        <PrivateRoute requiredRole={role[0]}>
           <NoticeNewPostForm />
         </PrivateRoute>
       }
@@ -74,7 +51,7 @@ const PrivateRoutes = () => (
     <Route
       path="/class-new-post-form"
       element={
-        <PrivateRoute>
+        <PrivateRoute requiredRole={[role[0], role[1]]}>
           <ClassNewPostForm />
         </PrivateRoute>
       }
@@ -82,7 +59,7 @@ const PrivateRoutes = () => (
     <Route
       path="/student-view"
       element={
-        <PrivateRoute>
+        <PrivateRoute requiredRole={role[0]}>
           <StudentView />
         </PrivateRoute>
       }
@@ -90,7 +67,7 @@ const PrivateRoutes = () => (
     <Route
       path="/teacher-view"
       element={
-        <PrivateRoute>
+        <PrivateRoute requiredRole={role[0]}>
           <TeacherView />
         </PrivateRoute>
       }
@@ -98,39 +75,33 @@ const PrivateRoutes = () => (
     <Route
       path="/create-class"
       element={
-        <PrivateRoute>
+        <PrivateRoute requiredRole={role[0]}>
           <CreateClass />
         </PrivateRoute>
       }
     />
     <Route
-      path="/class-board"
+      path="/create-account"
       element={
-        <PrivateRoute>
-          <ClassBoard />
+        <PrivateRoute requiredRole={role[0]}>
+          <CreateClass />
         </PrivateRoute>
       }
     />
+
     <Route
       path="/class-info"
       element={
-        <PrivateRoute>
+        <PrivateRoute requiredRole={role[0]}>
           <ClassInfo />
         </PrivateRoute>
       }
     />
-    <Route
-      path="/subject-board"
-      element={
-        <PrivateRoute>
-          <SubjectBoard />
-        </PrivateRoute>
-      }
-    />
+
     <Route
       path="/subject-info"
       element={
-        <PrivateRoute>
+        <PrivateRoute requiredRole={role[0]}>
           <SubjectInfo />
         </PrivateRoute>
       }
@@ -138,7 +109,7 @@ const PrivateRoutes = () => (
     <Route
       path="/subject-new-post-form"
       element={
-        <PrivateRoute>
+        <PrivateRoute requiredRole={[role[0], role[1]]}>
           <SubjectNewPostForm />
         </PrivateRoute>
       }
@@ -146,7 +117,7 @@ const PrivateRoutes = () => (
     <Route
       path="/assign-homeroom"
       element={
-        <PrivateRoute>
+        <PrivateRoute requiredRole={[role[0], role[1]]}>
           <AssignHomeroom />
         </PrivateRoute>
       }
@@ -154,7 +125,7 @@ const PrivateRoutes = () => (
     <Route
       path="/common-course-management"
       element={
-        <PrivateRoute>
+        <PrivateRoute requiredRole={[role[0], role[1]]}>
           <CommonCourseManagement />
         </PrivateRoute>
       }
@@ -162,12 +133,11 @@ const PrivateRoutes = () => (
     <Route
       path="/elective-course-management"
       element={
-        <PrivateRoute>
+        <PrivateRoute requiredRole={[role[0], role[1]]}>
           <ElectiveCourseManagement />
         </PrivateRoute>
       }
     />
-    <Route path="/unauthorized" element={<div>Unauthorized</div>} />
   </Routes>
 );
 

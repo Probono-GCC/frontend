@@ -23,17 +23,27 @@ import { useMediaQueryContext } from "../store/MediaQueryContext";
 //api
 import { getNoticePostList } from "../Apis/Api/Notice";
 
+//권한
+import { useAuth } from "../store/AuthContext"; // Context API에서 인증 상태를 가져옵니다
+
 function NoticeBoard() {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const itemsPerPage = 10;
   const { isSmallScreen } = useMediaQueryContext();
   const [rows, setRows] = useState([]);
+
+  //권한 체크
+  const { userRole, isLoading } = useAuth(); // 인증 토큰 확인
+
   useMemo(() => {
     getNoticePostList().then((result) => {
-      setRows(result);
-      console.log(result);
+      console.log("?", result);
+      if (result) {
+        setRows(result);
+      }
     });
+    console.log(userRole);
   }, []);
 
   const handleChangePage = (event, newPage) => {
@@ -41,7 +51,7 @@ function NoticeBoard() {
   };
 
   const handleNewPost = () => {
-    navigate("/notice-new-post-form");
+    navigate("/private/notice-new-post-form");
   };
 
   const handlePreviousGroup = () => {
@@ -73,9 +83,7 @@ function NoticeBoard() {
     (page - 1) * itemsPerPage,
     page * itemsPerPage
   );
-  if (displayedRows.length === 0) {
-    return <div></div>;
-  }
+
   return (
     <div>
       <AppBar />
@@ -187,18 +195,6 @@ function NoticeBoard() {
                     {row.date}
                   </Typography>
                 </TableCell>
-                {/* <TableCell
-                  sx={{
-                    padding: "16px",
-                    textAlign: "left",
-                    borderBottom: "1px solid #e0e0e0",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {row.grade}
-                </TableCell> */}
 
                 <TableCell
                   sx={{
@@ -217,52 +213,94 @@ function NoticeBoard() {
           </TableBody>
         </Table>
       </TableContainer>
-      <Box sx={{ display: "flex", justifyContent: "center", margin: "20px 0" }}>
-        <IconButton onClick={handlePreviousGroup} disabled={page <= 1}>
-          <KeyboardDoubleArrowLeftIcon />
-        </IconButton>
-        <IconButton
-          onClick={() => handleChangePage(null, page - 1)}
-          disabled={page === 1}
-        >
-          <KeyboardArrowLeftIcon />
-        </IconButton>
-        {displayedPages.map((p) => (
-          <Button
-            key={p}
-            onClick={() => handleChangePage(null, p)}
-            sx={{ minWidth: 0, padding: 1, margin: "0 5px" }}
-            variant={p === page ? "contained" : "text"}
-          >
-            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-              {p}
-            </Typography>
-          </Button>
-        ))}
-        <IconButton
-          onClick={() => handleChangePage(null, page + 1)}
-          disabled={page === totalPages}
-        >
-          <KeyboardArrowRightIcon />
-        </IconButton>
-        <IconButton onClick={handleNextGroup} disabled={page >= totalPages}>
-          <KeyboardDoubleArrowRightIcon />
-        </IconButton>
-      </Box>
       <Box
-        sx={{ display: "flex", justifyContent: "flex-end", margin: "20px 10%" }}
+        sx={{
+          display: "flex",
+
+          margin: "20px 0",
+          position: "fixed",
+          bottom: 20,
+          width: "100%",
+
+          zIndex: 1000, // 다른 콘텐츠 위에 표시되도록 z-index를 조정
+        }}
       >
-        <Button
-          variant="contained"
+        <Box
           sx={{
-            backgroundColor: "#1b8ef2",
-            color: "white",
-            "&:hover": { backgroundColor: "#1565c0" },
+            display: "flex",
+
+            margin: "20px 0",
+            position: "fixed",
+            bottom: "20px",
+            width: "100%",
+
+            zIndex: 1000, // 다른 콘텐츠 위에 표시되도록 z-index를 조정
+            justifyContent: "center",
           }}
-          onClick={handleNewPost}
         >
-          New
-        </Button>
+          <IconButton onClick={handlePreviousGroup} disabled={page <= 1}>
+            <KeyboardDoubleArrowLeftIcon />
+          </IconButton>
+          <IconButton
+            onClick={() => handleChangePage(null, page - 1)}
+            disabled={page === 1}
+          >
+            <KeyboardArrowLeftIcon />
+          </IconButton>
+          {displayedPages.map((p) => (
+            <Button
+              key={p}
+              onClick={() => handleChangePage(null, p)}
+              sx={{ minWidth: 0, padding: 1, margin: "0 5px" }}
+              variant={p === page ? "contained" : "text"}
+            >
+              <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                {p}
+              </Typography>
+            </Button>
+          ))}
+          <IconButton
+            onClick={() => handleChangePage(null, page + 1)}
+            disabled={page === totalPages}
+          >
+            <KeyboardArrowRightIcon />
+          </IconButton>
+          <IconButton onClick={handleNextGroup} disabled={page >= totalPages}>
+            <KeyboardDoubleArrowRightIcon />
+          </IconButton>
+        </Box>
+
+        <Box
+          sx={{
+            display: "flex",
+
+            margin: "20px 0px",
+            padding: "0px 20px",
+            position: "fixed",
+            bottom: 20,
+            width: "100%",
+
+            zIndex: 1000, // 다른 콘텐츠 위에 표시되도록 z-index를 조정
+
+            justifyContent: "flex-end",
+          }}
+        >
+          {userRole === "ROLE_ADMIN" ? (
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "#1b8ef2",
+                color: "white",
+                "&:hover": { backgroundColor: "#1565c0" },
+              }}
+              onClick={handleNewPost}
+            >
+              New
+            </Button>
+          ) : (
+            <div></div>
+          )}
+        </Box>
       </Box>
     </div>
   );

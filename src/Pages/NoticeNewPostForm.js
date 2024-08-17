@@ -50,10 +50,11 @@ function NoticeNewPostForm() {
     };
     // console.log("postingData", postingData);
     postNewNotice(postingData).then((result) => {
-      if (result.noticeId && imgURL) {
+      if (result && imgURL) {
         console.log(result.noticeId, "+", imgURL);
+        console.log("post result?", result);
+        alert("게시글 포스팅 완료");
       }
-      alert("게시글 포스팅 완료");
     });
     navigate("/notice-board");
   };
@@ -142,14 +143,15 @@ function NoticeNewPostForm() {
         </Typography>
       </Box>
       <Box
-        component={isSmallScreen ? "" : Paper}
+        component={isSmallScreen ? "div" : Paper}
         sx={{
           display: "flex",
           justifyContent: "center",
           padding: 2,
           maxWidth: isSmallScreen ? "100%" : "80%",
           margin: "0 auto",
-          marginBottom: 5,
+          marginBottom: 2,
+          height: "auto",
         }}
       >
         <Grid container spacing={2}>
@@ -162,22 +164,7 @@ function NoticeNewPostForm() {
               onChange={(e) => setTitle(e.target.value)}
             />
           </Grid>
-          {/* <Grid item xs={12}>
-            <TextField
-              select
-              fullWidth
-              label="Grade"
-              variant="outlined"
-              value={grade}
-              onChange={(e) => setGrade(e.target.value)}
-            >
-              {grades.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid> */}
+
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -210,10 +197,12 @@ function NoticeNewPostForm() {
               placeholder="Write your content here..."
               style={{
                 height: "300px",
-                marginBottom: "50px",
+                marginBottom: isSmallScreen ? "80px" : "50px",
               }}
             />
-            <Typography sx={{ marginBottom: "8px" }}>Attached Image</Typography>
+            <Typography sx={{ marginBottom: isSmallScreen ? "1px" : "8px" }}>
+              Attached Image
+            </Typography>
             <Box
               sx={{
                 display: "flex",
