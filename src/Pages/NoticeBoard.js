@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import AppBar from "../Components/AppBar";
 import {
   Box,
@@ -36,15 +36,27 @@ function NoticeBoard() {
   //권한 체크
   const { userRole, isLoading } = useAuth(); // 인증 토큰 확인
 
-  useMemo(() => {
-    getNoticePostList().then((result) => {
-      console.log("?", result);
-      if (result) {
-        setRows(result);
-      }
-    });
+  useEffect(() => {
+    getNoticePostList(page, 10)
+      .then((result) => {
+        if (result != undefined && Array.isArray(result.content)) {
+          setRows(result.content);
+        } else {
+          setRows([]);
+        }
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 404) {
+          console.error("404 Not Found");
+          setRows([]);
+        } else {
+          console.error("Error fetching notice posts", error);
+        }
+        return { content: [] }; // 에러 발생 시 빈 배열 반환
+      });
+
     console.log(userRole);
-  }, []);
+  }, [userRole]); // userRole을 의존성 배열에 추가
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -79,10 +91,9 @@ function NoticeBoard() {
     displayedPages.push(i);
   }
 
-  const displayedRows = rows.slice(
-    (page - 1) * itemsPerPage,
-    page * itemsPerPage
-  );
+  const displayedRows = Array.isArray(rows)
+    ? rows.slice((page - 1) * itemsPerPage, page * itemsPerPage)
+    : [];
 
   return (
     <div>

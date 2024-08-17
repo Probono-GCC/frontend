@@ -12,9 +12,11 @@ export async function postNewNotice(postingData) {
 }
 
 //게시판 글 리스트 불러오기
-export async function getNoticePostList() {
+export async function getNoticePostList(page, size) {
   try {
-    const response = await axiosInstance.get("/notice/schoolNoticeList");
+    const response = await axiosInstance.get(
+      `/notice/schoolNoticeList?page=0&size=10`
+    );
     return response.data;
   } catch (err) {
     console.log(err);

@@ -1,5 +1,5 @@
 import styles from "../Styles/css/Login.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { TextField, Typography, Box } from "@mui/material";
@@ -14,7 +14,7 @@ function LoginContainer() {
   const [userID, setUserID] = useState("");
   const [userPW, setUserPW] = useState("");
   const { isSmallScreen, isSmallWidth } = useMediaQueryContext();
-  const { saveToken } = useAuth(); //토큰 전역 저장
+  const { saveToken, clearToken } = useAuth(); //토큰 전역 저장
   const moveForgotPassword = () => {
     navigate("/forgot-password");
   };
@@ -27,8 +27,8 @@ function LoginContainer() {
     formData.append("username", userID);
     formData.append("password", userPW);
 
-    loginApi(formData).then((response) => {
-      if (response && response.status === 200) {
+    loginApi(formData)
+      .then((response) => {
         const authorizationHeader = response.headers["authorization"];
         const token = authorizationHeader && authorizationHeader.split(" ")[1]; // Bearer 이후의 토큰만 추출
         localStorage.setItem("jwt", token);
@@ -37,18 +37,28 @@ function LoginContainer() {
         if (token) {
           const userData = saveToken(token);
           console.log(userData);
-          if (!userData.hasOwnProperty("birth")) {
+          if (
+            !userData.hasOwnProperty("birth") &&
+            !userData.role == "ROLE_ADMIN"
+          ) {
             navigate("/my-profile");
           } else {
             navigate("/home"); // 로그인 후 이동할 경로
           }
         }
-      } else {
-        console.error("Login failed:", response.statusText);
-      }
-    });
+      })
+      .catch((error) => {
+        // if (error.response.status == 401) {
+        //   // API 호출 중 404 오류가 발생한 경우
+        //   console.error("Error during login:", error);
+        //   alert("로그인 API가 존재하지 않습니다. 관리자에게 문의하세요.");
+        // }
+        console.log(error, "er");
+      });
   };
-
+  useEffect(() => {
+    clearToken();
+  }, []);
   return (
     <div id={styles.login_container}>
       <Typography
