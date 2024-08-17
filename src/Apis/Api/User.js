@@ -40,6 +40,15 @@ export async function getStudents() {
   }
 }
 
+
+export async function loginApi(userData) {
+  try {
+    const response = await axiosInstance.post(`/login`, userData);
+    return response;
+  } catch (err) {
+    console.log(err);
+  }
+}
 export async function putStudent(userData) {
   try {
     const response = await axiosInstance.put(
@@ -48,6 +57,7 @@ export async function putStudent(userData) {
     );
     console.log(response);
     return response.data;
+
   } catch (err) {
     console.log(err);
   }

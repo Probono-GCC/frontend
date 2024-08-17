@@ -1,13 +1,21 @@
-import React, { useContext } from "react";
+import React, { useEffect } from "react";
 import { Box, Typography, Button, Paper, Divider, Grid } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import AppBar from "../Components/AppBar";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import PersonIcon from "@mui/icons-material/Person";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
+
+//api
+import { deleteNoticePost } from "../Apis/Api/Notice";
+
 function Post() {
   const navigate = useNavigate();
+
   const { isSmallScreen } = useMediaQueryContext();
+  // const [postData, setPostData] = useState(null);
+  const location = useLocation();
+  const postData = location.state;
 
   const handleEdit = () => {
     navigate("/notice-new-post-form");
@@ -15,11 +23,15 @@ function Post() {
 
   const handleDelete = () => {
     if (window.confirm("Do you want to delete the post?")) {
-      window.alert("Deleted");
-      // 추가적인 삭제 로직을 여기에 추가할 수 있습니다.
+      deleteNoticePost(postData.noticeId).then(() => {
+        window.alert("Deleted");
+        navigate("/notice-board");
+      });
     }
   };
-
+  if (!postData) {
+    return <div>Loading...</div>; // 데이터를 로딩 중일 때 보여줄 내용
+  }
   return (
     <div>
       <AppBar />
@@ -53,7 +65,7 @@ function Post() {
           >
             <Grid item xs={12} sm={12} md={6} lg={8}>
               <Typography variant={isSmallScreen ? "h5" : "h4"}>
-                2024 Session Start
+                {postData.title}
               </Typography>
             </Grid>
             <Grid
@@ -88,7 +100,7 @@ function Post() {
           <Grid container>
             <Grid item xs={8} lg={8}>
               <Typography variant="subtitle2" sx={{ color: "#999" }}>
-                2024. 04. 24. 19:25:42
+                {postData.createdAt}
               </Typography>
             </Grid>
             <Grid
@@ -110,7 +122,7 @@ function Post() {
                 <Typography
                   sx={{ marginRight: 0.5, color: isSmallScreen ? "grey" : "" }}
                 >
-                  1024
+                  {postData.views}
                 </Typography>
                 <VisibilityIcon
                   sx={{ color: isSmallScreen ? "grey" : "" }}
@@ -120,24 +132,32 @@ function Post() {
             </Grid>
           </Grid>
           <Divider sx={{ marginBottom: 5 }} />
-          <Box sx={{ textAlign: "center", marginBottom: 3 }}>
-            <img
-              src="./images/profile_temp.png"
-              alt="Notice Image"
-              style={{ width: "20%", maxWidth: "100%", height: "auto" }}
-            />
-          </Box>
-          <Typography variant="body1" sx={{ marginBottom: 3 }}>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of type
-            and scrambled it to make a type specimen book. It has survived not
-            only five centuries, but also the leap into electronic typesetting,
-            remaining essentially unchanged. It was popularised in the 1960s
-            with the release of Letraset sheets containing Lorem Ipsum passages,
-            and more recently with desktop publishing software like Aldus
-            PageMaker including versions of Lorem Ipsum.
+          {postData.imageList.length != 0 ? (
+            <Box sx={{ textAlign: "center", marginBottom: 3 }}>
+              <img
+                src="./images/profile_temp.png"
+                alt="Notice Image"
+                style={{ width: "20%", maxWidth: "100%", height: "auto" }}
+              />
+            </Box>
+          ) : (
+            <div></div>
+          )}
+
+          <Typography
+            variant="body1"
+            sx={{
+              marginBottom: 3,
+              marginLeft: 3,
+              marginRight: 3,
+              minHeight: "50vh",
+              overflowY: "scroll",
+              borderBottom: "1px solid #e0e0e0", // 회색 실선 추가
+            }}
+          >
+            {postData.content}
           </Typography>
+
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
             <Button
               variant="outlined"

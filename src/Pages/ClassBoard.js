@@ -43,7 +43,7 @@ function ClassBoard() {
   };
 
   const handleNewPost = () => {
-    navigate("/class-new-post-form");
+    navigate("/private/class-new-post-form");
   };
 
   const handlePreviousGroup = () => {

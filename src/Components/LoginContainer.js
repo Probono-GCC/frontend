@@ -6,17 +6,47 @@ import { TextField, Typography, Box } from "@mui/material";
 
 import Button from "../Components/Button";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
+import { useAuth } from "../store/AuthContext";
+//api
+import { loginApi } from "../Apis/Api/User";
 function LoginContainer() {
   const navigate = useNavigate();
   const [userID, setUserID] = useState("");
   const [userPW, setUserPW] = useState("");
   const { isSmallScreen, isSmallWidth } = useMediaQueryContext();
-
+  const { saveToken } = useAuth(); //토큰 전역 저장
   const moveForgotPassword = () => {
     navigate("/forgot-password");
   };
+
   const login = () => {
-    navigate("/");
+    // FormData 객체 생성
+    const formData = new FormData();
+
+    // formData에 username과 password 추가
+    formData.append("username", userID);
+    formData.append("password", userPW);
+
+    loginApi(formData).then((response) => {
+      if (response && response.status === 200) {
+        const authorizationHeader = response.headers["authorization"];
+        const token = authorizationHeader && authorizationHeader.split(" ")[1]; // Bearer 이후의 토큰만 추출
+        localStorage.setItem("jwt", token);
+
+        console.log("Token:", token);
+        if (token) {
+          const userData = saveToken(token);
+          console.log(userData);
+          if (!userData.hasOwnProperty("birth")) {
+            navigate("/my-profile");
+          } else {
+            navigate("/home"); // 로그인 후 이동할 경로
+          }
+        }
+      } else {
+        console.error("Login failed:", response.statusText);
+      }
+    });
   };
 
   return (

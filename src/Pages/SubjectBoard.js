@@ -19,7 +19,8 @@ import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
-
+//권한
+import { useAuth } from "../store/AuthContext"; // Context API에서 인증 상태를 가져옵니다
 function createData(title, date, author, viewCount) {
   return { title, date, author, viewCount };
 }
@@ -37,6 +38,9 @@ function SubjectBoard() {
   const [page, setPage] = useState(1);
   const itemsPerPage = 10;
   const { isSmallScreen } = useMediaQueryContext();
+
+  //권한 체크
+  const { userRole, isLoading } = useAuth(); // 인증 토큰 확인
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -249,21 +253,29 @@ function SubjectBoard() {
           <KeyboardDoubleArrowRightIcon />
         </IconButton>
       </Box>
-      <Box
-        sx={{ display: "flex", justifyContent: "flex-end", margin: "20px 10%" }}
-      >
-        <Button
-          variant="contained"
+      {userRole === "ROLE_ADMIN" ? (
+        <Box
           sx={{
-            backgroundColor: "#1b8ef2",
-            color: "white",
-            "&:hover": { backgroundColor: "#1565c0" },
+            display: "flex",
+            justifyContent: "flex-end",
+            margin: "20px 10%",
           }}
-          onClick={handleNewPost}
         >
-          New
-        </Button>
-      </Box>
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: "#1b8ef2",
+              color: "white",
+              "&:hover": { backgroundColor: "#1565c0" },
+            }}
+            onClick={handleNewPost}
+          >
+            New
+          </Button>
+        </Box>
+      ) : (
+        <div></div>
+      )}
     </div>
   );
 }
