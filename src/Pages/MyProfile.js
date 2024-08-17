@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Typography,
   Box,
@@ -11,11 +11,23 @@ import {
   Checkbox,
   FormControlLabel,
   FormHelperText,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import AppBar from "../Components/AppBar";
+import { jwtDecode } from "jwt-decode";
 
 function MyProfile() {
+  const [gender, setGender] = useState("");
+  const [birth, setBirth] = useState("");
+  const [phoneNum, setPhoneNum] = useState("");
+  const [fatherPhoneNum, setFatherPhoneNum] = useState("");
+  const [motherPhoneNum, setMotherPhoneNum] = useState("");
+  const [guardiansPhoneNum, setGuardiansPhoneNum] = useState("");
+  const [pwAnswer, setPwAnswer] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -25,7 +37,42 @@ function MyProfile() {
   const [passwordError, setPasswordError] = useState(false);
   const [agree, setAgree] = useState(false);
   const [profileImage, setProfileImage] = useState("/images/profile_temp.png");
+  const storedToken = localStorage.getItem("jwt");
+  const decodedToken = jwtDecode(storedToken);
 
+  // 필수 필드가 채워져 있는지 확인하는 로직
+  const validateForm = () => {
+    return (
+      pwAnswer &&
+      gender &&
+      birth &&
+      phoneNum &&
+      (fatherPhoneNum || motherPhoneNum || guardiansPhoneNum)
+    );
+  };
+  const handleGenderChange = (event) => {
+    setGender(event.target.value);
+  };
+  const handleBirthChange = (event) => {
+    const selectedDate = new Date(event.target.value);
+    setBirth(selectedDate.toISOString());
+  };
+  const handlePhoneNumChange = (event) => {
+    setPhoneNum(event.target.value);
+  };
+  const handleMotherPhoneNumChange = (event) => {
+    setMotherPhoneNum(event.target.value);
+  };
+  const handleFatherPhoneNumChange = (event) => {
+    setFatherPhoneNum(event.target.value);
+  };
+  const handleGuardiansNumChange = (event) => {
+    setGuardiansPhoneNum(event.target.value);
+  };
+
+  const handlePwAnswerChange = (event) => {
+    setPwAnswer(event.target.value);
+  };
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -79,6 +126,21 @@ function MyProfile() {
     setProfileImage("/images/profile_temp.png");
   };
 
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      if (!validateForm()) {
+        event.preventDefault();
+        event.returnValue =
+          "There are unsaved changes. Are you sure you want to leave?";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [password, newPassword, confirmPassword, passwordError, agree]);
   return (
     <div>
       <AppBar />
@@ -138,12 +200,12 @@ function MyProfile() {
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label="ID"
-              defaultValue="Const ID"
+              defaultValue={decodedToken.username}
               variant="outlined"
               InputProps={{
                 readOnly: true,
               }}
+              // value={decodedToken.username}
             />
           </Grid>
           <Grid item xs={12}>
@@ -155,25 +217,19 @@ function MyProfile() {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Gender"
-              variant="outlined"
-              InputProps={{
-                readOnly: true,
-              }}
-            />
+            <FormControl fullWidth variant="outlined">
+              <InputLabel>Gender</InputLabel>
+              <Select
+                value={gender}
+                onChange={handleGenderChange}
+                label="Gender"
+              >
+                <MenuItem value="Male">Male</MenuItem>
+                <MenuItem value="Female">Female</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Entrance Year"
-              variant="outlined"
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          </Grid>
+
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -197,15 +253,41 @@ function MyProfile() {
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label="Birth"
+              placeholder="Birth YYYY-MM-DD"
+              // placeholder="YYYY-MM-DD" // 입력 필드에 표시될 안내 텍스트
               variant="outlined"
-              InputProps={{
-                readOnly: true,
-              }}
+              type="date"
+              value={birth ? birth.split("T")[0] : ""}
+              onChange={handleBirthChange}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Phone"
+              variant="outlined"
+              value={phoneNum}
+              onChange={handlePhoneNumChange}
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField fullWidth label="Phone" variant="outlined" />
+            <TextField
+              fullWidth
+              label="Mother Phone Number"
+              variant="outlined"
+              value={motherPhoneNum}
+              onChange={handleMotherPhoneNumChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Father Phone Number"
+              variant="outlined"
+              value={fatherPhoneNum}
+              onChange={handleFatherPhoneNumChange}
+            />
           </Grid>
           <Grid item xs={12}>
             <TextField
@@ -222,6 +304,8 @@ function MyProfile() {
               variant="outlined"
               defaultValue="Green"
               sx={{ marginTop: 1 }}
+              value={pwAnswer}
+              onChange={handlePwAnswerChange}
             />
           </Grid>
           <Grid item xs={12}>
