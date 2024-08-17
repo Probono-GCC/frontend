@@ -25,7 +25,7 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
   const handleSave = () => {
     // const userData = JSON.stringify(rowData);
     if (rowData) {
-      const updatedStudentData = { ...rowData[0], pw: password };
+      const updatedStudentData = { ...rowData, pw: password };
       putStudent(updatedStudentData);
       setPassword("");
       setRePassword("");

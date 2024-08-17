@@ -15,12 +15,11 @@ import { putStudent, getStudents } from "../Apis/Api/User";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
-function createData(sn, gender, name, birth, id, grade) {
-  return { sn, gender, name, birth, id, grade };
+function createData(sn, name, gender, birth, id, grade) {
+  return { sn, name, gender, birth, id, grade };
 }
 
 function ChangePassword() {
-  // const [selectedRows, setSelectedRows] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalRowData, setModalRowData] = useState("default row data");
   const [alert, setAlert] = useState(false);
@@ -37,10 +36,10 @@ function ChangePassword() {
         const tempRow = result.map((item) =>
           createData(
             item.serialNumber,
-            item.sex,
             item.name,
+            item.sex,
             item.birth,
-            item.loginId,
+            item.username,
             item.grade,
             item.phoneNum
           )
@@ -49,6 +48,15 @@ function ChangePassword() {
       }
     });
   }, []);
+
+  useEffect(() => {
+    if (checkedRowId) {
+      const selectedData = allStudentData.find(
+        (item) => item.username === checkedRowId
+      );
+      setCheckedRowData(selectedData);
+    }
+  }, [checkedRowId, allStudentData]);
 
   const columns = isSmallScreen
     ? [
@@ -78,10 +86,6 @@ function ChangePassword() {
 
   const handleRowSelection = (_loginId) => {
     setCheckedRowId(_loginId);
-    setCheckedRowData(
-      allStudentData.filter((item) => item.loginId === _loginId)[0]
-    );
-    console.log("CHECKED: ", checkedRowData);
   };
 
   const handleModalOpen = () => {
