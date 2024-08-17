@@ -20,21 +20,50 @@ import { getStudents } from "../Apis/Api/User";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
-function createData(sn, gender, name, birth, id, grade) {
-  return { sn, gender, name, birth, id, grade };
+function createData(sn, name, gender, birth, id, grade) {
+  return { sn, name, gender, birth, id, grade };
 }
 
 function ChangeGrade() {
-  // const [selectedRows, setSelectedRows] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [warningModalOpen, setWarningModalOpen] = useState(false);
   const [modalRowData, setModalRowData] = useState("default row data");
   const [alert, setAlert] = useState(false);
-  const [checkedRowId, setCheckedRowId] = useState(null); // 단일 값으로 변경
+  const [checkedRowId, setCheckedRowId] = useState(null);
   const [checkedRowData, setCheckedRowData] = useState(null);
   const [rows, setRows] = useState([]);
   const [allStudentData, setAllStudentDatas] = useState([]);
   const { isSmallScreen } = useMediaQueryContext();
+
+  useEffect(() => {
+    getStudents().then((result) => {
+      console.log("ALL DATA:", result);
+      setAllStudentDatas(result);
+      if (result.length > 0) {
+        const tempRow = result.map((item) =>
+          createData(
+            item.serialNumber,
+            item.name,
+            item.sex,
+            item.birth,
+            item.username,
+            item.grade,
+            item.phoneNum
+          )
+        );
+        setRows(tempRow);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (checkedRowId) {
+      const selectedData = allStudentData.find(
+        (item) => item.username === checkedRowId
+      );
+      setCheckedRowData(selectedData);
+    }
+  }, [checkedRowId, allStudentData]);
 
   const columns = isSmallScreen
     ? [
@@ -61,32 +90,20 @@ function ChangeGrade() {
         { field: "id", headerName: "ID", flex: 0.2 },
         { field: "grade", headerName: "Grade", flex: 0.3 },
       ];
-  //table의 선택된 row id를 checkedRowId 변수에 저장
+
   const handleSelectedRowId = (_loginId) => {
+    console.log("CHECKED: ", _loginId);
     setCheckedRowId(_loginId);
-    setCheckedRowData(
-      allStudentData.filter((item) => item.loginId === _loginId)[0]
-    );
   };
 
-  // //table의 선택된 row data를 checkedRowData 변수에 저장
-  // const handleSelectedRowData = (params) => {
-  //   console.log(params, "data");
-  //   setCheckedRowData(params);
-  // };
-  //change grade 모달 open함수 호출
   const handleModalOpen = () => {
-    // setModalRowData(checkedRowId);
     console.log("OPENING: ", checkedRowData);
     setModalOpen(true);
   };
 
-  //모달 닫기 함수
   const handleModalClose = () => {
     setModalOpen(false);
   };
-
-  //change all grade 경고 모달 open
 
   const handleClickOpen = () => {
     setWarningModalOpen(true);
@@ -95,6 +112,7 @@ function ChangeGrade() {
   const handleClose = () => {
     setWarningModalOpen(false);
   };
+
   const updatedColumns = [
     {
       field: "check",
@@ -106,27 +124,6 @@ function ChangeGrade() {
     },
     ...columns,
   ];
-
-  useEffect(() => {
-    getStudents().then((result) => {
-      console.log(result);
-      setAllStudentDatas(result);
-      if (result.length > 0) {
-        const tempRow = result.map((item) =>
-          createData(
-            item.serialNumber,
-            item.sex,
-            item.name,
-            item.birth,
-            item.loginId,
-            item.grade,
-            item.phoneNum
-          )
-        );
-        setRows(tempRow);
-      }
-    });
-  }, []);
 
   return (
     <div id="page_content">
@@ -161,12 +158,13 @@ function ChangeGrade() {
         <Table
           columns={updatedColumns}
           rows={rows}
-          onRowSelection={handleSelectedRowId} //라디오 버튼과 같은 선택 상자가 클릭 될 때의 event
-          // onRowSelectionData={handleSelectedRowData}
+          onRowSelection={handleSelectedRowId}
+          onRowClick={handleSelectedRowId}
           id={isSmallScreen ? "" : "table_body"}
           getRowId={(row) => row.sn}
           isRadioButton={true}
           checkedRows={(params) => null}
+          onRowDoubleClick={(params) => handleModalOpen(params.row)}
         />
         <Grid container>
           <Grid xs={6} sx={{ display: "flex", justifyContent: "flex-start" }}>

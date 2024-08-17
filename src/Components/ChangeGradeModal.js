@@ -42,7 +42,7 @@ function CustomModal({ open, handleClose, title, rowData }) {
 
   const handleSave = async () => {
     if (rowData) {
-      const updatedStudentData = { ...rowData[0], grade: newGrade };
+      const updatedStudentData = { ...rowData, grade: newGrade };
       putStudent(updatedStudentData);
       setNewGrade("");
       handleClose();
@@ -83,7 +83,7 @@ function CustomModal({ open, handleClose, title, rowData }) {
                   label="name"
                   variant="outlined"
                   type="text"
-                  value={studentData ? studentData.name : ""}
+                  value={rowData ? rowData.name : ""}
                   InputProps={{
                     style: {
                       fontWeight: "bold", // 텍스트를 bold로 설정
@@ -124,7 +124,7 @@ function CustomModal({ open, handleClose, title, rowData }) {
                   variant="contained"
                   color="primary"
                   onClick={handleSave}
-                  disabled={newGrade.length === 0}
+                  disabled={newGrade != null && newGrade.length === 0}
                 >
                   Save
                 </Button>
