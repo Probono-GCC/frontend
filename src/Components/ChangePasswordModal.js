@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { styled, css, color } from "@mui/system";
 import { grey } from "../Styles/Color"; // 색상 팔레트 임포트
 
@@ -13,6 +13,7 @@ import {
   Button,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { getStudents, postStudent, putStudent } from "../Apis/Api/User";
 
 function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
   const [password, setPassword] = useState("");
@@ -23,8 +24,13 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
 
   const handleSave = () => {
     // const userData = JSON.stringify(rowData);
-    setPassword("");
-    setRePassword("");
+    if (rowData) {
+      const updatedStudentData = { ...rowData[0], pw: password };
+      putStudent(updatedStudentData);
+      setPassword("");
+      setRePassword("");
+      handleClose();
+    }
   };
 
   const handleClickShowPassword = () => {

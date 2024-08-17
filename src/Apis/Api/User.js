@@ -40,10 +40,24 @@ export async function getStudents() {
   }
 }
 
+
 export async function loginApi(userData) {
   try {
     const response = await axiosInstance.post(`/login`, userData);
     return response;
+  } catch (err) {
+    console.log(err);
+  }
+}
+export async function putStudent(userData) {
+  try {
+    const response = await axiosInstance.put(
+      `/students/${userData.loginId}`,
+      userData
+    );
+    console.log(response);
+    return response.data;
+
   } catch (err) {
     console.log(err);
   }
