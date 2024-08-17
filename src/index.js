@@ -16,19 +16,13 @@ root.render(
   <MediaQueryProvider>
     <React.StrictMode>
       <BrowserRouter>
-        <Routes>
-          {/* 공용 라우트 */}
-          <Route path="/*" element={<PublicRoutes />} />
-          {/* 개인 라우트 */}
-          <Route
-            path="/*"
-            element={
-              <AuthProvider>
-                <PrivateRoutes />
-              </AuthProvider>
-            }
-          />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route path="/*" element={<PublicRoutes />} />
+            {/* 프라이빗 라우트 */}
+            <Route path="/private/*" element={<PrivateRoutes />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </React.StrictMode>
   </MediaQueryProvider>

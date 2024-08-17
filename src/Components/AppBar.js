@@ -48,7 +48,7 @@ function AppBar() {
 
   const location = useLocation();
   const goHome = () => {
-    navigate("/");
+    navigate("/home");
   };
 
   const goNoticeBoard = () => {
@@ -56,7 +56,7 @@ function AppBar() {
   };
 
   const goCreateAccount = () => {
-    navigate("/create-account");
+    navigate("/private/create-account");
   };
 
   const goMyProfile = () => {
@@ -64,15 +64,15 @@ function AppBar() {
   };
 
   const goStudentView = () => {
-    navigate("/student-view");
+    navigate("/private/student-view");
   };
 
   const goTeacherView = () => {
-    navigate("/teacher-view");
+    navigate("/private/teacher-view");
   };
 
   const goCreateClass = () => {
-    navigate("/create-class");
+    navigate("/private/create-class");
   };
 
   const goClassBoard = () => {
@@ -80,7 +80,7 @@ function AppBar() {
   };
 
   const goClassInfo = () => {
-    navigate("/class-info");
+    navigate("/private/class-info");
   };
 
   const goSubjectBoard = () => {
@@ -88,27 +88,27 @@ function AppBar() {
   };
 
   const goSubjectInfo = () => {
-    navigate("/subject-info");
+    navigate("/private/subject-info");
   };
 
   const goAssignHomeroom = () => {
-    navigate("/assign-homeroom");
+    navigate("/private/assign-homeroom");
   };
 
   const goChangePassword = () => {
-    navigate("/change-password");
+    navigate("/private/change-password");
   };
 
   const goCommonCourseManagement = () => {
-    navigate("/common-course-management");
+    navigate("/private/common-course-management");
   };
 
   const goElectiveCourseManagement = () => {
-    navigate("/elective-course-management");
+    navigate("/private/elective-course-management");
   };
 
   const goChangeGrade = () => {
-    navigate("/change-grade");
+    navigate("/private/change-grade");
   };
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -286,16 +286,16 @@ function AppBar() {
   // 하위 경로 확인 및 Accordion 상태 설정 (classes 추후 수정 필요)
   useEffect(() => {
     const userManagementPaths = [
-      "/create-account",
-      "/student-view",
-      "/teacher-view",
-      "/change-password",
-      "/change-grade",
+      "/private/create-account",
+      "/private/student-view",
+      "/private/teacher-view",
+      "/private/change-password",
+      "/private/change-grade",
     ];
     const classCourseManagementPaths = [
-      "/create-class",
-      "/assign-homeroom",
-      "/common-course-management",
+      "/private/create-class",
+      "/private/assign-homeroom",
+      "/private/common-course-management",
     ];
     if (
       userManagementPaths.some((path) => location.pathname.startsWith(path))
@@ -407,7 +407,7 @@ function AppBar() {
           >
             <Avatar
               alt="Administrator"
-              src="/images/profile_temp.png"
+              src="/private/images/profile_temp.png"
               sx={{
                 width: 60,
                 height: 60,
@@ -425,7 +425,10 @@ function AppBar() {
                 <ListItemIcon
                   sx={{
                     minWidth: "40px",
-                    color: location.pathname === "/" ? "primary.main" : "none",
+                    color:
+                      location.pathname === "/private/"
+                        ? "primary.main"
+                        : "none",
                   }}
                 >
                   <HomeIcon />
@@ -435,7 +438,7 @@ function AppBar() {
                   sx={{
                     "& .MuiTypography-root": {
                       fontWeight:
-                        location.pathname === "/"
+                        location.pathname === "/private/"
                           ? theme.typography.fontWeightBold
                           : theme.typography.fontWeightRegular,
                     },
@@ -452,7 +455,7 @@ function AppBar() {
                   sx={{
                     minWidth: "40px",
                     color:
-                      location.pathname === "/notice-board"
+                      location.pathname === "/private/notice-board"
                         ? theme.palette.primary.main
                         : "none",
                   }}
@@ -464,7 +467,7 @@ function AppBar() {
                   sx={{
                     "& .MuiTypography-root": {
                       fontWeight:
-                        location.pathname === "/notice-board"
+                        location.pathname === "/private/notice-board"
                           ? theme.typography.fontWeightBold
                           : theme.typography.fontWeightRegular,
                     },
@@ -516,7 +519,7 @@ function AppBar() {
                       sx={{
                         "& .MuiTypography-root": {
                           fontWeight:
-                            location.pathname === "/create-account"
+                            location.pathname === "/private/create-account"
                               ? theme.typography.fontWeightBold
                               : theme.typography.fontWeightRegular,
                         },
@@ -535,7 +538,7 @@ function AppBar() {
                       sx={{
                         "& .MuiTypography-root": {
                           fontWeight:
-                            location.pathname === "/student-view"
+                            location.pathname === "/private/student-view"
                               ? theme.typography.fontWeightBold
                               : theme.typography.fontWeightRegular,
                         },
@@ -554,7 +557,7 @@ function AppBar() {
                       sx={{
                         "& .MuiTypography-root": {
                           fontWeight:
-                            location.pathname === "/teacher-view"
+                            location.pathname === "/private/teacher-view"
                               ? theme.typography.fontWeightBold
                               : theme.typography.fontWeightRegular,
                         },
@@ -573,7 +576,7 @@ function AppBar() {
                       sx={{
                         "& .MuiTypography-root": {
                           fontWeight:
-                            location.pathname === "/change-password"
+                            location.pathname === "/private/change-password"
                               ? theme.typography.fontWeightBold
                               : theme.typography.fontWeightRegular,
                         },
@@ -592,7 +595,7 @@ function AppBar() {
                       sx={{
                         "& .MuiTypography-root": {
                           fontWeight:
-                            location.pathname === "/change-grade"
+                            location.pathname === "/private/change-grade"
                               ? theme.typography.fontWeightBold
                               : theme.typography.fontWeightRegular,
                         },
@@ -644,7 +647,7 @@ function AppBar() {
                       sx={{
                         "& .MuiTypography-root": {
                           fontWeight:
-                            location.pathname === "/create-class"
+                            location.pathname === "/private/create-class"
                               ? theme.typography.fontWeightBold
                               : theme.typography.fontWeightRegular,
                         },
@@ -659,7 +662,7 @@ function AppBar() {
                       sx={{
                         "& .MuiTypography-root": {
                           fontWeight:
-                            location.pathname === "/assign-homeroom"
+                            location.pathname === "/private/assign-homeroom"
                               ? theme.typography.fontWeightBold
                               : theme.typography.fontWeightRegular,
                         },
@@ -677,7 +680,8 @@ function AppBar() {
                       sx={{
                         "& .MuiTypography-root": {
                           fontWeight:
-                            location.pathname === "/common-course-management"
+                            location.pathname ===
+                            "/private/common-course-management"
                               ? theme.typography.fontWeightBold
                               : theme.typography.fontWeightRegular,
                         },
@@ -869,7 +873,7 @@ function AppBar() {
                   sx={{
                     minWidth: "40px",
                     color:
-                      location.pathname === "/my-profile"
+                      location.pathname === "/private/my-profile"
                         ? theme.palette.primary.main
                         : "none",
                   }}
@@ -881,7 +885,7 @@ function AppBar() {
                   sx={{
                     "& .MuiTypography-root": {
                       fontWeight:
-                        location.pathname === "/my-profile"
+                        location.pathname === "/private/my-profile"
                           ? theme.typography.fontWeightBold
                           : theme.typography.fontWeightRegular,
                     },

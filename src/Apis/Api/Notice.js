@@ -5,7 +5,7 @@ import { axiosInstance } from "../Utils/Axios";
 export async function postNewNotice(postingData) {
   try {
     const response = await axiosInstance.post("/notice", postingData);
-    return response.data;
+    return response;
   } catch (err) {
     console.log(err);
   }
@@ -14,7 +14,7 @@ export async function postNewNotice(postingData) {
 //게시판 글 리스트 불러오기
 export async function getNoticePostList() {
   try {
-    const response = await axiosInstance.get("/notice/schoolNoticeList/1");
+    const response = await axiosInstance.get("/notice/schoolNoticeList");
     return response.data;
   } catch (err) {
     console.log(err);
