@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -13,7 +13,6 @@ import AppBar from "../Components/AppBar";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
-
 
 //API
 import { postNewNotice, postImage } from "../Apis/Api/Notice";
@@ -40,25 +39,41 @@ function NoticeNewPostForm() {
   const [title, setTitle] = useState("");
   // const [grade, setGrade] = useState("All");
   const [content, setContent] = useState("");
-  const [imgURL, setimgURL] = useState("");
+  const [imgURL, setImgURL] = useState([]);
   const { isSmallScreen } = useMediaQueryContext();
   const quillRef = useRef();
   const handleSave = () => {
-    // 저장 시 새로운 페이지 생성하는 코드 필요!
-    const postingData = {
-      title: title,
-      content: content.replace(/<\/?[^>]+(>|$)/g, ""),
-      type: "SCHOOL",
-    };
-    // console.log("postingData", postingData);
-    postNewNotice(postingData).then((result) => {
+    const formData = new FormData();
+
+    // 필수 필드 추가
+    formData.append("title", title);
+    formData.append("content", content.replace(/<\/?[^>]+(>|$)/g, ""));
+    formData.append("type", "SCHOOL");
+
+    // 선택적 필드 추가
+    formData.append("classId", null);
+    formData.append("courseId", null);
+
+    // 이미지 리스트가 있을 경우 추가
+    if (Array.isArray(imgURL) && imgURL.length > 0) {
+      imgURL.forEach((img, index) => {
+        if (img instanceof File) {
+          formData.append(`imageList[${index}]`, img);
+        }
+      });
+    } else {
+      // 이미지 리스트가 비어 있을 경우 빈 배열로 추가
+      formData.append("imageList", JSON.stringify([]));
+    }
+    // FormData를 서버에 POST 요청으로 전송
+    postNewNotice(formData).then((result) => {
       if (result && imgURL) {
         console.log(result.noticeId, "+", imgURL);
         console.log("post result?", result);
         alert("게시글 포스팅 완료");
+        navigate("/notice-board");
       }
     });
-    navigate("/notice-board");
   };
 
   const handleCancel = () => {
@@ -76,8 +91,8 @@ function NoticeNewPostForm() {
         const reader = new FileReader();
 
         reader.onloadend = () => {
-          // URL.createObjectURL 대신 FileReader 사용
-          setimgURL(reader.result);
+          // 이전 이미지 배열에 새로운 이미지를 추가
+          setImgURL((prevURLs) => [...prevURLs, reader.result]);
         };
 
         reader.readAsDataURL(file); // 이미지 파일을 Data URL로 읽어들임
@@ -86,7 +101,6 @@ function NoticeNewPostForm() {
 
     input.click();
   };
-
   const checkImage = (file) => {
     let err = "";
 
@@ -125,6 +139,7 @@ function NoticeNewPostForm() {
     "blockquote",
     "image",
   ];
+
   return (
     <div>
       <AppBar />
@@ -208,7 +223,7 @@ function NoticeNewPostForm() {
             <Box
               sx={{
                 display: "flex",
-                flexDirection: "column",
+                flexDirection: "row",
                 alignItems: "start",
                 minHeight: "50px", // 기본 높이 설정
                 height: "auto", // 이미지에 따라 자동 조정
@@ -217,18 +232,20 @@ function NoticeNewPostForm() {
                 padding: "8px",
               }}
             >
-              {imgURL && (
+              {imgURL.map((url, index) => (
                 <img
-                  src={imgURL}
-                  alt="Selected"
                   style={{
                     maxWidth: "100%",
                     maxHeight: "200px",
                     borderRadius: "8px",
                     objectFit: "cover",
+                    // margin: "0 5px",
                   }}
+                  key={index}
+                  src={url}
+                  alt={`Uploaded ${index}`}
                 />
-              )}
+              ))}
             </Box>
           </Grid>
           <Grid
