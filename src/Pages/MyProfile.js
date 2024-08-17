@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Typography,
   Box,
@@ -19,6 +19,13 @@ import {
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import AppBar from "../Components/AppBar";
 import { jwtDecode } from "jwt-decode";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+
+//권한
+import { useAuth } from "../store/AuthContext"; // Context API에서 인증 상태를 가져옵니다
 
 function MyProfile() {
   const [gender, setGender] = useState("");
@@ -40,6 +47,7 @@ function MyProfile() {
   const storedToken = localStorage.getItem("jwt");
   const decodedToken = jwtDecode(storedToken);
 
+  const { userRole } = useAuth();
   // 필수 필드가 채워져 있는지 확인하는 로직
   const validateForm = () => {
     return (
@@ -200,6 +208,8 @@ function MyProfile() {
           <Grid item xs={12}>
             <TextField
               fullWidth
+              disabled={userRole === "ROLE_ADMIN"}
+              label="ID"
               defaultValue={decodedToken.username}
               variant="outlined"
               InputProps={{
@@ -211,18 +221,27 @@ function MyProfile() {
           <Grid item xs={12}>
             <TextField
               fullWidth
+              disabled={userRole === "ROLE_ADMIN"}
+              id="outlined-disabled"
               label="Name"
-              defaultValue="Const Name"
+              defaultValue="name"
+              value={decodedToken.name}
               variant="outlined"
             />
           </Grid>
+
           <Grid item xs={12}>
             <FormControl fullWidth variant="outlined">
-              <InputLabel>Gender</InputLabel>
+              {userRole == "ROLE_ADMIN" ? (
+                <InputLabel>Gender field for student/teacher</InputLabel>
+              ) : (
+                <InputLabel>Gender</InputLabel>
+              )}
+
               <Select
                 value={gender}
                 onChange={handleGenderChange}
-                label="Gender"
+                disabled={userRole === "ROLE_ADMIN"}
               >
                 <MenuItem value="Male">Male</MenuItem>
                 <MenuItem value="Female">Female</MenuItem>
@@ -233,7 +252,12 @@ function MyProfile() {
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label="Grade"
+              disabled={userRole === "ROLE_ADMIN" || "ROLE_TEACHER"}
+              label={
+                userRole === "ROLE_ADMIN" || "ROLE_TEACHER"
+                  ? "Grade field for student"
+                  : "Grade"
+              }
               variant="outlined"
               InputProps={{
                 readOnly: true,
@@ -243,164 +267,224 @@ function MyProfile() {
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label="Section"
+              label={
+                userRole === "ROLE_ADMIN" || "ROLE_TEACHER"
+                  ? "Section field for student"
+                  : "Section"
+              }
+              disabled={userRole === "ROLE_ADMIN" || "ROLE_TEACHER"}
               variant="outlined"
               InputProps={{
                 readOnly: true,
               }}
             />
           </Grid>
+
+          <Grid item xs={12}>
+            <LocalizationProvider fullWidth dateAdapter={AdapterDayjs}>
+              <DemoContainer components={["DatePicker"]}>
+                <DatePicker
+                  sx={{ width: "100%" }}
+                  label={
+                    userRole === "ROLE_ADMIN"
+                      ? "Birth field for student/teacher"
+                      : "Birth"
+                  }
+                  disabled={userRole === "ROLE_ADMIN"}
+                />
+              </DemoContainer>
+            </LocalizationProvider>
+          </Grid>
           <Grid item xs={12}>
             <TextField
               fullWidth
-              placeholder="Birth YYYY-MM-DD"
-              // placeholder="YYYY-MM-DD" // 입력 필드에 표시될 안내 텍스트
               variant="outlined"
-              type="date"
-              value={birth ? birth.split("T")[0] : ""}
-              onChange={handleBirthChange}
+              value={phoneNum}
+              onChange={handlePhoneNumChange}
+              label={
+                userRole === "ROLE_ADMIN" || "ROLE_TEACHER"
+                  ? "Phone field for student"
+                  : "Phone"
+              }
+              disabled={userRole === "ROLE_ADMIN" || "ROLE_TEACHER"}
             />
           </Grid>
 
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label="Phone"
-              variant="outlined"
-              value={phoneNum}
-              onChange={handlePhoneNumChange}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Mother Phone Number"
               variant="outlined"
               value={motherPhoneNum}
               onChange={handleMotherPhoneNumChange}
+              label={
+                userRole === "ROLE_ADMIN" || "ROLE_TEACHER"
+                  ? "Mother Phone field for student"
+                  : "Phone"
+              }
+              disabled={userRole === "ROLE_ADMIN" || "ROLE_TEACHER"}
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label="Father Phone Number"
+              label={
+                userRole === "ROLE_ADMIN" || "ROLE_TEACHER"
+                  ? "Father Phone field for student"
+                  : "Phone"
+              }
+              disabled={userRole === "ROLE_ADMIN" || "ROLE_TEACHER"}
               variant="outlined"
               value={fatherPhoneNum}
               onChange={handleFatherPhoneNumChange}
             />
           </Grid>
+
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label="PW Question"
               variant="outlined"
               defaultValue="What is your favorite color?"
               InputProps={{
                 readOnly: true,
               }}
+              label={
+                userRole === "ROLE_ADMIN"
+                  ? "PW Question field for student/teacher"
+                  : "PW Question"
+              }
+              disabled={userRole === "ROLE_ADMIN"}
             />
             <TextField
               fullWidth
               variant="outlined"
-              defaultValue="Green"
+              defaultValue=""
               sx={{ marginTop: 1 }}
               value={pwAnswer}
               onChange={handlePwAnswerChange}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Previous PW"
-              variant="outlined"
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={handlePasswordChange}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="New PW"
-              variant="outlined"
-              type={showNewPassword ? "text" : "password"}
-              value={newPassword}
-              onChange={handleNewPasswordChange}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowNewPassword}
-                      edge="end"
-                    >
-                      {showNewPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Re-type PW"
-              variant="outlined"
-              type={showConfirmPassword ? "text" : "password"}
-              value={confirmPassword}
-              onChange={handleConfirmPasswordChange}
-              error={passwordError}
-              helperText={passwordError ? "Passwords do not match" : ""}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowConfirmPassword}
-                      edge="end"
-                    >
-                      {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <FormControlLabel
-              control={
-                <Checkbox checked={agree} onChange={handleAgreeChange} />
+              label={
+                userRole === "ROLE_ADMIN"
+                  ? "PW Answer field for student/teacher"
+                  : "PW Answer"
               }
-              label="Agree with"
+              disabled={userRole === "ROLE_ADMIN"}
             />
-            <FormHelperText>
-              [Consent for Collection and Use of Personal Information] Retention
-              and usage period: Until the member withdraws their membership.
-            </FormHelperText>
           </Grid>
-          <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              disabled={!agree}
-            >
-              Save
-            </Button>
-          </Grid>
+          {userRole != "ROLE_ADMIN" ? (
+            <div>
+              <p
+                style={{
+                  marginLeft: "24px",
+                  marginBottom: 0,
+                }}
+              >
+                change password
+              </p>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Previous PW"
+                  variant="outlined"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={handlePasswordChange}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="New PW"
+                  variant="outlined"
+                  type={showNewPassword ? "text" : "password"}
+                  value={newPassword}
+                  onChange={handleNewPasswordChange}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowNewPassword}
+                          edge="end"
+                        >
+                          {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Re-type PW"
+                  variant="outlined"
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={handleConfirmPasswordChange}
+                  error={passwordError}
+                  helperText={passwordError ? "Passwords do not match" : ""}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowConfirmPassword}
+                          edge="end"
+                        >
+                          {showConfirmPassword ? (
+                            <VisibilityOff />
+                          ) : (
+                            <Visibility />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={
+                    <Checkbox checked={agree} onChange={handleAgreeChange} />
+                  }
+                  label="Agree with"
+                />
+                <FormHelperText>
+                  [Consent for Collection and Use of Personal Information]
+                  Retention and usage period: Until the member withdraws their
+                  membership.
+                </FormHelperText>
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                sx={{ display: "flex", justifyContent: "center" }}
+              >
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  disabled={!agree}
+                >
+                  Save
+                </Button>
+              </Grid>
+            </div>
+          ) : (
+            <div></div>
+          )}
         </Grid>
       </Box>
       <Box sx={{ marginBottom: 5 }} />
