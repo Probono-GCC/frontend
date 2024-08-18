@@ -83,6 +83,8 @@ function StudentView() {
     { field: "grade", headerName: "Grade", flex: 0.3 },
     { field: "phone_num", headerName: "Phone" },
   ];
+
+  // 추후 수정 필요
   const handleRowSelection = (id) => {
     setCheckedRows((prevCheckedRows) => {
       const newCheckedRows = prevCheckedRows.includes(id)
@@ -92,6 +94,7 @@ function StudentView() {
       return newCheckedRows;
     });
   };
+
   const handleModalOpen = (row) => {
     setModalRowData(row);
     setModalOpen(true);
@@ -122,7 +125,7 @@ function StudentView() {
 
       // 성공적으로 삭제 후 알림 표시
       setAlert(true);
-      setTimeout(() => setAlert(false), 2000); // 3초 후 알림 숨김
+      setTimeout(() => setAlert(false), 2000); // 2초 후 알림 숨김
 
       setCheckedRows([]);
 
@@ -138,8 +141,10 @@ function StudentView() {
   useEffect(() => {
     getStudents().then((result) => {
       console.log(result);
-      if (result.length > 0) {
-        const tempRow = result.map((item) =>
+      const students = result.content || []; // content 배열 가져오기
+      console.log(students);
+      if (students.length > 0) {
+        const tempRow = students.map((item) =>
           createData(
             item.serialNumber,
             item.sex,
@@ -154,7 +159,6 @@ function StudentView() {
       }
     });
   }, []);
-  // [] 안에 rows를 넣으면 이 값이 바뀔때마다 useEffect가 실행됨!
 
   return (
     <div id="page_content">
@@ -190,7 +194,7 @@ function StudentView() {
           rows={rows}
           onRowSelection={handleRowSelection}
           onRowDoubleClick={handleRowDoubleClick}
-          getRowId={(row) => row.sn}
+          getRowId={(row) => row.id}
           id={isSmallScreen ? "" : "table_body"}
           isRadioButton={false}
           isStudentTable={true} //row클릭시 체크박스 활성화 안되게 하기위해 커스텀

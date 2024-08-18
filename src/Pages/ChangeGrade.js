@@ -37,10 +37,12 @@ function ChangeGrade() {
 
   useEffect(() => {
     getStudents().then((result) => {
-      console.log("ALL DATA:", result);
-      setAllStudentDatas(result);
-      if (result.length > 0) {
-        const tempRow = result.map((item) =>
+      console.log(result);
+      const students = result.content || []; // content 배열 가져오기
+      setAllStudentDatas(students);
+      console.log(students);
+      if (students.length > 0) {
+        const tempRow = students.map((item) =>
           createData(
             item.serialNumber,
             item.name,
@@ -161,7 +163,7 @@ function ChangeGrade() {
           onRowSelection={handleSelectedRowId}
           onRowClick={handleSelectedRowId}
           id={isSmallScreen ? "" : "table_body"}
-          getRowId={(row) => row.sn}
+          getRowId={(row) => row.id}
           isRadioButton={true}
           checkedRows={(params) => null}
           onRowDoubleClick={(params) => handleModalOpen(params.row)}
