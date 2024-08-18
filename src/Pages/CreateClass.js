@@ -9,13 +9,12 @@ import {
   Typography,
   Alert,
   Stack,
+  Checkbox,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import AppBar from "../Components/AppBar";
-import Table from "../Components/Table"; // Import the Table component
-import Checkbox from "@mui/material/Checkbox";
+import Table from "../Components/Table";
+import { postClass, getClasses, deleteClass } from "../Apis/Api/Class";
 
-import axios from "axios";
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 const grades = [
@@ -35,79 +34,121 @@ const grades = [
   { value: "CLASS10", label: "Class 10" },
 ];
 
-const sections = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"];
+const sections = ["A", "B"];
 
 const batchYears = [];
 for (let year = 2024 + 57; year <= 2030 + 57; year++) {
-  // 네팔력
   batchYears.push(year);
 }
 
 function CreateClass() {
-  const navigate = useNavigate();
   const [batch, setBatch] = useState("");
   const [grade, setGrade] = useState("");
   const [section, setSection] = useState("");
-  const [alert, setAlert] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
   const [checkedRows, setCheckedRows] = useState([]);
+  const [rows, setRows] = useState([]);
 
   useEffect(() => {
     setBatch(batchYears[0]);
-  }, [batchYears]);
 
-  const handleCreate = () => {
-    // Implement the create functionality here
+    // Fetching class data when the component mounts
+    getClasses().then((result) => {
+      console.log(result);
+      const tempRow = result.content.map((item, index) => ({
+        id: index + 1, // Assuming an index for table rows
+        year: item.year,
+        grade: item.grade,
+        section: item.section,
+        classId: item.classId, // classId를 가져와서 삭제에 활용
+      }));
+      setRows(tempRow);
+    });
+  }, []);
+
+  const handleCreate = async () => {
+    const newClassData = {
+      year: batch,
+      grade: grade,
+      section: section,
+    };
+    console.log(newClassData);
+    try {
+      const response = await postClass(newClassData);
+      setRows((prevRows) => [
+        ...prevRows,
+        { id: prevRows.length + 1, ...response },
+      ]);
+      setShowAlert(true);
+    } catch (err) {
+      console.error("Failed to create class:", err);
+      window.alert("Failed to create class.");
+    }
   };
 
-  const handleRowSelection = (id) => {
-    setCheckedRows((prevCheckedRows) =>
-      prevCheckedRows.includes(id)
-        ? prevCheckedRows.filter((rowId) => rowId !== id)
-        : [...prevCheckedRows, id]
-    );
+  const handleRowSelection = (_id) => {
+    console.log("체크: ", _id);
+    setCheckedRows((prevCheckedRows) => {
+      const newCheckedRows = prevCheckedRows.includes(_id)
+        ? prevCheckedRows.filter((rowId) => rowId !== _id)
+        : [...prevCheckedRows, _id];
+      console.log("업데이트된 선택된 행:", newCheckedRows);
+      return newCheckedRows;
+    });
   };
 
-  const deleteRow = () => {
-    setAlert(true);
-    setTimeout(() => setAlert(false), 2000); // Hide the alert after 2 seconds
-    setCheckedRows([]);
+  const deleteRow = async () => {
+    try {
+      // 각 선택된 행에 대해 삭제 요청 수행
+      for (const id of checkedRows) {
+        const rowToDelete = rows.find((row) => row.id === id);
+        if (rowToDelete) {
+          await deleteClass({ classId: rowToDelete.classId });
+        }
+      }
+
+      // 삭제된 행을 UI에서 제거
+      setRows((prevRows) =>
+        prevRows.filter((row) => !checkedRows.includes(row.id))
+      );
+
+      // 성공적으로 삭제되었음을 알림
+      setShowAlert(true);
+      setTimeout(() => setShowAlert(false), 2000); // 2초 후 알림 숨김
+      setCheckedRows([]);
+    } catch (err) {
+      console.error("Failed to delete class:", err);
+      window.alert("Failed to delete class.");
+    }
   };
 
   const columns = [
-    // {
-    //   field: "check",
-    //   headerName: "",
-    //   flex: 0.05,
-    //   renderCell: (params) => (
-    //     <Checkbox
-    //       {...label}
-    //       checked={checkedRows.includes(params.row.id)}
-    //       onChange={() => handleRowSelection(params.row.id)}
-    //     />
-    //   ),
-    // },
-    { field: "batch", headerName: "Batch", flex: 0.33 },
-    { field: "grade", headerName: "Grade", flex: 0.33 },
-    { field: "section", headerName: "Section", flex: 0.33 },
-  ];
-
-  const rows = [
-    { id: 1, batch: "2084", grade: "PlayGroup", section: "A" },
-    { id: 2, batch: "2084", grade: "LowerKG", section: "A" },
-    { id: 3, batch: "2084", grade: "LowerKG", section: "B" },
-    { id: 4, batch: "2084", grade: "UpperKG", section: "A" },
-    { id: 5, batch: "2084", grade: "UpperKG", section: "B" },
+    {
+      field: "check",
+      headerName: "",
+      flex: 0.05,
+      renderCell: (params) => (
+        <Checkbox
+          {...label}
+          checked={checkedRows.includes(params.row.id)}
+          onChange={() => handleRowSelection(params.row.id)}
+        />
+      ),
+    },
+    { field: "year", headerName: "Batch", flex: 0.25 },
+    { field: "grade", headerName: "Grade", flex: 0.25 },
+    { field: "section", headerName: "Section", flex: 0.25 },
   ];
 
   return (
     <div>
       <AppBar />
-      {alert && (
+      {showAlert && (
         <Stack
           sx={{ width: "100%", position: "fixed", top: "65px", zIndex: 10 }}
           spacing={2}
         >
-          <Alert severity="success">Deleted successfully!</Alert>
+          <Alert severity="success">Operation successful!</Alert>
         </Stack>
       )}
       <Box sx={{ padding: 3 }}>
@@ -117,7 +158,7 @@ function CreateClass() {
         >
           Create Class
         </Typography>
-        <Paper sx={{ padding: 3, marginTop: 3 }}>
+        <Paper sx={{ padding: 3, marginTop: 3, boxShadow: 0 }}>
           <Box
             sx={{
               display: "flex",
@@ -187,7 +228,8 @@ function CreateClass() {
             rows={rows}
             onRowSelection={handleRowSelection}
             getRowId={(row) => row.id}
-            id={"table_body"}
+            checkedRows={checkedRows}
+            isRadioButton={false}
           />
           <Box
             sx={{ display: "flex", justifyContent: "flex-end", marginTop: 3 }}

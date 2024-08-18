@@ -68,9 +68,11 @@ function CreateAccount() {
 
   const handleIdDuplicateCheck = async () => {
     try {
-      const students = await getStudents();
-      const teachers = await getTeachers();
+      // studentsResponse에서 content 배열을 가져옴
+      const students = getStudents.content || [];
+      const teachers = getTeachers.content || [];
 
+      // students와 teachers의 username이 중복되는지 확인
       const isDuplicate =
         students.some((student) => student.username === id) ||
         teachers.some((teacher) => teacher.username === id);
@@ -92,7 +94,7 @@ function CreateAccount() {
     if (tabValue !== 0) return; // Teacher 등록 시에는 S/N 체크 필요 없음
 
     try {
-      const students = await getStudents();
+      const students = getStudents.content || [];
       console.log(students);
       console.log(sn);
       const isDuplicate = students.some(

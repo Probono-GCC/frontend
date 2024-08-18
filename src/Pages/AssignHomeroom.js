@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -15,62 +15,15 @@ import Radio from "@mui/material/Radio";
 import CustomButton from "../Components/Button";
 import SelectButton from "../Components/SelectButton";
 import SelectButtonContainer from "../Components/SelectButtonContatiner";
+import { getTeachers, getStudents } from "../Apis/Api/User";
+import { getClasses, putClass } from "../Apis/Api/Class";
 
 const label = { inputProps: { "aria-label": "Radio button demo" } };
 const checkLabel = { inputProps: { "aria-label": "Checkbox demo" } };
 
-const classes = [
-  {
-    id: 1,
-    batch: 2084,
-    grade: "PlayGroup",
-    section: "A",
-    teacher1: "Jin",
-    teacher2: "Sunny",
-  },
-  {
-    id: 2,
-    batch: 2084,
-    grade: "LowerKG",
-    section: "A",
-    teacher1: "Jin",
-    teacher2: "Sunny",
-  },
-];
-
-const teachers = [
-  { id: 1, name: "Jun", subject: "t1013" },
-  { id: 2, name: "Jin", subject: "t0108" },
-  { id: 3, name: "Euler", subject: "t0213" },
-  { id: 4, name: "Einstein", subject: "physics123" },
-  { id: 5, name: "Srinivasan", subject: "t0221" },
-  { id: 6, name: "Mozart", subject: "music123" },
-  { id: 7, name: "Gold", subject: "economy123" },
-  { id: 8, name: "Sunny", subject: "t1228" },
-];
 function createData(sn, gender, name, birth, id, grade) {
   return { sn, gender, name, birth, id, grade };
 }
-
-const students = [
-  createData(1, "Male", "Jon", "20.02.24", "a0000", "PlayGroup"),
-  createData(2, "Female", "Cersei", "20.01.04", "a0001", "PlayGroup"),
-  createData(3, "Male", "Jaime", "20.12.24", "a0002", "PlayGroup"),
-  createData(4, "Male", "Arya", "20.05.27", "a0003", "PlayGroup"),
-  createData(5, "Male", "Daenerys", "20.08.14", "a0004", "PlayGroup"),
-  createData(6, "Male", "nell", "20.12.24", "a0005", "PlayGroup"),
-  createData(7, "Female", "Ferrara", "19.07.05", "b0006", "UnderKG"),
-  createData(8, "Female", "Rossini", "19.07.25", "b0007", "UnderKG"),
-  createData(9, "Female", "Harvey", "19.07.04", "b0008", "UnderKG"),
-];
-
-const classColumns = [
-  { field: "batch", headerName: "Batch", flex: 0.2 },
-  { field: "grade", headerName: "Grade", flex: 0.2 },
-  { field: "section", headerName: "Section", flex: 0.2 },
-  { field: "teacher1", headerName: "Teacher1", flex: 0.2 },
-  { field: "teacher2", headerName: "Teacher2", flex: 0.2 },
-];
 
 const studentColumns = [
   { field: "sn", headerName: "SN", flex: 0.1 },
@@ -82,14 +35,62 @@ const studentColumns = [
 ];
 
 function AssignHomeroom() {
+  const [classes, setClasses] = useState([]);
+  const [teachers, setTeachers] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
   const [selectedTeachers, setSelectedTeachers] = useState([]);
-  const [leftStudents, setLeftStudents] = useState(students);
+  const [leftStudents, setLeftStudents] = useState([]);
   const [rightStudents, setRightStudents] = useState([]);
   const [selectedLeftStudents, setSelectedLeftStudents] = useState([]);
   const [selectedRightStudents, setSelectedRightStudents] = useState([]);
   const [alertOpen, setAlertOpen] = useState(false);
+  const [allStudentData, setAllStudentDatas] = useState([]);
+
   const [checkedRows, setCheckedRows] = useState([]);
+
+  useEffect(() => {
+    // Fetch classes and teachers data on component mount
+    // Fetching class data when the component mounts
+    getClasses().then((result) => {
+      console.log(result);
+      const tempRow = result.content.map((item, index) => ({
+        id: index + 1, // Assuming an index for table rows
+        year: item.year,
+        grade: item.grade,
+        section: item.section,
+        classId: item.classId, // classId를 가져와서 삭제에 활용
+      }));
+      setClasses(tempRow);
+    });
+
+    getTeachers().then((result) => {
+      setTeachers(result.content || []); // Fetch teachers from API
+    });
+  }, []);
+
+  useEffect(() => {
+    getStudents().then((result) => {
+      console.log(result);
+      const students = result.content || []; // content 배열 가져오기
+      console.log(students);
+      setAllStudentDatas(students);
+      if (students.length > 0) {
+        const tempRow = students.map((item) =>
+          createData(
+            item.serialNumber,
+            item.sex,
+            item.name,
+            item.birth,
+            item.username,
+            item.grade,
+            item.phoneNum
+          )
+        );
+        setLeftStudents(tempRow);
+      }
+    });
+  }, []);
+
   const handleRowSelection = (id) => {
     setCheckedRows((prevCheckedRows) =>
       prevCheckedRows.includes(id)
@@ -97,8 +98,35 @@ function AssignHomeroom() {
         : [...prevCheckedRows, id]
     );
   };
+
   const handleClassRowSelection = (id) => {
     setSelectedClass(id);
+
+    // 선택된 클래스의 GRADE 정보 가져오기
+    const selectedClassData = classes.find((cls) => cls.id === id);
+
+    if (selectedClassData) {
+      const selectedGrade = selectedClassData.grade;
+
+      // 해당 GRADE와 일치하는 학생들 필터링
+      const filteredStudents = allStudentData.filter(
+        (student) => student.grade === selectedGrade
+      );
+
+      // 필터링된 학생들을 LeftStudents에 설정
+      setLeftStudents(filteredStudents);
+    }
+  };
+
+  const handleLeftStudentRowSelection = (_id) => {
+    console.log("체크: ", _id);
+    setLeftStudents((prevCheckedRows) => {
+      const newCheckedRows = prevCheckedRows.includes(_id)
+        ? prevCheckedRows.filter((rowId) => rowId !== _id)
+        : [...prevCheckedRows, _id];
+      console.log("업데이트된 선택된 행:", newCheckedRows);
+      return newCheckedRows;
+    });
   };
 
   const updatedClassColumns = [
@@ -114,15 +142,19 @@ function AssignHomeroom() {
         />
       ),
     },
-    ...classColumns,
+    { field: "year", headerName: "Batch", flex: 0.2 },
+    { field: "grade", headerName: "Grade", flex: 0.2 },
+    { field: "section", headerName: "Section", flex: 0.2 },
+    { field: "teacher1", headerName: "Teacher1", flex: 0.2 },
+    { field: "teacher2", headerName: "Teacher2", flex: 0.2 },
   ];
 
-  const handleTeacherClick = (teacher) => {
+  const handleTeacherClick = (teacherId) => {
     setSelectedTeachers((prev) => {
-      if (prev.includes(teacher)) {
-        return prev.filter((t) => t !== teacher);
+      if (prev.includes(teacherId)) {
+        return prev.filter((id) => id !== teacherId);
       } else if (prev.length < 2) {
-        return [...prev, teacher];
+        return [...prev, teacherId];
       } else {
         setAlertOpen(true);
         return prev;
@@ -138,11 +170,40 @@ function AssignHomeroom() {
     selected,
     setSelected
   ) => {
-    //     const newFrom = from.filter((student) => !selected.includes(student));
-    //     const newTo = [...to, ...selected];
-    //     setFrom(newFrom);
-    //     setTo(newTo);
-    //setSelected([]);
+    const newFrom = from.filter((student) => !selected.includes(student.sn));
+    const newTo = [
+      ...to,
+      ...selected.map((id) => from.find((student) => student.sn === id)),
+    ];
+    setFrom(newFrom);
+    setTo(newTo);
+    setSelected([]);
+  };
+
+  const handleSave = async () => {
+    if (!selectedClass) {
+      alert("Please select a class.");
+      return;
+    }
+
+    const selectedClassData = classes.find((cls) => cls.id === selectedClass);
+    const updatedClassData = {
+      ...selectedClassData,
+      teacher1:
+        teachers.find((teacher) => teacher.id === selectedTeachers[0])?.name ||
+        "",
+      teacher2:
+        teachers.find((teacher) => teacher.id === selectedTeachers[1])?.name ||
+        "",
+      // Include other fields if necessary
+    };
+
+    try {
+      await putClass(updatedClassData);
+      alert("Homeroom assigned successfully!");
+    } catch (err) {
+      console.error("Failed to save homeroom assignment:", err);
+    }
   };
 
   const handleCloseAlert = () => {
@@ -182,12 +243,12 @@ function AssignHomeroom() {
             </Typography>
             <SelectButtonContainer>
               {teachers.map((teacher) => (
-                <Grid item xs={2} key={teacher.id}>
+                <Grid item xs={2} key={teacher.username}>
                   <SelectButton
-                    selected={selectedTeachers.includes(teacher.id)}
-                    onClick={() => handleTeacherClick(teacher.id)}
+                    selected={selectedTeachers.includes(teacher.username)}
+                    onClick={() => handleTeacherClick(teacher.username)}
                   >
-                    {teacher.name} <br /> ({teacher.subject})
+                    {teacher.name} <br /> ({teacher.username})
                   </SelectButton>
                 </Grid>
               ))}
@@ -205,10 +266,8 @@ function AssignHomeroom() {
                   sx={{ width: "100%" }} // 왼쪽 테이블의 너비 설정
                   columns={studentColumns}
                   rows={leftStudents}
-                  onRowSelection={(selection) =>
-                    setSelectedLeftStudents(selection)
-                  }
-                  getRowId={(row) => row.sn}
+                  onRowSelection={handleLeftStudentRowSelection}
+                  getRowId={(row) => row.username}
                   id={"student_select_body"}
                 />
               </Grid>
@@ -225,15 +284,33 @@ function AssignHomeroom() {
                 <CustomButton
                   title={">"}
                   variant="contained"
-                  onClick={() => handleStudentTransfer()}
-                  disabled={selectedLeftStudents.length === 0 ? true : false}
+                  onClick={() =>
+                    handleStudentTransfer(
+                      leftStudents,
+                      rightStudents,
+                      setLeftStudents,
+                      setRightStudents,
+                      selectedLeftStudents,
+                      setSelectedLeftStudents
+                    )
+                  }
+                  disabled={selectedLeftStudents.length === 0}
                 />
                 <Box sx={{ marginTop: 2, marginBottom: 2 }} />
                 <CustomButton
                   title={"<"}
                   variant="contained"
-                  onClick={() => handleStudentTransfer()}
-                  disabled={selectedRightStudents.length === 0 ? true : false}
+                  onClick={() =>
+                    handleStudentTransfer(
+                      rightStudents,
+                      leftStudents,
+                      setRightStudents,
+                      setLeftStudents,
+                      selectedRightStudents,
+                      setSelectedRightStudents
+                    )
+                  }
+                  disabled={selectedRightStudents.length === 0}
                 />
               </Grid>
               <Grid item xs={5}>
@@ -244,7 +321,7 @@ function AssignHomeroom() {
                   onRowSelection={(selection) =>
                     setSelectedRightStudents(selection)
                   }
-                  getRowId={(row) => row.sn}
+                  getRowId={(row) => row.username}
                   id={"student_select_body"}
                 />
               </Grid>
@@ -253,9 +330,12 @@ function AssignHomeroom() {
               sx={{ display: "flex", justifyContent: "flex-end", marginTop: 3 }}
             >
               <Box sx={{ marginRight: 2 }}>
-                <CustomButton title="Cancel" />{" "}
+                <CustomButton
+                  title="Cancel"
+                  onClick={() => console.log("Cancelled")}
+                />
               </Box>
-              <CustomButton title="Save" />
+              <CustomButton title="Save" onClick={handleSave} />
             </Box>
           </Box>
         )}

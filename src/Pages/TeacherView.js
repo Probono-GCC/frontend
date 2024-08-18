@@ -78,6 +78,7 @@ function TeacherView() {
     { field: "course", headerName: "Course", flex: 0.3 },
   ];
 
+  // 추후 수정 필요
   const handleRowSelection = (id) => {
     setCheckedRows((prevCheckedRows) => {
       const newCheckedRows = prevCheckedRows.includes(id)
@@ -118,7 +119,7 @@ function TeacherView() {
 
       // 성공적으로 삭제 후 알림 표시
       setAlert(true);
-      setTimeout(() => setAlert(false), 2000); // 3초 후 알림 숨김
+      setTimeout(() => setAlert(false), 2000); // 2초 후 알림 숨김
 
       setCheckedRows([]);
 
@@ -134,15 +135,16 @@ function TeacherView() {
   useEffect(() => {
     getTeachers().then((result) => {
       console.log(result);
-      if (result.length > 0) {
-        const tempRow = result.map((item) =>
+      const teachers = result.content || []; // content 배열 가져오기
+      if (teachers.length > 0) {
+        const tempRow = teachers.map((item) =>
           createData(
             item.sex,
             item.name,
             item.birth,
             item.username,
             item.phoneNum,
-            item.home_room,
+            item.homeRoom,
             item.course
           )
         );
