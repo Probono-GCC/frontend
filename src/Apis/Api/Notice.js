@@ -15,7 +15,7 @@ export async function postNewNotice(postingData) {
 export async function getNoticePostList(page, size) {
   try {
     const response = await axiosInstance.get(
-      `/notice/schoolNoticeList?page=0&size=10`
+      `/notice/schoolNoticeList?page=${page}&size=${size}`
     );
     return response.data;
   } catch (err) {
@@ -50,6 +50,16 @@ export async function postImage(noticeId, ImageId) {
 export async function deleteNoticePost(noticeId) {
   try {
     const response = await axiosInstance.delete(`/notice/${noticeId}`);
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+//단일 게시글 수정
+export async function putNoticePost(noticeId) {
+  try {
+    const response = await axiosInstance.put(`/notice/${noticeId}`);
     return response.data;
   } catch (err) {
     console.log(err);
