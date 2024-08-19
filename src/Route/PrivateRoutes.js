@@ -11,6 +11,7 @@ import StudentView from "../Pages/StudentView";
 import TeacherView from "../Pages/TeacherView";
 import CreateClass from "../Pages/CreateClass";
 import ClassInfo from "../Pages/ClassInfo";
+import CreateAccount from "../Pages/CreateAccount";
 
 import SubjectInfo from "../Pages/SubjectInfo";
 import SubjectNewPostForm from "../Pages/SubjectNewPostForm";
@@ -84,7 +85,7 @@ const PrivateRoutes = () => (
       path="/create-account"
       element={
         <PrivateRoute requiredRole={role[0]}>
-          <CreateClass />
+          <CreateAccount />
         </PrivateRoute>
       }
     />

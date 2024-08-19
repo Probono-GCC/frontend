@@ -3,7 +3,7 @@ import { axiosInstance } from "../Utils/Axios";
 
 export async function postTeacher(userData) {
   try {
-    const response = await axiosInstance.post(`/teachers`, userData);
+    const response = await axiosInstance.post(`/teachers/join`, userData);
     return response.data;
   } catch (err) {
     console.log(err);
@@ -22,7 +22,7 @@ export async function getTeachers() {
 
 export async function postStudent(userData) {
   try {
-    const response = await axiosInstance.post("/students", userData);
+    const response = await axiosInstance.post("/students/join", userData);
     console.log(response);
     return response.data;
   } catch (err) {
@@ -49,9 +49,12 @@ export async function loginApi(userData) {
     return err;
   }
 }
-export async function putStudent(userData, loginId) {
+export async function putStudent(userData) {
   try {
-    const response = await axiosInstance.put(`/students/${loginId}`, userData);
+    const response = await axiosInstance.put(
+      `/students/${userData.username}`,
+      userData
+    );
     console.log(response);
     return response;
   } catch (err) {
@@ -101,6 +104,30 @@ export async function putTeacher(userData, loginId) {
 export async function getProfileImage(userId) {
   try {
     const response = await axiosInstance.get(`/profile/images/${userId}`);
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+}
+export async function deleteTeacher(userData) {
+  try {
+    const response = await axiosInstance.delete(
+      `/teachers/${userData.username}`,
+      userData
+    );
+    console.log(response);
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+}
+export async function deleteStudent(userData) {
+  try {
+    const response = await axiosInstance.delete(
+      `/students/${userData.username}`,
+      userData
+    );
+    console.log(response);
     return response.data;
   } catch (err) {
     console.log(err);

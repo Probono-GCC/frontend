@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { styled, css, color } from "@mui/system";
+import { styled, css } from "@mui/system";
 import { grey } from "../Styles/Color"; // 색상 팔레트 임포트
-
 import {
   Box,
   TextField,
@@ -11,21 +10,38 @@ import {
   Modal as BaseModal,
   Backdrop,
   Button,
+  Alert,
+  Snackbar,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { getStudents, postStudent, putStudent } from "../Apis/Api/User";
+import { putStudent } from "../Apis/Api/User";
+
+// 비밀번호 정규표현식
+const pwRegex = /^(?=.*[a-zA-Z])[a-zA-Z\d!@#$%^*+=-]{4,20}$/;
 
 function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
   const [password, setPassword] = useState("");
   const [rePassword, setRePassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showRePassword, setShowRePassword] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
   const [rePasswordError, setRePasswordError] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false); // 경고 메시지 표시 상태
 
   const handleSave = () => {
-    // const userData = JSON.stringify(rowData);
+    if (!pwRegex.test(password)) {
+      setPasswordError(true);
+      setAlertOpen(true);
+      return;
+    }
+    if (password !== rePassword) {
+      setRePasswordError(true);
+      setAlertOpen(true);
+      return;
+    }
+
     if (rowData) {
-      const updatedStudentData = { ...rowData[0], pw: password };
+      const updatedStudentData = { ...rowData, pw: password };
       putStudent(updatedStudentData);
       setPassword("");
       setRePassword("");
@@ -43,6 +59,7 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
+    setPasswordError(!pwRegex.test(event.target.value));
     checkPasswords(event.target.value, rePassword);
   };
 
@@ -58,6 +75,11 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
       setRePasswordError(false);
     }
   };
+
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+  };
+
   return (
     <div>
       <Modal
@@ -85,7 +107,7 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
                 <TextField
                   disabled
                   fullWidth
-                  label="name"
+                  label="Name"
                   variant="outlined"
                   type="text"
                   value={rowData ? rowData.name : ""}
@@ -105,6 +127,12 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={handlePasswordChange}
+                  error={passwordError}
+                  helperText={
+                    passwordError
+                      ? "Password must be 4-20 characters long and contain at least one letter."
+                      : ""
+                  }
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -162,7 +190,12 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
                   variant="contained"
                   color="primary"
                   onClick={handleSave}
-                  disabled={password.length === 0 || rePassword.length === 0}
+                  disabled={
+                    password.length === 0 ||
+                    rePassword.length === 0 ||
+                    passwordError ||
+                    rePasswordError
+                  }
                 >
                   Save
                 </Button>
@@ -171,6 +204,23 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
           </Box>
         </ModalContent>
       </Modal>
+
+      {/* 경고 메시지 표시 */}
+      <Snackbar
+        open={alertOpen}
+        autoHideDuration={6000}
+        onClose={handleAlertClose}
+      >
+        <Alert
+          onClose={handleAlertClose}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {passwordError
+            ? "Password must be 4-20 characters long and contain at least one letter."
+            : "Passwords do not match!"}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

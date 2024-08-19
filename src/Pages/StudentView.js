@@ -11,33 +11,13 @@ import Checkbox from "@mui/material/Checkbox";
 import Modal from "../Components/Modal";
 import { Typography, Box } from "@mui/material";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
-import { getStudents } from "../Apis/Api/User";
+import { getStudents, deleteStudent } from "../Apis/Api/User";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 function createData(sn, gender, name, birth, id, grade, phone_num) {
   return { sn, gender, name, birth, id, grade, phone_num };
 }
-
-const rows = [
-  createData(
-    1,
-    "Male",
-    "Jon",
-    "20.02.24",
-    "a0000",
-    "PlayGroup",
-    "0112331541354132123asdf0"
-  ),
-  createData(2, "Female", "Cersei", "20.01.04", "a0001", "PlayGroup", "101"),
-  createData(3, "Male", "Jaime", "20.12.24", "a0002", "PlayGroup", "010"),
-  createData(4, "Male", "Arya", "20.05.27", "a0003", "PlayGroup", "010"),
-  createData(5, "Male", "Daenerys", "20.08.14", "a0004", "PlayGroup", "010"),
-  createData(6, "Male", "nell", "20.12.24", "a0005", "PlayGroup", "010"),
-  createData(7, "Female", "Ferrara", "19.07.05", "b0006", "UnderKG", "010"),
-  createData(8, "Female", "Rossini", "19.07.25", "b0007", "UnderKG", "010"),
-  createData(9, "Female", "Harvey", "19.07.04", "b0008", "UnderKG", "010"),
-];
 
 function StudentView() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -103,6 +83,8 @@ function StudentView() {
     { field: "grade", headerName: "Grade", flex: 0.3 },
     { field: "phone_num", headerName: "Phone" },
   ];
+
+  // 추후 수정 필요
   const handleRowSelection = (id) => {
     setCheckedRows((prevCheckedRows) => {
       const newCheckedRows = prevCheckedRows.includes(id)
@@ -112,6 +94,7 @@ function StudentView() {
       return newCheckedRows;
     });
   };
+
   const handleModalOpen = (row) => {
     setModalRowData(row);
     setModalOpen(true);
@@ -125,25 +108,49 @@ function StudentView() {
   const handleRowDoubleClick = (params) => {
     handleModalOpen(params.row);
   };
-  const deleteRow = () => {
-    setAlert(true);
-    setTimeout(() => setAlert(false), 2000); // Hide the alert after 3 seconds
 
-    console.log("Deleting rows:", checkedRows);
-    setCheckedRows([]);
+  const deleteRow = async () => {
+    try {
+      // 선택된 각 행에 대해 삭제 로직을 수행
+      for (const rowIndex of checkedRows) {
+        const studentData = rows.find((row) => row.sn === rowIndex);
+
+        if (studentData) {
+          // 각 학생에 대해 deleteStudent 호출
+          await deleteStudent({ username: studentData.id });
+        }
+      }
+
+      console.log("Deleting rows:", checkedRows);
+
+      // 성공적으로 삭제 후 알림 표시
+      setAlert(true);
+      setTimeout(() => setAlert(false), 2000); // 2초 후 알림 숨김
+
+      setCheckedRows([]);
+
+      // 삭제된 행을 rows에서 제거
+      setRows((prevRows) =>
+        prevRows.filter((row) => !checkedRows.includes(row.sn))
+      );
+    } catch (error) {
+      console.error("Error deleting rows:", error);
+    }
   };
 
   useEffect(() => {
     getStudents().then((result) => {
       console.log(result);
-      if (result.length > 0) {
-        const tempRow = result.map((item) =>
+      const students = result.content || []; // content 배열 가져오기
+      console.log(students);
+      if (students.length > 0) {
+        const tempRow = students.map((item) =>
           createData(
             item.serialNumber,
             item.sex,
             item.name,
             item.birth,
-            item.loginId,
+            item.username,
             item.grade,
             item.phoneNum
           )
@@ -152,7 +159,6 @@ function StudentView() {
       }
     });
   }, []);
-  // [] 안에 rows를 넣으면 이 값이 바뀔때마다 useEffect가 실행됨!
 
   return (
     <div id="page_content">
@@ -188,24 +194,24 @@ function StudentView() {
           rows={rows}
           onRowSelection={handleRowSelection}
           onRowDoubleClick={handleRowDoubleClick}
-          getRowId={(row) => row.sn}
+          getRowId={(row) => row.id}
           id={isSmallScreen ? "" : "table_body"}
           isRadioButton={false}
           isStudentTable={true} //row클릭시 체크박스 활성화 안되게 하기위해 커스텀
           checkedRows={checkedRows} // 체크된 행 상태 전달
         />
+        {isSmallScreen ? (
+          <div>&nbsp;</div>
+        ) : (
+          <Button
+            title={"Delete"}
+            disabled={checkedRows.length === 0}
+            onClick={deleteRow}
+            id={"view_btn"}
+            size={"bg"}
+          />
+        )}
       </div>
-      {isSmallScreen ? (
-        <div>&nbsp;</div>
-      ) : (
-        <Button
-          title={"Delete"}
-          disabled={checkedRows.length === 0}
-          onClick={deleteRow}
-          id={"view_btn"}
-          size={"bg"}
-        />
-      )}
 
       <Modal
         open={modalOpen}

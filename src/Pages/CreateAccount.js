@@ -13,7 +13,12 @@ import {
   MenuItem,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { postStudent, postTeacher } from "../Apis/Api/User";
+import {
+  postStudent,
+  postTeacher,
+  getStudents,
+  getTeachers,
+} from "../Apis/Api/User";
 
 function CreateAccount() {
   const [tabValue, setTabValue] = useState(0); // 0: Student, 1: Teacher
@@ -22,7 +27,7 @@ function CreateAccount() {
   const [password, setPassword] = useState("");
   const [rePassword, setRePassword] = useState("");
   const [rePasswordError, setRePasswordError] = useState(false);
-  const [grade, setGrade] = useState("PlayGroup");
+  const [grade, setGrade] = useState("PLAYGROUP");
   const [isIdChecked, setIsIdChecked] = useState(false);
   const [isSnChecked, setIsSnChecked] = useState(false);
   const [id, setId] = useState("");
@@ -31,6 +36,8 @@ function CreateAccount() {
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
+    setIsIdChecked(false);
+    setIsSnChecked(false);
   };
 
   const handleClickShowPassword = () => {
@@ -59,15 +66,52 @@ function CreateAccount() {
     }
   };
 
-  const handleIdDuplicateCheck = () => {
-    alert("Not Duplicate");
+  const handleIdDuplicateCheck = async () => {
+    try {
+      // studentsResponse에서 content 배열을 가져옴
+      const students = getStudents.content || [];
+      const teachers = getTeachers.content || [];
 
-    setIsIdChecked(true);
+      // students와 teachers의 username이 중복되는지 확인
+      const isDuplicate =
+        students.some((student) => student.username === id) ||
+        teachers.some((teacher) => teacher.username === id);
+
+      if (isDuplicate) {
+        alert("ID is already taken.");
+        setIsIdChecked(false);
+      } else {
+        alert("ID is available.");
+        setIsIdChecked(true);
+      }
+    } catch (error) {
+      console.error("Error checking ID duplication:", error);
+      setIsIdChecked(false);
+    }
   };
 
-  const handleSnDuplicateCheck = () => {
-    alert("Not Duplicate");
-    setIsSnChecked(true);
+  const handleSnDuplicateCheck = async () => {
+    if (tabValue !== 0) return; // Teacher 등록 시에는 S/N 체크 필요 없음
+
+    try {
+      const students = getStudents.content || [];
+      console.log(students);
+      console.log(sn);
+      const isDuplicate = students.some(
+        (student) => student.serialNumber == sn
+      );
+
+      if (isDuplicate) {
+        alert("Serial Number is already taken.");
+        setIsSnChecked(false);
+      } else {
+        alert("Serial Number is available.");
+        setIsSnChecked(true);
+      }
+    } catch (error) {
+      console.error("Error checking Serial Number duplication:", error);
+      setIsSnChecked(false);
+    }
   };
 
   const grades = [
@@ -87,22 +131,43 @@ function CreateAccount() {
     { value: "CLASS10", label: "Class 10" },
   ];
 
-  // 정규표현식으로 입력 조건 필터링 필요
+  // 정규표현식
+  // id: 4자 이상 20자 이하, 영어와 숫자만 사용 가능, 적어도 하나의 영어가 포함되어야 함
+  const idRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9]{4,20}$/;
+
+  // pw: 4자 이상 20자 이하, 영어와 숫자, 특수문자 [!@#$%^*+=-] 사용 가능, 적어도 하나의 영어가 포함되어야 함
+  const pwRegex = /^(?=.*[a-zA-Z])[a-zA-Z\d!@#$%^*+=-]{4,20}$/;
+
+  // sn: 자연수만 가능
+  const snRegex = /^[1-9]\d*$/;
+
+  // name: 숫자 및 특수문자 입력 불가능
+  const nameRegex = /^[a-zA-Z\s]+$/;
+
   const handleRegister = () => {
     if (!isIdChecked) {
       alert("Please Check your ID");
       return;
     }
-    if (tabValue === 0 && !isSnChecked) {
+
+    if (tabValue === 0 && !snRegex.test(sn) && !isSnChecked) {
       alert("Please Check your S/N");
       return;
     }
-    if (name.trim() === "") {
-      alert("Please input your name");
+
+    if (!nameRegex.test(name)) {
+      alert("Name must contain only letters");
       return;
     }
-    if (password.trim() === "" || password !== rePassword) {
-      alert("Please check your PW");
+
+    if (!pwRegex.test(password)) {
+      alert(
+        "Password must be 4-20 characters long and contain letters, numbers, and special characters, with at least one letter and one number."
+      );
+      return;
+    }
+    if (password !== rePassword) {
+      alert("Re-type Password is different from original password!");
       return;
     }
 
@@ -115,16 +180,16 @@ function CreateAccount() {
     }
 
     const studentBody = {
-      loginId: id,
-      loginPw: password,
+      username: id,
+      password: password,
       name: name,
       serialNumber: sn,
       grade: grade,
     };
 
     const teacherBody = {
-      loginId: id,
-      loginPw: password,
+      username: id,
+      password: password,
       name: name,
     };
 
@@ -180,13 +245,17 @@ function CreateAccount() {
               label="ID"
               variant="outlined"
               value={id}
-              onChange={(e) => setId(e.target.value)}
+              onChange={(e) => {
+                setId(e.target.value);
+                setIsIdChecked(false); // ID 입력이 변경될 때 isIdChecked 해제
+              }}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
                     <Button
                       variant="outlined"
                       size="small"
+                      disabled={!idRegex.test(id)}
                       onClick={handleIdDuplicateCheck}
                     >
                       Duplicate Check
@@ -203,13 +272,17 @@ function CreateAccount() {
                 label="Serial Number"
                 variant="outlined"
                 value={sn}
-                onChange={(e) => setSn(e.target.value)}
+                onChange={(e) => {
+                  setSn(e.target.value);
+                  setIsSnChecked(false); // Serial Number 입력이 변경될 때 isSnChecked 해제
+                }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
                       <Button
                         variant="outlined"
                         size="small"
+                        disabled={!snRegex.test(sn)}
                         onClick={handleSnDuplicateCheck}
                       >
                         Duplicate Check
@@ -285,7 +358,7 @@ function CreateAccount() {
                 select
                 label="Grade"
                 value={grade}
-                onChange={(e) => setGrade(e.target.value)}
+                onChange={(e) => setGrade(e.target.value)} // 사용자가 변경할 때 state를 업데이트
               >
                 {grades.map((option) => (
                   <MenuItem key={option.value} value={option.value}>

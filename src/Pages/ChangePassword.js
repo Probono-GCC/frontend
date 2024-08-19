@@ -15,12 +15,11 @@ import { putStudent, getStudents } from "../Apis/Api/User";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
-function createData(sn, gender, name, birth, id, grade) {
-  return { sn, gender, name, birth, id, grade };
+function createData(sn, name, gender, birth, id, grade) {
+  return { sn, name, gender, birth, id, grade };
 }
 
 function ChangePassword() {
-  // const [selectedRows, setSelectedRows] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalRowData, setModalRowData] = useState("default row data");
   const [alert, setAlert] = useState(false);
@@ -32,15 +31,18 @@ function ChangePassword() {
 
   useEffect(() => {
     getStudents().then((result) => {
-      setAllStudentDatas(result);
-      if (result.length > 0) {
-        const tempRow = result.map((item) =>
+      console.log(result);
+      const students = result.content || []; // content 배열 가져오기
+      setAllStudentDatas(students);
+      console.log(students);
+      if (students.length > 0) {
+        const tempRow = students.map((item) =>
           createData(
             item.serialNumber,
-            item.sex,
             item.name,
+            item.sex,
             item.birth,
-            item.loginId,
+            item.username,
             item.grade,
             item.phoneNum
           )
@@ -49,6 +51,15 @@ function ChangePassword() {
       }
     });
   }, []);
+
+  useEffect(() => {
+    if (checkedRowId) {
+      const selectedData = allStudentData.find(
+        (item) => item.username === checkedRowId
+      );
+      setCheckedRowData(selectedData);
+    }
+  }, [checkedRowId, allStudentData]);
 
   const columns = isSmallScreen
     ? [
@@ -78,10 +89,6 @@ function ChangePassword() {
 
   const handleRowSelection = (_loginId) => {
     setCheckedRowId(_loginId);
-    setCheckedRowData(
-      allStudentData.filter((item) => item.loginId === _loginId)[0]
-    );
-    console.log("CHECKED: ", checkedRowData);
   };
 
   const handleModalOpen = () => {
@@ -143,7 +150,7 @@ function ChangePassword() {
           id={isSmallScreen ? "" : "table_body"}
           onRowClick={handleRowSelection}
           onRowDoubleClick={(params) => handleModalOpen(params.row)}
-          getRowId={(row) => row.sn}
+          getRowId={(row) => row.id}
           isRadioButton={true}
           checkedRows={(params) => null}
         />
