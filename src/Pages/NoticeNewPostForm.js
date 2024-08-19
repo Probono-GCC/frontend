@@ -42,6 +42,7 @@ function NoticeNewPostForm() {
   const [imgURL, setImgURL] = useState([]);
   const { isSmallScreen } = useMediaQueryContext();
   const quillRef = useRef();
+
   const handleSave = () => {
     const formData = new FormData();
 
@@ -56,19 +57,17 @@ function NoticeNewPostForm() {
 
     // 이미지 리스트가 있을 경우 추가
     if (Array.isArray(imgURL) && imgURL.length > 0) {
-      imgURL.forEach((img, index) => {
-        if (img instanceof File) {
-          formData.append(`imageList[${index}]`, img);
-        }
-      });
+      formData.append("imageList", imgURL);
     } else {
       // 이미지 리스트가 비어 있을 경우 빈 배열로 추가
       formData.append("imageList", JSON.stringify([]));
     }
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ": " + pair[1]);
+    }
     // FormData를 서버에 POST 요청으로 전송
     postNewNotice(formData).then((result) => {
       if (result && imgURL) {
-        console.log(result.noticeId, "+", imgURL);
         console.log("post result?", result);
         alert("게시글 포스팅 완료");
         navigate("/notice-board");
