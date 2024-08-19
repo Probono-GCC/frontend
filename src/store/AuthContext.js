@@ -10,6 +10,7 @@ export const AuthProvider = ({ children }) => {
   const [userData, setUserData] = useState(null);
   const [userRole, setUserRole] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const roleArray = ["ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"];
 
   useEffect(() => {
     const storedToken = localStorage.getItem("jwt");
@@ -42,7 +43,15 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ token, userRole, isLoading, saveToken, clearToken }}
+      value={{
+        token,
+        userRole,
+        isLoading,
+        roleArray,
+        userData,
+        saveToken,
+        clearToken,
+      }}
     >
       {children}
     </AuthContext.Provider>
