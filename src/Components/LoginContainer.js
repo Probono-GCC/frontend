@@ -7,6 +7,7 @@ import { TextField, Typography, Box } from "@mui/material";
 import Button from "../Components/Button";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
 import { useAuth } from "../store/AuthContext";
+import { isFirstAccess } from "../Util/CheckFirstAccess";
 //api
 import { loginApi } from "../Apis/Api/User";
 function LoginContainer() {
@@ -19,7 +20,7 @@ function LoginContainer() {
     navigate("/forgot-password");
   };
 
-  const login = () => {
+  const login = async () => {
     // FormData 객체 생성
     const formData = new FormData();
 
@@ -29,6 +30,12 @@ function LoginContainer() {
 
     loginApi(formData)
       .then((response) => {
+        if (response.response && response.response.status == 401) {
+          setUserID("");
+          setUserPW("");
+          alert("Please check your ID, PW.");
+          return;
+        }
         const authorizationHeader = response.headers["authorization"];
         const token = authorizationHeader && authorizationHeader.split(" ")[1]; // Bearer 이후의 토큰만 추출
         localStorage.setItem("jwt", token);
@@ -36,24 +43,25 @@ function LoginContainer() {
         console.log("Token:", token);
         if (token) {
           const userData = saveToken(token);
-          console.log(userData);
-          if (
-            !userData.hasOwnProperty("birth") &&
-            !userData.role == "ROLE_ADMIN"
-          ) {
-            navigate("/my-profile");
-          } else {
-            navigate("/home"); // 로그인 후 이동할 경로
-          }
+          console.log("유저 정보", userData);
+
+          //첫 접속인지 아닌지 판단
+          return isFirstAccess(userData.username).then((access) => {
+            console.log(access);
+            if (access && userData.role !== "ROLE_ADMIN") {
+              alert("Fill in the essential information on your profile");
+              navigate("/my-profile");
+            } else {
+              navigate("/home"); // 로그인 후 이동할 경로
+            }
+          });
         }
+        // 로그인 성공 시 입력 창 초기화
+        setUserID("");
+        setUserPW("");
       })
       .catch((error) => {
-        // if (error.response.status == 401) {
-        //   // API 호출 중 404 오류가 발생한 경우
-        //   console.error("Error during login:", error);
-        //   alert("로그인 API가 존재하지 않습니다. 관리자에게 문의하세요.");
-        // }
-        console.log(error, "er");
+        console.log(error);
       });
   };
   useEffect(() => {
@@ -100,6 +108,7 @@ function LoginContainer() {
             onChange={(event) => {
               setUserID(event.target.value);
             }}
+            value={userID}
             sx={{
               marginBottom: "16px",
               width: isSmallScreen ? "80vw" : "30vw",
@@ -115,6 +124,7 @@ function LoginContainer() {
             onChange={(event) => {
               setUserPW(event.target.value);
             }}
+            value={userPW}
             sx={{
               marginBottom: "16px",
               width: isSmallScreen ? "80vw" : "30vw",
