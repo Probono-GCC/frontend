@@ -7,11 +7,6 @@ const PrivateRoute = ({ requiredRole, children }) => {
   const { userRole, isLoading } = useAuth(); // 인증 토큰 확인
   // 여기서 필요에 따라 권한을 체크할 수 있습니다. 예를 들어, auth이 'admin'인지 확인
 
-  useEffect(() => {
-    console.log("requiredRole", requiredRole);
-    console.log("userRole", userRole);
-  });
-
   /***
    * 로딩 중일 때 아무것도 렌더링하지 않음
    * 새로고침하면 ContextAPI가 초기화되기 때문에

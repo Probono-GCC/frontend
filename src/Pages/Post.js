@@ -18,7 +18,7 @@ function Post() {
   const postData = location.state;
 
   const handleEdit = () => {
-    navigate("/notice-new-post-form");
+    navigate("/private/notice-new-post-form", { state: postData });
   };
 
   const handleDelete = () => {
@@ -29,6 +29,9 @@ function Post() {
       });
     }
   };
+  useEffect(() => {
+    console.log(postData, "sdf");
+  });
   if (!postData) {
     return <div>Loading...</div>; // 데이터를 로딩 중일 때 보여줄 내용
   }
@@ -132,7 +135,7 @@ function Post() {
             </Grid>
           </Grid>
           <Divider sx={{ marginBottom: 5 }} />
-          {postData.imageList.length != 0 ? (
+          {postData.imageList && postData.imageList.length != 0 ? (
             <Box sx={{ textAlign: "center", marginBottom: 3 }}>
               <img
                 src="./images/profile_temp.png"
