@@ -16,12 +16,13 @@ const Table = memo(
     isReadOnly,
   }) => {
     const handleRowClick = (params) => {
-      console.log("table:", checkedRows);
-      if (isRadioButton) {
-        onRowSelection(params.row.id);
-      }
+      console.log("table:", params.row);
+      onRowSelection(params.row);
     };
-
+    const handleRowSelection = (newSelection) => {
+      console.log("table selected rows:", newSelection);
+      onRowSelection(newSelection); // 선택된 행 ID들을 상위 컴포넌트에 전달
+    };
     return (
       <div id={id ? styles[id] : ""}>
         <DataGrid
@@ -57,11 +58,7 @@ const Table = memo(
           rows={rows}
           columns={columns}
           onRowClick={handleRowClick}
-          onRowSelectionModelChange={
-            isStudentTable
-              ? (newSelection) => onRowSelection(newSelection)
-              : undefined
-          }
+          onRowSelectionModelChange={handleRowSelection}
           checkboxSelection={!(isRadioButton || isStudentTable || isReadOnly)} // 라디오 버튼 모드에 따라 체크박스 선택 여부 조절
           initialState={{
             pagination: {
