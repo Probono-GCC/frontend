@@ -20,10 +20,10 @@ jobs: # job 시작 명시(모든 job의 묶음)
     steps: # step 시작 명시(모든 step의 묶음)
       - uses: actions/checkout@v4 # use 키워드는 actions/checkout의 v4버전을 실행할 것을 의미. repository 코드를 runner에 다운하고 브랜치 전환하는 역할. workflow가 repository 코드를 사용할때 사용해야한다.
 
-      # .env에 있던 환경변수들을 등록해주는 단계
-      # - name: .env setting
-      #   run: |
-      #     echo "REACT_APP_SERVER_IP=${{ secrets.REACT_APP_API_URL }}" >> .env
+      #.env에 있던 환경변수들을 등록해주는 단계
+      - name: .env setting
+        run: |
+          echo "REACT_APP_SERVER_IP=${{ secrets.ENV }}" >> .env
       #     echo "REACT_APP_EXAMPLE=${{ secrets.REACT_APP_API_URL }}" >> .env
       #
       #
