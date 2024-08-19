@@ -1,0 +1,28 @@
+#table_body {
+  height: 60vh;
+  width: 90vw;
+  /* margin: 2%; */
+  margin: auto;
+}
+
+#student_select_body {
+  height: 60vh;
+  /* margin: 2%; */
+  margin: auto;
+}
+
+#table_container {
+  width: 100vw;
+  height: 100vh;
+}
+
+#centerAlign {
+  text-align: center;
+}
+
+/* Table.module.css */
+
+.checkedRow {
+  background-color: blue !important; /* 기본 스타일을 덮어쓰기 위해 중요하게 설정 */
+  color: white; /* 텍스트 색상도 조정하여 가독성 향상 */
+}

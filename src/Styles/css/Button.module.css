@@ -1,0 +1,33 @@
+.bg_button {
+  min-width: 13vw;
+  height: 5vh;
+  margin-top: 3vh;
+  max-height: 50px;
+}
+.md_button {
+  min-width: 100px;
+  height: 5vh;
+  max-height: 50px;
+}
+/* 오른쪽 정렬 버튼(가장 많이 쓰임) */
+#view_btn {
+  position: absolute;
+  right: 5vw;
+  margin-top: 3vh;
+  margin-bottom: 3vh;
+}
+
+#left_btn {
+  position: absolute;
+  left: 5vw;
+  margin-top: 3vh;
+  margin-bottom: 3vh;
+}
+
+@media (max-width: 768px) {
+  .bg_button {
+    width: 30vw;
+    height: 6vh;
+    line-height: 5vh;
+  }
+}
