@@ -255,7 +255,7 @@ function MyProfile() {
           userData.imageId = result.imageId;
           if (decodedToken.role == role[1]) {
             console.log("teacher userData", userData);
-            putTeacher(userData, userID).then((result) => {
+            putTeacher(userData).then((result) => {
               console.log("final teacher data", result);
               if (result && result.status == 200) {
                 alert("Complete");
@@ -264,7 +264,7 @@ function MyProfile() {
             });
           } else if (decodedToken.role == role[2]) {
             console.log("put userdata", userData);
-            putStudent(userData, userID).then((result) => {
+            putStudent(userData).then((result) => {
               if (result && result.status == 200) {
                 alert("Complete");
                 navigate("/home");
