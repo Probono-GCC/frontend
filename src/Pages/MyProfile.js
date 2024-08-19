@@ -15,6 +15,7 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Divider,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import AppBar from "../Components/AppBar";
@@ -23,48 +24,70 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-
+import dayjs from "dayjs";
+import { useNavigate } from "react-router-dom";
 //권한
 import { useAuth } from "../store/AuthContext"; // Context API에서 인증 상태를 가져옵니다
 
+//api
+import {
+  putStudent,
+  postProfileImage,
+  putTeacher,
+  getStudent,
+  getTeacher,
+  getProfileImage,
+} from "../Apis/Api/User";
+
 function MyProfile() {
+  const { userRole, userData } = useAuth();
+  const role = ["ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"];
+  const [name, setName] = useState("");
   const [gender, setGender] = useState("");
-  const [birth, setBirth] = useState("");
+  const [birth, setBirth] = useState(null);
   const [phoneNum, setPhoneNum] = useState("");
   const [fatherPhoneNum, setFatherPhoneNum] = useState("");
   const [motherPhoneNum, setMotherPhoneNum] = useState("");
   const [guardiansPhoneNum, setGuardiansPhoneNum] = useState("");
   const [pwAnswer, setPwAnswer] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState(false);
+  const [firstAccess, setFirstAccess] = useState(null);
   const [agree, setAgree] = useState(false);
-  const [profileImage, setProfileImage] = useState("/images/profile_temp.png");
+  const [isButtonEnabled, setIsButtonEnabled] = useState(false);
+  const [profileImage, setProfileImage] = useState("");
+  const [thumbnailImage, setThumnailImage] = useState("");
   const storedToken = localStorage.getItem("jwt");
   const decodedToken = jwtDecode(storedToken);
 
-  const { userRole } = useAuth();
-  // 필수 필드가 채워져 있는지 확인하는 로직
-  const validateForm = () => {
-    return (
-      pwAnswer &&
-      gender &&
-      birth &&
-      phoneNum &&
-      (fatherPhoneNum || motherPhoneNum || guardiansPhoneNum)
-    );
-  };
+  //초기 데이터 저장
+  const [initialValues, setInitialValues] = useState({
+    imageId: 0,
+    gender: "",
+    birth: null,
+    phoneNum: "",
+    fatherPhoneNum: "",
+    motherPhoneNum: "",
+    guardiansPhoneNum: "",
+    pwAnswer: "",
+  });
+
+  const navigate = useNavigate();
   const handleGenderChange = (event) => {
     setGender(event.target.value);
   };
-  const handleBirthChange = (event) => {
-    const selectedDate = new Date(event.target.value);
-    setBirth(selectedDate.toISOString());
+  const handleNameChange = (event) => {
+    setName(event.target.value);
   };
+
+  const handleBirthChange = (newValue) => {
+    // newValue는 선택된 날짜를 포함한 Dayjs 객체
+    setBirth(newValue ? newValue.format("YYYY-MM-DD") : null);
+  };
+
   const handlePhoneNumChange = (event) => {
     setPhoneNum(event.target.value);
   };
@@ -81,9 +104,6 @@ function MyProfile() {
   const handlePwAnswerChange = (event) => {
     setPwAnswer(event.target.value);
   };
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
 
   const handleClickShowNewPassword = () => {
     setShowNewPassword(!showNewPassword);
@@ -91,10 +111,6 @@ function MyProfile() {
 
   const handleClickShowConfirmPassword = () => {
     setShowConfirmPassword(!showConfirmPassword);
-  };
-
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
   };
 
   const handleNewPasswordChange = (event) => {
@@ -120,35 +136,224 @@ function MyProfile() {
   };
 
   const handleProfileImageChange = (event) => {
+    console.log("imagechanged");
     const file = event.target.files[0];
     if (file) {
+      setProfileImage(file); // File 객체로 저장
       const reader = new FileReader();
       reader.onload = (e) => {
-        setProfileImage(e.target.result);
+        setThumnailImage(e.target.result);
       };
       reader.readAsDataURL(file);
     }
   };
-
   const handleProfileImageDelete = () => {
-    setProfileImage("/images/profile_temp.png");
+    setProfileImage("");
+    setThumnailImage("");
+  };
+  const validateForm = () => {
+    const isProfileImageValid = profileImage !== "";
+    console.log(
+      profileImage,
+      "?",
+      profileImage,
+      "//image?",
+      isProfileImageValid
+    );
+    const isPersonalInfoValid =
+      gender !== "" && birth !== "" && phoneNum !== "" && pwAnswer !== "";
+
+    if (decodedToken.role == role[2]) {
+      const isContactInfoValid =
+        fatherPhoneNum !== "" ||
+        motherPhoneNum !== "" ||
+        guardiansPhoneNum !== "";
+      console.log(
+        isProfileImageValid && isPersonalInfoValid && isContactInfoValid,
+        "왜 true???"
+      );
+      return isProfileImageValid && isPersonalInfoValid && isContactInfoValid;
+    } else {
+      return isProfileImageValid && isPersonalInfoValid;
+    }
+  };
+  const handleEdit = () => {
+    const changedFields = {};
+    //student, teacher 공통필드
+    if (name !== initialValues.name) {
+      changedFields.name = name;
+    }
+    if (gender !== initialValues.gender) {
+      changedFields.gender = gender;
+    }
+    if (birth !== initialValues.birth) {
+      changedFields.birth = birth;
+    }
+    if (phoneNum !== initialValues.phoneNum) {
+      changedFields.phoneNum = phoneNum;
+    }
+    if (pwAnswer !== initialValues.pwAnswer) {
+      changedFields.pwAnswer = pwAnswer;
+    }
+    //teacher
+    if (userRole == role[1]) {
+      putTeacher(changedFields, userData.username).then((result) => {
+        console.log("최초접속 아닌경우 선생님 put 정보 완료", result);
+        alert("Complete edit");
+        navigate("/home");
+      });
+    }
+    //student
+    if (userRole == role[2]) {
+      if (fatherPhoneNum !== initialValues.fatherPhoneNum) {
+        changedFields.fatherPhoneNum = fatherPhoneNum;
+      }
+      if (motherPhoneNum !== initialValues.motherPhoneNum) {
+        changedFields.motherPhoneNum = motherPhoneNum;
+      }
+      if (guardiansPhoneNum !== initialValues.guardiansPhoneNum) {
+        changedFields.guardiansPhoneNum = guardiansPhoneNum;
+      }
+      putStudent(changedFields, userData.username).then((result) => {
+        console.log("최초접속 아닌경우 선생님 put 정보 완료", result);
+        alert("Complete edit");
+        navigate("/home");
+      });
+    }
+  };
+  const handleSave = () => {
+    const userID = decodedToken.username;
+    // 프로필 이미지가 있다면 FormData를 사용하여 서버에 전송
+    const imageData = new FormData();
+    if (profileImage) {
+      imageData.append("image", profileImage); // File 객체를 FormData에 추가
+    }
+
+    const userData = {
+      birth: birth,
+      sex: gender,
+      phoneNum: phoneNum,
+    };
+
+    if (userRole == role[2]) {
+      userData.fatherPhoneNum = fatherPhoneNum;
+      userData.motherPhoneNum = motherPhoneNum;
+      userData.guardiansPhoneNum = guardiansPhoneNum;
+    }
+    if (firstAccess === null) {
+      userData.pwAnswer = pwAnswer;
+    }
+    if (newPassword != "") {
+      userData.password = newPassword;
+    }
+
+    // 프로필 이미지 업로드
+    if (profileImage) {
+      postProfileImage(imageData, userID)
+        .then((result) => {
+          console.log("imagepost", result.imageId);
+          userData.imageId = result.imageId;
+          if (decodedToken.role == role[1]) {
+            console.log("teacher userData", userData);
+            putTeacher(userData, userID).then((result) => {
+              console.log("final teacher data", result);
+              if (result && result.status == 200) {
+                alert("Complete");
+                navigate("/home");
+              }
+            });
+          } else if (decodedToken.role == role[2]) {
+            console.log("put userdata", userData);
+            putStudent(userData, userID).then((result) => {
+              if (result && result.status == 200) {
+                alert("Complete");
+                navigate("/home");
+              }
+            });
+          } else {
+            console.error("role err");
+          }
+        })
+        .catch((error) => {
+          console.error("Image upload error:", error);
+        });
+    }
   };
 
   useEffect(() => {
-    const handleBeforeUnload = (event) => {
-      if (!validateForm()) {
-        event.preventDefault();
-        event.returnValue =
-          "There are unsaved changes. Are you sure you want to leave?";
-      }
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [password, newPassword, confirmPassword, passwordError, agree]);
+    if (decodedToken.role == role[1]) {
+      getTeacher(decodedToken.username).then((result) => {
+        setBirth(result.birth);
+        setName(result.name);
+        setGender(result.sex);
+        setPhoneNum(result.phoneNum);
+        setPwAnswer(result.pwAnswer);
+        setFirstAccess(result.pwAnswer);
+        // console.log("result.imageId.imageId", result.imageId.imageId);
+        if (result.imageId) {
+          getProfileImage(result.imageId.imageId).then((res) => {
+            setThumnailImage(res.imagePath);
+          });
+        }
+        // 초기 값 설정(변경 전 후 감지후 put하기위해)
+        setInitialValues({
+          name: result.name,
+          gender: result.sex,
+          birth: result.birth,
+          phoneNum: result.phoneNum,
+          pwAnswer: result.pwAnswer,
+          imageId: result.imageId,
+        });
+      });
+    } else if (decodedToken.role == role[2]) {
+      getStudent(decodedToken.username).then((result) => {
+        setBirth(result.birth);
+        setName(result.name);
+        setGender(result.sex);
+        setPhoneNum(result.phoneNum);
+        setPwAnswer(result.pwAnswer);
+        setFatherPhoneNum(result.fatherPhoneNum);
+        setMotherPhoneNum(result.motherPhoneNum);
+        setGuardiansPhoneNum(result.guardiansPhoneNum);
+        setFirstAccess(result.pwAnswer);
+        if (result.imageId) {
+          getProfileImage(result.imageId.imageId).then((res) => {
+            setThumnailImage(res.imagePath);
+          });
+        }
+        // 초기 값 설정
+        setInitialValues({
+          name: result.name,
+          gender: result.sex,
+          birth: result.birth,
+          phoneNum: result.phoneNum,
+          pwAnswer: result.pwAnswer,
+          fatherPhoneNum: result.fatherPhoneNum,
+          motherPhoneNum: result.motherPhoneNum,
+          guardiansPhoneNum: result.guardiansPhoneNum,
+          imageId: result.imageId,
+        });
+      });
+    }
+  }, []);
+  useEffect(() => {
+    if (firstAccess === null) {
+      console.log("!agree?", !agree);
+      console.log("!isButtonEnabled?", !isButtonEnabled);
+      console.log("firstAccess임!!!", !agree && !isButtonEnabled);
+      setIsButtonEnabled(validateForm());
+    }
+  }, [
+    name,
+    birth,
+    gender,
+    phoneNum,
+    pwAnswer,
+    fatherPhoneNum,
+    motherPhoneNum,
+    guardiansPhoneNum,
+    profileImage,
+  ]);
   return (
     <div>
       <AppBar />
@@ -180,7 +385,7 @@ function MyProfile() {
           <Grid item xs={12} sx={{ textAlign: "center" }}>
             <Avatar
               alt="Profile Image"
-              src={profileImage}
+              src={thumbnailImage}
               sx={{ width: 150, height: 150, margin: "0 auto" }}
             />
             <Button
@@ -208,7 +413,7 @@ function MyProfile() {
           <Grid item xs={12}>
             <TextField
               fullWidth
-              disabled={userRole === "ROLE_ADMIN"}
+              disabled={userRole === role[0]}
               label="ID"
               defaultValue={decodedToken.username}
               variant="outlined"
@@ -221,63 +426,79 @@ function MyProfile() {
           <Grid item xs={12}>
             <TextField
               fullWidth
-              disabled={userRole === "ROLE_ADMIN"}
+              disabled={userRole === role[0]}
               id="outlined-disabled"
               label="Name"
-              defaultValue="name"
-              value={decodedToken.name}
+              onChange={handleNameChange}
+              value={name ? name : ""}
               variant="outlined"
             />
           </Grid>
-
           <Grid item xs={12}>
-            <FormControl fullWidth variant="outlined">
-              {userRole == "ROLE_ADMIN" ? (
-                <InputLabel>Gender field for student/teacher</InputLabel>
+            <TextField
+              fullWidth
+              disabled
+              label={
+                userRole === role[0] || userRole === role[1]
+                  ? "Grade field for student"
+                  : "Non Grade"
+              }
+              variant="outlined"
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              disabled
+              label={
+                userRole === role[0] || userRole === role[1]
+                  ? "Section field for student"
+                  : "Non Section"
+              }
+              variant="outlined"
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Divider />
+          </Grid>
+          <Grid item xs={12}>
+            <Typography sx={{ color: "red" }}>Fill in the blank</Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+              {userRole == role[0] ? (
+                <InputLabel id="demo-simple-select-label">
+                  Gender field for student/teacher
+                </InputLabel>
               ) : (
-                <InputLabel>Gender</InputLabel>
+                <InputLabel id="demo-simple-select-label">Gender*</InputLabel>
               )}
 
               <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label={
+                  userRole == role[0]
+                    ? " Gender field for student/teacher"
+                    : "Gender"
+                }
                 value={gender}
                 onChange={handleGenderChange}
-                disabled={userRole === "ROLE_ADMIN"}
+                disabled={userRole === role[0]}
+                InputProps={{
+                  style: { borderColor: "red" }, // 빨간 테두리 스타일
+                }}
               >
-                <MenuItem value="Male">Male</MenuItem>
-                <MenuItem value="Female">Female</MenuItem>
+                <MenuItem value="MALE">Male</MenuItem>
+                <MenuItem value="FEMALE">Female</MenuItem>
               </Select>
             </FormControl>
-          </Grid>
-
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              disabled={userRole === "ROLE_ADMIN" || "ROLE_TEACHER"}
-              label={
-                userRole === "ROLE_ADMIN" || "ROLE_TEACHER"
-                  ? "Grade field for student"
-                  : "Grade"
-              }
-              variant="outlined"
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label={
-                userRole === "ROLE_ADMIN" || "ROLE_TEACHER"
-                  ? "Section field for student"
-                  : "Section"
-              }
-              disabled={userRole === "ROLE_ADMIN" || "ROLE_TEACHER"}
-              variant="outlined"
-              InputProps={{
-                readOnly: true,
-              }}
-            />
           </Grid>
 
           <Grid item xs={12}>
@@ -286,11 +507,13 @@ function MyProfile() {
                 <DatePicker
                   sx={{ width: "100%" }}
                   label={
-                    userRole === "ROLE_ADMIN"
+                    userRole === role[0]
                       ? "Birth field for student/teacher"
-                      : "Birth"
+                      : "Birth*"
                   }
-                  disabled={userRole === "ROLE_ADMIN"}
+                  disabled={userRole === role[0]}
+                  onChange={handleBirthChange}
+                  value={birth ? dayjs(birth) : null}
                 />
               </DemoContainer>
             </LocalizationProvider>
@@ -299,14 +522,14 @@ function MyProfile() {
             <TextField
               fullWidth
               variant="outlined"
-              value={phoneNum}
+              value={phoneNum ? phoneNum : ""}
               onChange={handlePhoneNumChange}
               label={
-                userRole === "ROLE_ADMIN" || "ROLE_TEACHER"
+                userRole === role[0]
                   ? "Phone field for student"
-                  : "Phone"
+                  : "Phone Number*"
               }
-              disabled={userRole === "ROLE_ADMIN" || "ROLE_TEACHER"}
+              disabled={userRole === role[0]}
             />
           </Grid>
 
@@ -317,174 +540,155 @@ function MyProfile() {
               value={motherPhoneNum}
               onChange={handleMotherPhoneNumChange}
               label={
-                userRole === "ROLE_ADMIN" || "ROLE_TEACHER"
+                userRole === role[0] || userRole === role[1]
                   ? "Mother Phone field for student"
-                  : "Phone"
+                  : "Mother Phone Number"
               }
-              disabled={userRole === "ROLE_ADMIN" || "ROLE_TEACHER"}
+              disabled={userRole === role[0] || userRole === role[1]}
+              sx={{
+                backgroundColor:
+                  userRole === role[0] || userRole === role[1] ? "#dee5e8" : "",
+              }}
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
               fullWidth
               label={
-                userRole === "ROLE_ADMIN" || "ROLE_TEACHER"
+                userRole === role[0] || userRole === role[1]
                   ? "Father Phone field for student"
-                  : "Phone"
+                  : "Father Phone Number"
               }
-              disabled={userRole === "ROLE_ADMIN" || "ROLE_TEACHER"}
+              disabled={userRole === role[0] || userRole === role[1]}
+              sx={{
+                backgroundColor:
+                  userRole === role[0] || userRole === role[1] ? "#dee5e8" : "",
+              }}
               variant="outlined"
               value={fatherPhoneNum}
               onChange={handleFatherPhoneNumChange}
             />
           </Grid>
-
           <Grid item xs={12}>
             <TextField
               fullWidth
-              variant="outlined"
-              defaultValue="What is your favorite color?"
-              InputProps={{
-                readOnly: true,
-              }}
               label={
-                userRole === "ROLE_ADMIN"
-                  ? "PW Question field for student/teacher"
-                  : "PW Question"
+                userRole === role[0] || userRole === role[1]
+                  ? "Guardians Phone field for student"
+                  : "Guardians Phone Number"
               }
-              disabled={userRole === "ROLE_ADMIN"}
+              disabled={userRole === role[0] || userRole === role[1]}
+              sx={{
+                backgroundColor:
+                  userRole === role[0] || userRole === role[1] ? "#dee5e8" : "",
+              }}
+              variant="outlined"
+              value={guardiansPhoneNum}
+              onChange={handleGuardiansNumChange}
             />
+          </Grid>
+          <Grid item xs={12}>
+            <Typography sx={{ fontSize: 20, fontWeight: "bold" }}>
+              Password Recovery Question
+            </Typography>
+            <Typography>What is your favorite color?</Typography>
             <TextField
               fullWidth
               variant="outlined"
-              defaultValue=""
-              sx={{ marginTop: 1 }}
+              disabled={firstAccess != null || userRole == role[0]}
+              sx={{ marginTop: 2 }}
               value={pwAnswer}
               onChange={handlePwAnswerChange}
               label={
-                userRole === "ROLE_ADMIN"
+                userRole === role[0]
                   ? "PW Answer field for student/teacher"
-                  : "PW Answer"
+                  : "PW Answer*"
               }
-              disabled={userRole === "ROLE_ADMIN"}
             />
           </Grid>
-          {userRole != "ROLE_ADMIN" ? (
-            <div>
-              <p
-                style={{
-                  marginLeft: "24px",
-                  marginBottom: 0,
-                }}
-              >
-                change password
-              </p>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Previous PW"
-                  variant="outlined"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={handlePasswordChange}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          edge="end"
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="New PW"
-                  variant="outlined"
-                  type={showNewPassword ? "text" : "password"}
-                  value={newPassword}
-                  onChange={handleNewPasswordChange}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowNewPassword}
-                          edge="end"
-                        >
-                          {showNewPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Re-type PW"
-                  variant="outlined"
-                  type={showConfirmPassword ? "text" : "password"}
-                  value={confirmPassword}
-                  onChange={handleConfirmPasswordChange}
-                  error={passwordError}
-                  helperText={passwordError ? "Passwords do not match" : ""}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowConfirmPassword}
-                          edge="end"
-                        >
-                          {showConfirmPassword ? (
-                            <VisibilityOff />
-                          ) : (
-                            <Visibility />
-                          )}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={
-                    <Checkbox checked={agree} onChange={handleAgreeChange} />
-                  }
-                  label="Agree with"
-                />
-                <FormHelperText>
-                  [Consent for Collection and Use of Personal Information]
-                  Retention and usage period: Until the member withdraws their
-                  membership.
-                </FormHelperText>
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                sx={{ display: "flex", justifyContent: "center" }}
-              >
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                  disabled={!agree}
-                >
-                  Save
-                </Button>
-              </Grid>
-            </div>
-          ) : (
-            <div></div>
-          )}
+          <Grid item xs={12}>
+            <Divider />
+          </Grid>
+          <Grid item xs={12}>
+            <Typography
+              sx={{ fontSize: 20, fontWeight: "bold", marginBottom: "8px" }}
+            >
+              Change Password
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="New PW"
+              variant="outlined"
+              type={showNewPassword ? "text" : "password"}
+              value={newPassword}
+              onChange={handleNewPasswordChange}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowNewPassword}
+                      edge="end"
+                    >
+                      {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Re-type PW"
+              variant="outlined"
+              type={showConfirmPassword ? "text" : "password"}
+              value={confirmPassword}
+              onChange={handleConfirmPasswordChange}
+              error={passwordError}
+              helperText={passwordError ? "Passwords do not match" : ""}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowConfirmPassword}
+                      edge="end"
+                    >
+                      {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <FormControlLabel
+              control={
+                <Checkbox checked={agree} onChange={handleAgreeChange} />
+              }
+              label="Agree with"
+            />
+            <FormHelperText>
+              [Consent for Collection and Use of Personal Information] Retention
+              and usage period: Until the member withdraws their membership.
+            </FormHelperText>
+          </Grid>
+          <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              disabled={
+                firstAccess != null ? !agree : !agree || !isButtonEnabled
+              }
+              onClick={firstAccess != null ? handleEdit : handleSave}
+            >
+              Save
+            </Button>
+          </Grid>
         </Grid>
       </Box>
       <Box sx={{ marginBottom: 5 }} />
