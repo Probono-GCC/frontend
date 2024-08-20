@@ -11,17 +11,17 @@ import {
   MenuItem,
 } from "@mui/material";
 
-import { getStudents, postStudent, putStudent } from "../Apis/Api/User";
+import { changeGradeApi } from "../Apis/Api/User";
 
-function CustomModal({ open, handleClose, title, rowData }) {
+function CustomModal({ open, handleClose, title, rowData, onSave }) {
   const [newGrade, setNewGrade] = useState(rowData ? rowData.grade : "");
   const [studentData, setStudentData] = useState(null);
 
   const grades = [
     { value: "PLAYGROUP", label: "PlayGroup" },
     { value: "NURSERY", label: "Nursery" },
-    { value: "LOWERKG", label: "LowerKG" },
-    { value: "UPPERKG", label: "UpperKG" },
+    { value: "LOWER_KG", label: "LowerKG" },
+    { value: "UPPER_KG", label: "UpperKG" },
     { value: "CLASS1", label: "Class 1" },
     { value: "CLASS2", label: "Class 2" },
     { value: "CLASS3", label: "Class 3" },
@@ -35,18 +35,28 @@ function CustomModal({ open, handleClose, title, rowData }) {
   ];
 
   useEffect(() => {
+    console.log("ewrewrwe", rowData);
     if (open && rowData) {
+      console.log("ewrewrwe", rowData);
       setNewGrade(rowData.grade);
     }
   }, [open, rowData]);
 
   const handleSave = async () => {
     if (rowData) {
-      const updatedStudentData = { ...rowData, grade: newGrade };
-      putStudent(updatedStudentData);
-      setNewGrade("");
+      const updatedGradeData = { grade: newGrade };
+      changeGradeApi(updatedGradeData, rowData.username).then((result) => {
+        alert("change complete");
+        if (typeof onSave === "function") {
+          console.log("onsave호출?");
+          onSave();
+        }
+      });
+
       handleClose();
+      // 부모 컴포넌트의 fetchStudents 호출
     }
+    setNewGrade("");
   };
 
   const handleNewGradeChange = (event) => {
