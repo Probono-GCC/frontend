@@ -1,6 +1,6 @@
 import { getStudent } from "../Apis/Api/User";
 
-export const isFirstAccess = async (userId) => {
+export const isFirstAccessStudent = async (userId) => {
   try {
     const result = await getStudent(userId);
 
