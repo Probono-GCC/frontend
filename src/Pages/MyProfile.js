@@ -31,9 +31,9 @@ import { useAuth } from "../store/AuthContext"; // Context API에서 인증 상�
 
 //api
 import {
-  putStudent,
+  updateStudentProfile,
   postProfileImage,
-  putTeacher,
+  updateTeacherProfile,
   getStudent,
   getTeacher,
   getProfileImage,
@@ -58,8 +58,10 @@ function MyProfile() {
   const [firstAccess, setFirstAccess] = useState(null);
   const [agree, setAgree] = useState(false);
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
-  const [profileImage, setProfileImage] = useState("");
-  const [thumbnailImage, setThumnailImage] = useState("");
+  const [profileImage, setProfileImage] = useState(""); //file타입
+  const [initialImageId, setInitialImageId] = useState(0);
+  const [thumbnailImage, setThumnailImage] = useState(""); //썸네일
+
   const storedToken = localStorage.getItem("jwt");
   const decodedToken = jwtDecode(storedToken);
 
@@ -177,8 +179,8 @@ function MyProfile() {
       return isProfileImageValid && isPersonalInfoValid;
     }
   };
+  const changedFields = {};
   const handleEdit = () => {
-    const changedFields = {};
     //student, teacher 공통필드
     if (name !== initialValues.name) {
       changedFields.name = name;
@@ -195,16 +197,38 @@ function MyProfile() {
     if (pwAnswer !== initialValues.pwAnswer) {
       changedFields.pwAnswer = pwAnswer;
     }
-    //teacher
-    if (userRole == role[1]) {
-      putTeacher(changedFields, userData.username).then((result) => {
-        console.log("최초접속 아닌경우 선생님 put 정보 완료", result);
-        alert("Complete edit");
-        navigate("/home");
-      });
+    // 프로필 이미지 업로드
+    const userID = decodedToken.username;
+    const imageData = new FormData();
+
+    if (profileImage) {
+      imageData.append("image", profileImage); // File 객체를 FormData에 추가
+      postProfileImage(imageData, userID)
+        .then((result) => {
+          console.log("image new post", result.imageId);
+          changedFields.imageId = result.imageId;
+          updateProfile(); // 이미지 업로드가 완료된 후 updateProfile 함수 호출
+        })
+        .catch((error) => {
+          console.error("Image upload error:", error);
+        });
+    } else {
+      updateProfile();
     }
-    //student
-    if (userRole == role[2]) {
+  };
+  const updateProfile = () => {
+    if (decodedToken.role == role[1]) {
+      console.log("teacher userData", changedFields);
+      updateTeacherProfile(changedFields, decodedToken.username).then(
+        (result) => {
+          console.log("final teacher data", result);
+          if (result && result.status == 200) {
+            alert("Complete");
+            navigate("/home");
+          }
+        }
+      );
+    } else if (decodedToken.role == role[2]) {
       if (fatherPhoneNum !== initialValues.fatherPhoneNum) {
         changedFields.fatherPhoneNum = fatherPhoneNum;
       }
@@ -214,11 +238,17 @@ function MyProfile() {
       if (guardiansPhoneNum !== initialValues.guardiansPhoneNum) {
         changedFields.guardiansPhoneNum = guardiansPhoneNum;
       }
-      putStudent(changedFields, userData.username).then((result) => {
-        console.log("최초접속 아닌경우 선생님 put 정보 완료", result);
-        alert("Complete edit");
-        navigate("/home");
-      });
+      console.log("put userdata", changedFields);
+      updateStudentProfile(changedFields, decodedToken.username).then(
+        (result) => {
+          if (result && result.status == 200) {
+            alert("Complete");
+            navigate("/home");
+          }
+        }
+      );
+    } else {
+      console.error("role err");
     }
   };
   const handleSave = () => {
@@ -229,47 +259,51 @@ function MyProfile() {
       imageData.append("image", profileImage); // File 객체를 FormData에 추가
     }
 
-    const userData = {
+    const changedUserData = {
       birth: birth,
       sex: gender,
       phoneNum: phoneNum,
     };
 
-    if (userRole == role[2]) {
-      userData.fatherPhoneNum = fatherPhoneNum;
-      userData.motherPhoneNum = motherPhoneNum;
-      userData.guardiansPhoneNum = guardiansPhoneNum;
+    if (decodedToken.role == role[2]) {
+      changedUserData.fatherPhoneNum = fatherPhoneNum;
+      changedUserData.motherPhoneNum = motherPhoneNum;
+      changedUserData.guardiansPhoneNum = guardiansPhoneNum;
     }
     if (firstAccess === null) {
-      userData.pwAnswer = pwAnswer;
+      changedUserData.pwAnswer = pwAnswer;
     }
     if (newPassword != "") {
-      userData.password = newPassword;
+      changedUserData.password = newPassword;
     }
 
     // 프로필 이미지 업로드
     if (profileImage) {
       postProfileImage(imageData, userID)
         .then((result) => {
-          console.log("imagepost", result.imageId);
-          userData.imageId = result.imageId;
+          console.log("image new post", result.imageId);
+          changedUserData.imageId = result.imageId;
           if (decodedToken.role == role[1]) {
-            console.log("teacher userData", userData);
-            putTeacher(userData).then((result) => {
-              console.log("final teacher data", result);
-              if (result && result.status == 200) {
-                alert("Complete");
-                navigate("/home");
+            console.log("teacher userData", changedUserData);
+            updateTeacherProfile(changedUserData, decodedToken.username).then(
+              (result) => {
+                console.log("final teacher data", result);
+                if (result && result.status == 200) {
+                  alert("Complete");
+                  navigate("/home");
+                }
               }
-            });
+            );
           } else if (decodedToken.role == role[2]) {
-            console.log("put userdata", userData);
-            putStudent(userData).then((result) => {
-              if (result && result.status == 200) {
-                alert("Complete");
-                navigate("/home");
+            console.log("put userdata", changedUserData);
+            updateStudentProfile(changedUserData, decodedToken.username).then(
+              (result) => {
+                if (result && result.status == 200) {
+                  alert("Complete");
+                  navigate("/home");
+                }
               }
-            });
+            );
           } else {
             console.error("role err");
           }
@@ -281,6 +315,7 @@ function MyProfile() {
   };
 
   useEffect(() => {
+    console.log("decodedToken.role", decodedToken.role);
     if (decodedToken.role == role[1]) {
       getTeacher(decodedToken.username).then((result) => {
         setBirth(result.birth);
@@ -289,10 +324,13 @@ function MyProfile() {
         setPhoneNum(result.phoneNum);
         setPwAnswer(result.pwAnswer);
         setFirstAccess(result.pwAnswer);
-        // console.log("result.imageId.imageId", result.imageId.imageId);
+        console.log("result.imageId.imageId", result);
+
         if (result.imageId) {
           getProfileImage(result.imageId.imageId).then((res) => {
             setThumnailImage(res.imagePath);
+            setInitialImageId(res.imageId);
+            // console.log("imagepath", res.imagePath);
           });
         }
         // 초기 값 설정(변경 전 후 감지후 put하기위해)
@@ -307,6 +345,7 @@ function MyProfile() {
       });
     } else if (decodedToken.role == role[2]) {
       getStudent(decodedToken.username).then((result) => {
+        console.log("result.imageId.imageId", result, userData);
         setBirth(result.birth);
         setName(result.name);
         setGender(result.sex);
@@ -316,8 +355,8 @@ function MyProfile() {
         setMotherPhoneNum(result.motherPhoneNum);
         setGuardiansPhoneNum(result.guardiansPhoneNum);
         setFirstAccess(result.pwAnswer);
-        if (result.imageId) {
-          getProfileImage(result.imageId.imageId).then((res) => {
+        if (result.imageResponseDTO) {
+          getProfileImage(result.imageResponseDTO.imageId).then((res) => {
             setThumnailImage(res.imagePath);
           });
         }
@@ -331,7 +370,9 @@ function MyProfile() {
           fatherPhoneNum: result.fatherPhoneNum,
           motherPhoneNum: result.motherPhoneNum,
           guardiansPhoneNum: result.guardiansPhoneNum,
-          imageId: result.imageId,
+          imageId: result.imageResponseDTO
+            ? result.imageResponseDTO.imageId
+            : "",
         });
       });
     }
@@ -413,20 +454,20 @@ function MyProfile() {
           <Grid item xs={12}>
             <TextField
               fullWidth
-              disabled={userRole === role[0]}
+              disabled={decodedToken.role === role[0]}
               label="ID"
               defaultValue={decodedToken.username}
               variant="outlined"
               InputProps={{
                 readOnly: true,
               }}
-              // value={decodedToken.username}
+              value={decodedToken.username}
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
               fullWidth
-              disabled={userRole === role[0]}
+              disabled={decodedToken.role === role[0]}
               id="outlined-disabled"
               label="Name"
               onChange={handleNameChange}
@@ -439,7 +480,7 @@ function MyProfile() {
               fullWidth
               disabled
               label={
-                userRole === role[0] || userRole === role[1]
+                decodedToken.role === role[0] || decodedToken.role === role[1]
                   ? "Grade field for student"
                   : "Non Grade"
               }
@@ -454,7 +495,7 @@ function MyProfile() {
               fullWidth
               disabled
               label={
-                userRole === role[0] || userRole === role[1]
+                decodedToken.role === role[0] || decodedToken.role === role[1]
                   ? "Section field for student"
                   : "Non Section"
               }
@@ -472,7 +513,7 @@ function MyProfile() {
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth>
-              {userRole == role[0] ? (
+              {decodedToken.role == role[0] ? (
                 <InputLabel id="demo-simple-select-label">
                   Gender field for student/teacher
                 </InputLabel>
@@ -484,13 +525,13 @@ function MyProfile() {
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 label={
-                  userRole == role[0]
+                  decodedToken.role == role[0]
                     ? " Gender field for student/teacher"
                     : "Gender"
                 }
                 value={gender}
                 onChange={handleGenderChange}
-                disabled={userRole === role[0]}
+                disabled={decodedToken.role === role[0]}
                 InputProps={{
                   style: { borderColor: "red" }, // 빨간 테두리 스타일
                 }}
@@ -507,11 +548,11 @@ function MyProfile() {
                 <DatePicker
                   sx={{ width: "100%" }}
                   label={
-                    userRole === role[0]
+                    decodedToken.role === role[0]
                       ? "Birth field for student/teacher"
                       : "Birth*"
                   }
-                  disabled={userRole === role[0]}
+                  disabled={decodedToken.role === role[0]}
                   onChange={handleBirthChange}
                   value={birth ? dayjs(birth) : null}
                 />
@@ -525,11 +566,11 @@ function MyProfile() {
               value={phoneNum ? phoneNum : ""}
               onChange={handlePhoneNumChange}
               label={
-                userRole === role[0]
+                decodedToken.role === role[0]
                   ? "Phone field for student"
                   : "Phone Number*"
               }
-              disabled={userRole === role[0]}
+              disabled={decodedToken.role === role[0]}
             />
           </Grid>
 
@@ -540,14 +581,18 @@ function MyProfile() {
               value={motherPhoneNum}
               onChange={handleMotherPhoneNumChange}
               label={
-                userRole === role[0] || userRole === role[1]
+                decodedToken.role === role[0] || decodedToken.role === role[1]
                   ? "Mother Phone field for student"
                   : "Mother Phone Number"
               }
-              disabled={userRole === role[0] || userRole === role[1]}
+              disabled={
+                decodedToken.role === role[0] || decodedToken.role === role[1]
+              }
               sx={{
                 backgroundColor:
-                  userRole === role[0] || userRole === role[1] ? "#dee5e8" : "",
+                  decodedToken.role === role[0] || decodedToken.role === role[1]
+                    ? "#dee5e8"
+                    : "",
               }}
             />
           </Grid>
@@ -555,14 +600,18 @@ function MyProfile() {
             <TextField
               fullWidth
               label={
-                userRole === role[0] || userRole === role[1]
+                decodedToken.role === role[0] || decodedToken.role === role[1]
                   ? "Father Phone field for student"
                   : "Father Phone Number"
               }
-              disabled={userRole === role[0] || userRole === role[1]}
+              disabled={
+                decodedToken.role === role[0] || decodedToken.role === role[1]
+              }
               sx={{
                 backgroundColor:
-                  userRole === role[0] || userRole === role[1] ? "#dee5e8" : "",
+                  decodedToken.role === role[0] || decodedToken.role === role[1]
+                    ? "#dee5e8"
+                    : "",
               }}
               variant="outlined"
               value={fatherPhoneNum}
@@ -573,14 +622,18 @@ function MyProfile() {
             <TextField
               fullWidth
               label={
-                userRole === role[0] || userRole === role[1]
+                decodedToken.role === role[0] || decodedToken.role === role[1]
                   ? "Guardians Phone field for student"
                   : "Guardians Phone Number"
               }
-              disabled={userRole === role[0] || userRole === role[1]}
+              disabled={
+                decodedToken.role === role[0] || decodedToken.role === role[1]
+              }
               sx={{
                 backgroundColor:
-                  userRole === role[0] || userRole === role[1] ? "#dee5e8" : "",
+                  decodedToken.role === role[0] || decodedToken.role === role[1]
+                    ? "#dee5e8"
+                    : "",
               }}
               variant="outlined"
               value={guardiansPhoneNum}
@@ -595,12 +648,12 @@ function MyProfile() {
             <TextField
               fullWidth
               variant="outlined"
-              disabled={firstAccess != null || userRole == role[0]}
+              disabled={firstAccess != null || decodedToken.role == role[0]}
               sx={{ marginTop: 2 }}
               value={pwAnswer}
               onChange={handlePwAnswerChange}
               label={
-                userRole === role[0]
+                decodedToken.role === role[0]
                   ? "PW Answer field for student/teacher"
                   : "PW Answer*"
               }
