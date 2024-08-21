@@ -208,3 +208,36 @@ export async function checkDuplicatedTeacherIdApi(userId) {
     console.log(err);
   }
 }
+
+export async function IsUserExistsApi(userId) {
+  try {
+    const response = await axiosInstance.get(
+      `/users/${userId}`
+    );
+    return response;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export async function IsPwAnswerRightApi(userId,answer) {
+  try {
+    const response = await axiosInstance.get(
+      `/checkPwAnswer/${userId}/${answer}`
+    );
+    return response;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export async function ResetPwApi(PwData,userID) {
+  try {
+    const response = await axiosInstance.put(
+      `/resetPassword/${userID}`,PwData
+    );
+    return response;
+  } catch (err) {
+    console.log(err);
+  }
+}

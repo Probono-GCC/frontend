@@ -6,6 +6,11 @@ import { TextField, Box, useMediaQuery } from "@mui/material";
 
 import Button from "../Components/Button";
 
+import { IsUserExistsApi } from "../Apis/Api/User";
+import { IsPwAnswerRightApi } from "../Apis/Api/User";
+import { ResetPwApi } from "../Apis/Api/User";
+export default ForgotPassword;
+
 function ForgotPassword() {
   const navigate = useNavigate();
   const [userID, setUserID] = useState("");
@@ -15,6 +20,80 @@ function ForgotPassword() {
   const [currentIndex, setCurrentIndex] = useState(1);
   const [rePasswordError, setRePasswordError] = useState(false);
   /**언어 선택 임시 선택상자 */
+  const [isIdChecked,setIsIdChecked]=useState(false);
+  const [isPwAnswerRight,setIsPwAnswerRight]=useState(false);
+
+  
+  // handleIsIdExists 함수
+  const handleIsIdExists = async (id) => {
+    try {
+      console.log("????",id);
+      // ID 존재 여부 확인 API 호출
+      const result = await IsUserExistsApi(id);
+      
+      // API 호출이 성공적이고 상태 코드가 200인지 확인
+      if (result && result.status === 200) {
+        alert("ID exists.");
+        // ID 존재 확인 상태 업데이트
+        setIsIdChecked(true); 
+      } else {
+        // ID가 존재하지 않음
+        alert("⚠️ID does not exist.⚠️");
+        setIsIdChecked(false);
+      }
+    } catch (error) {
+      // API 호출 중 오류 발생 시
+      console.error("Error checking ID existence:", error);
+      alert("⚠️Error checking ID existence.⚠️");
+      setIsIdChecked(false);
+    }
+  }
+
+  //handleIsPwAnswerRight 함수
+  const handleIsPwAnswerRight = async (userID,answer) => {
+    try {
+      
+      const result = await IsPwAnswerRightApi(userID,answer);
+      
+      // API 호출이 성공적이고 상태 코드가 200인지 확인
+      if (result && result.status === 200) {
+        alert("Answer is right");
+        setIsPwAnswerRight(true); 
+      } else {
+        alert("Answer is wrong");
+        setIsPwAnswerRight(false);
+      }
+    } catch (error) {
+      // API 호출 중 오류 발생 시
+      console.error("Error checking PwAnswer:", error);
+      alert("Error checking PwAnswer:");
+      setIsIdChecked(false);
+    }
+  }
+
+  // handleSetNewPw 함수
+  const handleSetNewPw = async (userID) => {
+    const pwData = {
+      newPassword: userPW
+    };
+    try {
+      
+      const result = await ResetPwApi(pwData,userID);
+      
+      // API 호출이 성공적이고 상태 코드가 200인지 확인
+      if (result && result.status === 200) {
+        alert("Reset Password Successfully");
+      } else {
+        alert("Cannot Reset Password");
+      }
+    } catch (error) {
+      // API 호출 중 오류 발생 시
+      console.error("Error Resetting Password:", error);
+      alert("Error Resetting Password:");
+      setIsIdChecked(false);
+    }
+  }
+  
 
   const handleRePasswordChange = (event) => {
     setRePassword(event.target.value);
@@ -45,7 +124,7 @@ function ForgotPassword() {
           }}
         />
         <div id={styles.right_align}>
-          <Button size={"md"} title={"check"} disabled={userID.length === 0} />
+          <Button size={"md"} title={"check"} onClick={() => handleIsIdExists(userID)} disabled={userID.length === 0} />
         </div>
         <p className={styles.questionText}>
           2. What is your most favorite food?
@@ -54,12 +133,13 @@ function ForgotPassword() {
           sx={{ margin: "1vh 2vw", width: isSmallScreen ? "80vw" : "33vw" }}
           label="Answer"
           variant="outlined"
+          value={answer}
           onChange={(event) => {
             setAnswer(event.target.value);
           }}
         />
         <div id={styles.right_align}>
-          <Button size={"md"} title={"check"} disabled={answer.length === 0} />
+          <Button size={"md"} title={"check"} onClick={() => handleIsPwAnswerRight(userID,answer)}disabled={answer.length === 0} />
         </div>
         <p className={styles.questionText}>3. Reset Password</p>
         <TextField
@@ -71,6 +151,7 @@ function ForgotPassword() {
           onChange={(event) => {
             setUserPW(event.target.value);
           }}
+          value={userPW} //상태 변수를 value로 수정
         />
         <TextField
           sx={{ margin: "1vh 2vw", width: isSmallScreen ? "80vw" : "33vw" }}
@@ -86,6 +167,7 @@ function ForgotPassword() {
           <Button
             size={"md"}
             title={"change"}
+            onClick={()=> handleSetNewPw(userID,userPW)}
             disabled={userPW.length === 0 || rePassword.length === 0}
           />
         </div>
@@ -94,4 +176,4 @@ function ForgotPassword() {
   );
 }
 
-export default ForgotPassword;
+
