@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AppBar from "../Components/AppBar";
 import {
   Box,
@@ -13,15 +13,17 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
+import { getNoticePostList } from "../Apis/Api/ClassNotice";
+import { useAuth } from "../store/AuthContext";
 
-function createData(title, date, type, author, viewCount) {
-  return { title, date, type, author, viewCount };
+function createData(title, date, author, viewCount) {
+  return { title, date, author, viewCount };
 }
 
 const rows = [
@@ -35,15 +37,53 @@ const rows = [
 function ClassBoard() {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalPosting, setTotalPosting] = useState(0);
   const itemsPerPage = 10;
   const { isSmallScreen } = useMediaQueryContext();
+  const [rows, setRows] = useState([]);
+  const { userRole } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const location = useLocation();
+  const currentClassItem = location.state;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const result = await getNoticePostList(
+          currentClassItem.classId,
+          page - 1,
+          itemsPerPage
+        );
+        if (result && Array.isArray(result.content)) {
+          console.log("새로운 페이지 컨텐츠 받아왔나?", result.content);
+          setRows(result.content);
+          setTotalPages(result.totalPages);
+          setTotalPosting(result.totalElements);
+        } else {
+          setRows([]);
+          setTotalPages(1);
+        }
+      } catch (error) {
+        console.error("Error fetching notice posts", error);
+        setRows([]);
+        setTotalPages(1);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [page]);
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    if (newPage >= 1 && newPage <= totalPages) {
+      setPage(newPage);
+    }
   };
 
   const handleNewPost = () => {
-    navigate("/private/class-new-post-form");
+    navigate(`/private/class-new-post-form/${currentClassItem.classId}`);
   };
 
   const handlePreviousGroup = () => {
@@ -54,11 +94,15 @@ function ClassBoard() {
     setPage((prevPage) => Math.min(prevPage + 5, totalPages));
   };
 
-  const handleRowClick = () => {
-    navigate("/post");
+  const handleRowClick = (rowData) => {
+    console.log("rowData", rowData);
+    if (rowData && rowData.noticeId) {
+      navigate(`/class-notice/${rowData.noticeId}`, { state: rowData });
+    } else {
+      console.error("Row data does not contain an 'noticeId' field:", rowData);
+    }
   };
 
-  const totalPages = Math.ceil(rows.length / itemsPerPage);
   const maxDisplayPages = 5;
   const currentBlock = Math.ceil(page / maxDisplayPages);
   const displayedPages = [];
@@ -71,10 +115,9 @@ function ClassBoard() {
     displayedPages.push(i);
   }
 
-  const displayedRows = rows.slice(
-    (page - 1) * itemsPerPage,
-    page * itemsPerPage
-  );
+  const getItemNumber = (index) => {
+    return (page - 1) * itemsPerPage + totalPosting - index;
+  };
 
   return (
     <div>
@@ -102,7 +145,7 @@ function ClassBoard() {
       >
         <Table sx={{ tableLayout: "fixed", width: "100%" }}>
           <TableHead sx={{ backgroundColor: "#d8edff" }}>
-            <TableRow>
+            <TableRow sx={{ width: "100%" }}>
               <TableCell
                 sx={{
                   textAlign: "left",
@@ -117,21 +160,12 @@ function ClassBoard() {
                 sx={{
                   textAlign: "left",
                   fontWeight: "bold",
-                  width: isSmallScreen ? "65%" : "40%",
+                  width: isSmallScreen ? "65%" : "30%",
                 }}
               >
                 Title
               </TableCell>
-              <TableCell
-                sx={{
-                  textAlign: "left",
-                  fontWeight: "bold",
-                  width: "20%",
-                  padding: "5px",
-                }}
-              >
-                Type
-              </TableCell>
+
               {isSmallScreen ? (
                 <div></div>
               ) : (
@@ -140,28 +174,28 @@ function ClassBoard() {
                     sx={{
                       textAlign: "left",
                       fontWeight: "bold",
-                      width: "20%",
+                      width: "30%",
                       padding: "16px 30px 16px 16px",
                     }}
                   >
                     Author
                   </TableCell>
-                  <TableCell
-                    sx={{
-                      textAlign: "right",
-                      fontWeight: "bold",
-                      width: "12%",
-                      padding: "16px 30px 16px 16px",
-                    }}
-                  >
-                    View Count
-                  </TableCell>
                 </>
               )}
+              <TableCell
+                sx={{
+                  textAlign: "right",
+                  fontWeight: "bold",
+                  width: "25%",
+                  padding: "16px 30px 16px 16px",
+                }}
+              >
+                View
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {displayedRows.map((row, index) => (
+            {rows.map((row, index) => (
               <TableRow
                 key={index}
                 sx={{
@@ -169,7 +203,7 @@ function ClassBoard() {
                   transition: "background-color 0.3s",
                   "&:hover": { backgroundColor: "#f5f5f5" },
                 }}
-                onClick={handleRowClick}
+                onClick={() => handleRowClick(row)}
               >
                 <TableCell
                   sx={{
@@ -181,7 +215,7 @@ function ClassBoard() {
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {rows.length - (index + (page - 1) * itemsPerPage)}
+                  {getItemNumber(index)}
                 </TableCell>
                 <TableCell
                   sx={{
@@ -194,61 +228,84 @@ function ClassBoard() {
                   }}
                 >
                   {row.title}
-                  <Typography
-                    variant="body2"
-                    sx={{ color: "#999", fontSize: "0.875em" }}
-                  >
-                    {row.date}
-                  </Typography>
                 </TableCell>
+
+                {isSmallScreen ? (
+                  <div></div>
+                ) : (
+                  <TableCell
+                    sx={{
+                      padding: "16px 30px 16px 16px",
+                      textAlign: "left",
+                      borderBottom: "1px solid #e0e0e0",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {row.author}
+                  </TableCell>
+                )}
                 <TableCell
                   sx={{
-                    padding: "16px",
-                    textAlign: "left",
+                    padding: "16px 30px 16px 16px",
+                    textAlign: "right",
                     borderBottom: "1px solid #e0e0e0",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {row.type}
+                  {row.views}
                 </TableCell>
-                {isSmallScreen ? (
-                  <div></div>
-                ) : (
-                  <>
-                    <TableCell
-                      sx={{
-                        padding: "16px 30px 16px 16px",
-                        textAlign: "left",
-                        borderBottom: "1px solid #e0e0e0",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {row.author}
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        padding: "16px 30px 16px 16px",
-                        textAlign: "right",
-                        borderBottom: "1px solid #e0e0e0",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {row.viewCount}
-                    </TableCell>
-                  </>
-                )}
+              </TableRow>
+            ))}
+            {Array.from({
+              length: itemsPerPage - rows.length,
+            }).map((_, index) => (
+              <TableRow key={`empty-${index}`} sx={{ height: "50px" }}>
+                <TableCell colSpan={3}></TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-      <Box sx={{ display: "flex", justifyContent: "center", margin: "20px 0" }}>
+      {userRole === "ROLE_ADMIN" && (
+        <Box
+          sx={{
+            width: "80%",
+            margin: "20px auto",
+            display: "flex",
+
+            justifyContent: "flex-end",
+          }}
+        >
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: "#1b8ef2",
+              color: "white",
+              "&:hover": { backgroundColor: "#1565c0" },
+            }}
+            onClick={handleNewPost}
+          >
+            New
+          </Button>
+        </Box>
+      )}
+
+      <Box
+        sx={{
+          display: "flex",
+          margin: "20px 0",
+          position: "fixed",
+          bottom: 20,
+          right: 20,
+          width: "100%",
+          zIndex: 1000, // 다른 콘텐츠 위에 표시되도록 z-index를 조정
+          justifyContent: "center",
+        }}
+      >
         <IconButton onClick={handlePreviousGroup} disabled={page <= 1}>
           <KeyboardDoubleArrowLeftIcon />
         </IconButton>
@@ -270,6 +327,7 @@ function ClassBoard() {
             </Typography>
           </Button>
         ))}
+
         <IconButton
           onClick={() => handleChangePage(null, page + 1)}
           disabled={page === totalPages}
@@ -279,21 +337,6 @@ function ClassBoard() {
         <IconButton onClick={handleNextGroup} disabled={page >= totalPages}>
           <KeyboardDoubleArrowRightIcon />
         </IconButton>
-      </Box>
-      <Box
-        sx={{ display: "flex", justifyContent: "flex-end", margin: "20px 10%" }}
-      >
-        <Button
-          variant="contained"
-          sx={{
-            backgroundColor: "#1b8ef2",
-            color: "white",
-            "&:hover": { backgroundColor: "#1565c0" },
-          }}
-          onClick={handleNewPost}
-        >
-          New
-        </Button>
       </Box>
     </div>
   );

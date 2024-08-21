@@ -8,20 +8,11 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
 
-const rowsHeader = [
-  { field: "sn", name: "SN", type: "number" },
-  { field: "name", name: "Name" },
-  { field: "gender", name: "Gender" },
-  { field: "birth", name: "Birth" },
-  { field: "id", name: "ID" },
-  { field: "grade", name: "Grade" },
-];
-
 export default function DetailTable({ data, rowsHeader }) {
   const { isSmallScreen } = useMediaQueryContext();
 
   useEffect(() => {
-    console.log(data);
+    // console.log("data", data, "rowHeader", rowsHeader);
   }, [data]);
 
   return (

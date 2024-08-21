@@ -15,16 +15,8 @@ import { getTeachers, deleteTeacher } from "../Apis/Api/User"; // deleteTeacher 
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
-function createData(
-  gender,
-  name,
-  birth,
-  login_id,
-  phone_num,
-  home_room,
-  course
-) {
-  return { gender, name, login_id, birth, phone_num, home_room, course };
+function createData(gender, name, birth, id, phone_num, home_room) {
+  return { gender, name, id, birth, phone_num, home_room };
 }
 
 function TeacherView() {
@@ -38,12 +30,12 @@ function TeacherView() {
   // 기본 컬럼 정의
   const basic_columns = isSmallScreen
     ? [
-        { field: "login_id", headerName: "ID", flex: 0.35 },
+        { field: "id", headerName: "ID", flex: 0.35 },
         { field: "name", headerName: "Name", flex: 0.35 },
         { field: "home_room", headerName: "Home room", flex: 0.3 },
       ]
     : [
-        { field: "login_id", headerName: "ID", flex: 0.2 },
+        { field: "id", headerName: "ID", flex: 0.2 },
         { field: "name", headerName: "Name", flex: 0.2 },
         { field: "gender", headerName: "Gender", flex: 0.1 },
         { field: "birth", headerName: "Birth", flex: 0.1 },
@@ -59,23 +51,41 @@ function TeacherView() {
       renderCell: (params) => (
         <Checkbox
           {...label}
-          checked={checkedRows.includes(params.row.login_id)}
-          onChange={() => handleRowSelection(params.row.login_id)}
+          checked={checkedRows.includes(params.row.id)}
+          onChange={() => handleRowSelection(params.row.id)}
         />
       ),
     },
     ...basic_columns,
   ];
-
+  // {
+  //   "username": "testTeacher1",
+  //   "role": "ROLE_TEACHER",
+  //   "name": "testteacer",
+  //   "birth": "2024-08-16",
+  //   "sex": "FEMALE",
+  //   "phoneNum": "1",
+  //   "pwAnswer": "tred",
+  //   "status": "ACTIVE",
+  //   "classId": {
+  //       "classId": 1,
+  //       "year": 2084,
+  //       "grade": "CLASS3",
+  //       "section": "B"
+  //   },
+  //   "imageId": {
+  //       "imageId": 5,
+  //       "imagePath": "https://probono-image-bucket.s3.ap-northeast-2.amazonaws.com/0b01456b-6IMG_5667.jpg",
+  //       "createdChargeId": "testTeacher1"
+  //   }
   // 상세 정보 모달에 사용되는 컬럼 정의
   const detail_columns = [
     { field: "name", headerName: "Name", flex: 0.2 },
-    { field: "sex", headerName: "Gender", flex: 0.1 },
+    { field: "gender", headerName: "Gender", flex: 0.1 },
     { field: "birth", headerName: "Birth", flex: 0.1 },
-    { field: "login_id", headerName: "ID", flex: 0.2 },
-    { field: "classId", headerName: "Phone" },
+    { field: "id", headerName: "ID", flex: 0.2 },
+    { field: "phone_num", headerName: "Phone" },
     { field: "home_room", headerName: "Home room" },
-    { field: "course", headerName: "Course", flex: 0.3 },
   ];
 
   const handleRowSelection = (id) => {
@@ -138,7 +148,7 @@ function TeacherView() {
   };
   const fetchTeacher = () => {
     getTeachers().then((result) => {
-      console.log(result);
+      console.log("teacherinfo", result);
       const teachers = result.content || []; // content 배열 가져오기
       if (teachers.length > 0) {
         const tempRow = teachers.map((item) =>
@@ -148,8 +158,9 @@ function TeacherView() {
             item.birth,
             item.username,
             item.phoneNum,
-            item.homeRoom,
-            item.course
+            item.classId && item.classId.grade && item.classId.section
+              ? item.classId.grade + " - " + item.classId.section
+              : ""
           )
         );
         setRows(tempRow);
@@ -196,14 +207,14 @@ function TeacherView() {
           rows={rows}
           onSelectedAllRow={handleRowSelection}
           onRowDoubleClick={handleRowDoubleClick}
-          getRowId={(row) => row.login_id}
+          getRowId={(row) => row.id}
           id={isSmallScreen ? "" : "table_body"}
           isStudentTable={true} //row클릭시 체크박스 활성화 안되게 하기위해 커스텀
           // columns={isSmallScreen ? basic_columns : updatedColumns}
           // rows={rows}
           // onRowSelection={handleRowSelection}
           // onRowDoubleClick={handleRowDoubleClick}
-          // getRowId={(row) => row.login_id}
+          // getRowId={(row) => row.id}
           // id={isSmallScreen ? "" : "table_body"}
           // isRadioButton={false}
           // isStudentTable={true} // 필요에 따라 다른 커스텀 플래그를 사용할 수 있습니다.
@@ -225,7 +236,7 @@ function TeacherView() {
       <Modal
         open={modalOpen}
         handleClose={handleModalClose}
-        title={"Detail Information"}
+        title={"Teacher Detail Info"}
         rowData={modalRowData}
         rowsHeader={detail_columns}
       />

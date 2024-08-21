@@ -54,7 +54,9 @@ function AppBar() {
   const [myClass, setMyClass] = useState([]); //[{grade:"Class1",section:"A"},{grade:"Class3",section:"B"}]
 
   const navigate = useNavigate();
-  const currentYear = new Date().getFullYear();
+  const NepaliDate = require("nepali-date");
+  const todayNepaliDate = new NepaliDate();
+  const currentYear = todayNepaliDate.getYear();
 
   const location = useLocation();
   const goHome = () => {
@@ -85,8 +87,11 @@ function AppBar() {
     navigate("/private/create-class");
   };
 
-  const goClassBoard = () => {
-    navigate("/class-board");
+  const goClassBoard = (classItem) => {
+    console.log("app bar class", classItem);
+    navigate(`/class-board/${classItem.grade}-${classItem.section}/`, {
+      state: classItem,
+    });
   };
 
   const goClassInfo = (classData) => {
@@ -280,12 +285,10 @@ function AppBar() {
     justifyContent: "flex-end",
   }));
 
-  const [expanded, setExpanded] = useState({
-    Class: true,
-  });
+  const [expanded, setExpanded] = useState({});
   // myClass가 업데이트될 때 expanded 상태 동적으로 설정
   useEffect(() => {
-    const newExpanded = { classes: true };
+    const newExpanded = {};
     if (Array.isArray(myClass)) {
       myClass.forEach((_, index) => {
         newExpanded[`class${index}`] = false;
@@ -335,16 +338,17 @@ function AppBar() {
     }
     if (userRole == roleArray[0]) {
       setUserName("Administor");
-      getClassList(0, 100, currentYear + 60).then((result) => {
+      getClassList(0, 100, currentYear).then((result) => {
         if (result && result.content) {
           const myClassList = result.content.map((item) => ({
             grade: item.grade,
             section: item.section ? item.section : "",
+            classId: item.classId,
           }));
           console.log("admin classlist", myClassList);
           setMyClass(myClassList);
         } else {
-          setMyClass([{ grade: "", section: "" }]);
+          setMyClass([{ grade: "", section: "", classId: "" }]);
         }
       });
     } else if (userRole == roleArray[1]) {
@@ -365,7 +369,12 @@ function AppBar() {
         //   "grade": "PLAYGROUP",
         //   "section": "A"
         // },
-        if (result.classId && result.classId.grade && result.classId.section) {
+        if (
+          result.classId &&
+          result.classId.grade &&
+          result.classId.section &&
+          result.classId.classId
+        ) {
           // const myClassList = result.classId.map((item) => ({
           //   grade: item.grade,
           //   section: item.section ? item.section : "",
@@ -375,10 +384,11 @@ function AppBar() {
             {
               grade: result.classId.grade,
               section: result.classId.section,
+              classId: result.classId.classId,
             },
           ]);
         } else {
-          setMyClass([{ grade: "", section: "" }]);
+          setMyClass([{ grade: "", section: "", calssId: "" }]);
         }
       });
     } else if (userRole == roleArray[2]) {
@@ -395,22 +405,19 @@ function AppBar() {
           if (
             result.classResponse &&
             result.classResponse.grade &&
-            result.classResponse.section
+            result.classResponse.section &&
+            result.classResponse.classId
           ) {
-            console.log(
-              "set class 를 하자",
-              result.classResponse.grade,
-              result.classResponse.section
-            );
             setMyClass([
               {
                 grade: result.classResponse.grade,
                 section: result.classResponse.section,
+                classId: result.classResponse.classId,
               },
             ]);
             // handleMyClass({ grade: result.grade, section: result.section });
           } else {
-            setMyClass({ grade: "", section: "" });
+            setMyClass({ grade: "", section: "", classId: "" });
           }
         }
       });
