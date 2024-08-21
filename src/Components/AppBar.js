@@ -44,6 +44,7 @@ import {
 import { useEffect, useState } from "react";
 import { getStudent, getTeacher, getProfileImage } from "../Apis/Api/User";
 import { useAuth } from "../store/AuthContext";
+import { getClassList } from "../Apis/Api/Class";
 function AppBar() {
   const { userRole, roleArray, userData } = useAuth();
   const [userName, setUserName] = React.useState("");
@@ -53,6 +54,7 @@ function AppBar() {
   const [myClass, setMyClass] = useState([]); //[{grade:"Class1",section:"A"},{grade:"Class3",section:"B"}]
 
   const navigate = useNavigate();
+  const currentYear = new Date().getFullYear();
 
   const location = useLocation();
   const goHome = () => {
@@ -87,7 +89,7 @@ function AppBar() {
     navigate("/class-board");
   };
 
-  const goClassInfo = () => {
+  const goClassInfo = (classData) => {
     navigate("/private/class-info");
   };
 
@@ -278,10 +280,12 @@ function AppBar() {
     justifyContent: "flex-end",
   }));
 
-  const [expanded, setExpanded] = useState({});
+  const [expanded, setExpanded] = useState({
+    Class: true,
+  });
   // myClass가 업데이트될 때 expanded 상태 동적으로 설정
   useEffect(() => {
-    const newExpanded = {};
+    const newExpanded = { classes: true };
     if (Array.isArray(myClass)) {
       myClass.forEach((_, index) => {
         newExpanded[`class${index}`] = false;
@@ -331,6 +335,18 @@ function AppBar() {
     }
     if (userRole == roleArray[0]) {
       setUserName("Administor");
+      getClassList(0, 100, currentYear + 60).then((result) => {
+        if (result && result.content) {
+          const myClassList = result.content.map((item) => ({
+            grade: item.grade,
+            section: item.section ? item.section : "",
+          }));
+          console.log("admin classlist", myClassList);
+          setMyClass(myClassList);
+        } else {
+          setMyClass([{ grade: "", section: "" }]);
+        }
+      });
     } else if (userRole == roleArray[1]) {
       console.log("getTeacher");
       getTeacher(userData.username).then((result) => {

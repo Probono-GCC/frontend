@@ -85,3 +85,14 @@ export async function deleteClassMember(classData, username) {
     console.log(err);
   }
 }
+export async function getClassList(page, size, year) {
+  try {
+    const response = await axiosInstance.get(
+      `/classes?page=${page}&size=${size}&year=${year}`
+    );
+    console.log(response);
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+}
