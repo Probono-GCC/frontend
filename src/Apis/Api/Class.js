@@ -23,9 +23,9 @@ export async function getClass(classData) {
   }
 }
 
-export async function getClasses() {
+export async function getClasses(yearData) {
   try {
-    const response = await axiosInstance.get(`/classes?year=2084`);
+    const response = await axiosInstance.get(`/classes?year=${yearData}`);
     console.log(response);
     return response.data;
   } catch (err) {

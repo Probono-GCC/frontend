@@ -21,6 +21,12 @@ import Table from "../Components/Table";
 import CustomButton from "../Components/Button";
 import SelectButton from "../Components/SelectButton";
 import SelectButtonContainer from "../Components/SelectButtonContatiner";
+import {
+  postCourse,
+  getCourse,
+  getCourses,
+  deleteCourse,
+} from "../Apis/Api/Course";
 
 const modalStyle = {
   position: "absolute",
