@@ -99,10 +99,6 @@ function NoticeBoard() {
     displayedPages.push(i);
   }
 
-  // const displayedRows =
-  //   rows.length > 0
-  //     ? rows.slice((page - 1) * itemsPerPage, page * itemsPerPage)
-  //     : [];
   const getItemNumber = (index) => {
     return (page - 1) * itemsPerPage + totalPosting - index;
   };

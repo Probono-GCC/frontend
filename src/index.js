@@ -14,17 +14,17 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <MediaQueryProvider>
-    {/* <React.StrictMode> */}
-    <BrowserRouter>
-      <AuthProvider>
-        <Routes>
-          <Route path="/*" element={<PublicRoutes />} />
-          {/* 프라이빗 라우트 */}
-          <Route path="/private/*" element={<PrivateRoutes />} />
-        </Routes>
-      </AuthProvider>
-    </BrowserRouter>
-    {/* </React.StrictMode> */}
+    <React.StrictMode>
+      <BrowserRouter>
+        <AuthProvider>
+          <Routes>
+            <Route path="/*" element={<PublicRoutes />} />
+            {/* 프라이빗 라우트 */}
+            <Route path="/private/*" element={<PrivateRoutes />} />
+          </Routes>
+        </AuthProvider>
+      </BrowserRouter>
+    </React.StrictMode>
   </MediaQueryProvider>
 );
 
