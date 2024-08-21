@@ -5,8 +5,8 @@ import { grey } from "../Styles/Color"; // 색상 팔레트 임포트
 import { useMediaQueryContext } from "../store/MediaQueryContext";
 
 import DetailTable from "./DetailTable";
-// import ProfileImg from "../Assets/img/profile_temp.png";
-
+// import DefaultImg from "../Assets/img/profile_temp.png";
+import DefaultImg from "../Assets/img/default_profile.png";
 //api
 import { getTeacher, getStudent } from "../Apis/Api/User";
 function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
@@ -56,7 +56,11 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
           <h2 id="keep-mounted-modal-title" className="modal-title">
             {title}
           </h2>
-          <img src={profileImgPath} width="120px" height="120px" />
+          <img
+            src={profileImgPath ? profileImgPath : DefaultImg}
+            width="120px"
+            height="120px"
+          />
           <TableContainer sx={{ width: isSmallScreen ? "280px" : "400" }}>
             <DetailTable data={rowData} rowsHeader={rowsHeader} />
           </TableContainer>
