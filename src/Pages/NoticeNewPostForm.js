@@ -40,17 +40,22 @@ function NoticeNewPostForm() {
   // const [grade, setGrade] = useState("All");
   const [content, setContent] = useState("");
   const [imgURL, setImgURL] = useState([]); //server에 이미지 보내는 용도(파일형태)
+  const [prevImage, setPrevImage] = useState([]);
   const [thumbnail, setThumbnail] = useState([]); //화면에 이미지 띄워주는 용도(url string형태)
   const { isSmallScreen } = useMediaQueryContext();
   const location = useLocation();
   const postData = location.state;
+
+  const [initialTitle, setInitialTitle] = useState("");
+  const [initialContent, setInitialContent] = useState("");
+  const [initialImageList, setInitialImageList] = useState([]);
 
   const quillRef = useRef();
 
   const handleSave = () => {
     const formData = new FormData();
 
-    // 필수 필드 추가
+    // 필수 필드 추가 PUT용
     formData.append("title", title);
     formData.append("content", content.replace(/<\/?[^>]+(>|$)/g, ""));
     formData.append("type", "SCHOOL");
@@ -62,8 +67,17 @@ function NoticeNewPostForm() {
       });
     }
 
+    //Patch 의미(only바뀐것만)
+    // if (title !== initialTitle) formData.append("title", title);
+    // if (content !== initialContent) formData.append("content", content.replace(/<\/?[^>]+(>|$)/g, ""));
+    // if (imgURL.length > 0) {
+    //   imgURL.forEach((file) => {
+    //     formData.append("imageList", file);
+    //   });
+    // }
+
     if (postData) {
-      putNoticePost(formData).then((result) => {
+      putNoticePost(postData.noticeId, formData).then((result) => {
         console.log(result);
         if (result) {
           alert("Edit complete");
@@ -116,20 +130,27 @@ function NoticeNewPostForm() {
       };
       reader.readAsDataURL(file); // 이미지 파일을 Data URL로 읽어들임
     };
-
-    input.click();
   };
   useEffect(() => {
     if (postData) {
       setTitle(postData.title || "");
       setContent(postData.content || "");
-      // Initialize thumbnail and imgURL if postData contains images
-      if (postData.imageList) {
-        setThumbnail(postData.imageList);
-        // Assuming imageList is an array of URLs
-      }
+      setPrevImage(postData.imageList || []);
+      setInitialTitle(postData.title || "");
+      setInitialContent(postData.content || "");
+      setInitialImageList(postData.imageList || []);
     }
-  }, [postData]); // Adding postData as a dependency
+  }, [postData]);
+  // useEffect(() => {
+  //   if (postData) {
+  //     setTitle(postData.title || "");
+  //     setContent(postData.content || "");
+  //     if (postData.imageList) {
+  //       setPrevImage(postData.imageList);
+
+  //     }
+  //   }
+  // }, [postData]);
   const checkImage = (file) => {
     let err = "";
 
@@ -261,6 +282,20 @@ function NoticeNewPostForm() {
                 padding: "8px",
               }}
             >
+              {prevImage.map((item, index) => (
+                <img
+                  style={{
+                    maxWidth: "100%",
+                    maxHeight: "200px",
+                    borderRadius: "8px",
+                    objectFit: "cover",
+                    // margin: "0 5px",
+                  }}
+                  key={index}
+                  src={item.imagePath}
+                  alt={`Uploaded ${index}`}
+                />
+              ))}
               {thumbnail.map((url, index) => (
                 <img
                   style={{

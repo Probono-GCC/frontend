@@ -25,9 +25,7 @@ export async function getNoticePostList(page, size) {
 //단일 게시글 조회
 export async function getNoticePost(noticeId) {
   try {
-    const response = await axiosInstance.get(
-      `/notice/schoolNoticeList/${noticeId}`
-    );
+    const response = await axiosInstance.get(`/notice/${noticeId}`);
     return response.data;
   } catch (err) {
     console.log(err);
@@ -57,9 +55,9 @@ export async function deleteNoticePost(noticeId) {
 }
 
 //단일 게시글 수정
-export async function putNoticePost(noticeId) {
+export async function putNoticePost(noticeId, formData) {
   try {
-    const response = await axiosInstance.put(`/notice/${noticeId}`);
+    const response = await axiosInstance.put(`/notice/${noticeId}`, formData);
     return response.data;
   } catch (err) {
     console.log(err);

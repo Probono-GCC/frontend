@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import AppBar from "../Components/AppBar";
-import Table from "../Components/ViewTable";
+import Table from "../Components/Table";
 import CustomButton from "../Components/Button";
 import styles from "../Styles/css/Table.module.css";
 import Modal from "../Components/ChangeGradeModal";
@@ -16,7 +16,7 @@ import Radio from "@mui/material/Radio";
 import Button from "@mui/material/Button";
 import { Typography, Box, Grid } from "@mui/material";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
-import { getStudents } from "../Apis/Api/User";
+import { getStudents, changeGradeApi } from "../Apis/Api/User";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
@@ -34,38 +34,6 @@ function ChangeGrade() {
   const [rows, setRows] = useState([]);
   const [allStudentData, setAllStudentDatas] = useState([]);
   const { isSmallScreen } = useMediaQueryContext();
-
-  useEffect(() => {
-    getStudents().then((result) => {
-      console.log(result);
-      const students = result.content || []; // content 배열 가져오기
-      setAllStudentDatas(students);
-      console.log(students);
-      if (students.length > 0) {
-        const tempRow = students.map((item) =>
-          createData(
-            item.serialNumber,
-            item.name,
-            item.sex,
-            item.birth,
-            item.username,
-            item.grade,
-            item.phoneNum
-          )
-        );
-        setRows(tempRow);
-      }
-    });
-  }, []);
-
-  useEffect(() => {
-    if (checkedRowId) {
-      const selectedData = allStudentData.find(
-        (item) => item.username === checkedRowId
-      );
-      setCheckedRowData(selectedData);
-    }
-  }, [checkedRowId, allStudentData]);
 
   const columns = isSmallScreen
     ? [
@@ -93,13 +61,14 @@ function ChangeGrade() {
         { field: "grade", headerName: "Grade", flex: 0.3 },
       ];
 
-  const handleSelectedRowId = (_loginId) => {
+  const handleRowSelection = (_loginId) => {
     console.log("CHECKED: ", _loginId);
     setCheckedRowId(_loginId);
+    setCheckedRowData(_loginId);
   };
 
   const handleModalOpen = () => {
-    console.log("OPENING: ", checkedRowData);
+    console.log("OPENING: ", checkedRowId);
     setModalOpen(true);
   };
 
@@ -121,12 +90,114 @@ function ChangeGrade() {
       headerName: "",
       flex: 0.05,
       renderCell: (params) => (
-        <Radio {...label} checked={checkedRowId === params.row.id} />
+        <Radio
+          checked={checkedRowId ? checkedRowId.id === params.row.id : ""}
+          // onChange={() => handleRowSelection(params.row.id)}
+        />
       ),
     },
     ...columns,
   ];
+  const fetchStudents = () => {
+    getStudents().then((result) => {
+      const students = result.content || []; // content 배열 가져오기
+      setAllStudentDatas(students);
+      console.log(students);
+      if (students.length > 0) {
+        const tempRow = students.map((item) =>
+          createData(
+            item.serialNumber,
+            item.name,
+            item.sex,
+            item.birth,
+            item.username,
+            item.grade,
+            item.phoneNum
+          )
+        );
+        setRows(tempRow);
+      }
+    });
+  };
+  const advanceGrade = (prevGrade) => {
+    let newGrade;
 
+    // 현재 학년을 기반으로 새로운 학년을 결정
+    switch (prevGrade) {
+      case "PLAYGROUP":
+        newGrade = "NURSERY";
+        break;
+      case "NURSERY":
+        newGrade = "LOWER_KG";
+        break;
+      case "LOWER_KG":
+        newGrade = "UPPER_KG";
+        break;
+      case "UPPER_KG":
+        newGrade = "CLASS1";
+        break;
+      case "CLASS1":
+        newGrade = "CLASS2";
+        break;
+      case "CLASS2":
+        newGrade = "CLASS3";
+        break;
+      case "CLASS3":
+        newGrade = "CLASS4";
+        break;
+      case "CLASS4":
+        newGrade = "CLASS5";
+        break;
+      case "CLASS5":
+        newGrade = "CLASS6";
+        break;
+      case "CLASS6":
+        newGrade = "CLASS7";
+        break;
+      case "CLASS7":
+        newGrade = "CLASS8";
+        break;
+      case "CLASS8":
+        newGrade = "CLASS9";
+        break;
+      case "CLASS9":
+        newGrade = "CLASS10";
+        break;
+      case "CLASS10":
+        newGrade = "GRADUATED";
+        break;
+      default:
+        newGrade = prevGrade; // 학년이 이미 GRADUATED인 경우 그대로 유지
+    }
+    return newGrade;
+  };
+  const handleChangeAllGrade = () => {
+    allStudentData.forEach((student) => {
+      const newGrade = advanceGrade(student.grade);
+      const updatedGradeData = { grade: newGrade };
+      changeGradeApi(updatedGradeData, student.username).then((result) => {
+        console.log(result);
+      });
+      fetchStudents();
+    });
+    handleClose();
+  };
+  useEffect(() => {
+    fetchStudents();
+  }, []);
+
+  useEffect(() => {
+    console.log("checkedrowid", checkedRowId);
+    if (checkedRowId) {
+      const selectedData = allStudentData.find(
+        (item) => item.username === checkedRowId.id
+      );
+      if (selectedData) {
+        setCheckedRowData(selectedData);
+        console.log(selectedData, "selectedDta?");
+      }
+    }
+  }, [checkedRowId, allStudentData]);
   return (
     <div id="page_content">
       <AppBar />
@@ -160,13 +231,14 @@ function ChangeGrade() {
         <Table
           columns={updatedColumns}
           rows={rows}
-          onRowSelection={handleSelectedRowId}
-          onRowClick={handleSelectedRowId}
+          onRowSelection={handleRowSelection}
+          onRowSelectedId={() => {}}
           id={isSmallScreen ? "" : "table_body"}
+          // onRowClick={handleRowSelection}
+          onRowDoubleClick={(params) => handleModalOpen(params.row)}
           getRowId={(row) => row.id}
           isRadioButton={true}
-          checkedRows={(params) => null}
-          onRowDoubleClick={(params) => handleModalOpen(params.row)}
+          // checkedRows={(params) => null}
         />
         <Grid container>
           <Grid xs={6} sx={{ display: "flex", justifyContent: "flex-start" }}>
@@ -221,7 +293,7 @@ function ChangeGrade() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Disagree</Button>
-          <Button onClick={handleClose}>Agree</Button>
+          <Button onClick={handleChangeAllGrade}>Agree</Button>
         </DialogActions>
       </Dialog>
       <Modal
@@ -229,6 +301,7 @@ function ChangeGrade() {
         handleClose={handleModalClose}
         title={"Change Grade"}
         rowData={checkedRowData}
+        onSave={fetchStudents}
       />
     </div>
   );

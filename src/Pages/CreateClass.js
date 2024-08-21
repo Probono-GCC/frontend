@@ -20,8 +20,8 @@ const label = { inputProps: { "aria-label": "Checkbox demo" } };
 const grades = [
   { value: "PLAYGROUP", label: "PlayGroup" },
   { value: "NURSERY", label: "Nursery" },
-  { value: "LOWERKG", label: "LowerKG" },
-  { value: "UPPERKG", label: "UpperKG" },
+  { value: "LOWER_KG", label: "LowerKG" },
+  { value: "UPPER_KG", label: "UpperKG" },
   { value: "CLASS1", label: "Class 1" },
   { value: "CLASS2", label: "Class 2" },
   { value: "CLASS3", label: "Class 3" },
@@ -54,17 +54,20 @@ function CreateClass() {
 
     // Fetching class data when the component mounts
     getClasses().then((result) => {
-      console.log(result);
-      const tempRow = result.content.map((item, index) => ({
-        id: index + 1, // Assuming an index for table rows
-        year: item.year,
-        grade: item.grade,
-        section: item.section,
-        classId: item.classId, // classId를 가져와서 삭제에 활용
-      }));
-      setRows(tempRow);
+      if (result && result.content) {
+        const tempRow = result.content.map((item, index) => ({
+          id: index + 1, // Assuming an index for table rows
+          year: item.year,
+          grade: item.grade,
+          section: item.section,
+          classId: item.classId, // classId를 가져와서 삭제에 활용
+        }));
+        setRows(tempRow);
+      } else {
+        setRows([]);
+      }
     });
-  }, []);
+  }, [checkedRows]);
 
   const handleCreate = async () => {
     const newClassData = {
@@ -72,7 +75,6 @@ function CreateClass() {
       grade: grade,
       section: section,
     };
-    console.log(newClassData);
     try {
       const response = await postClass(newClassData);
       setRows((prevRows) => [
@@ -80,42 +82,39 @@ function CreateClass() {
         { id: prevRows.length + 1, ...response },
       ]);
       setShowAlert(true);
+      setTimeout(() => setShowAlert(false), 2000); // 2초 후 알림 숨김
+      setBatch("");
+      setGrade("");
+      setSection("");
     } catch (err) {
       console.error("Failed to create class:", err);
       window.alert("Failed to create class.");
     }
   };
 
-  const handleRowSelection = (_id) => {
-    console.log("체크: ", _id);
-    setCheckedRows((prevCheckedRows) => {
-      const newCheckedRows = prevCheckedRows.includes(_id)
-        ? prevCheckedRows.filter((rowId) => rowId !== _id)
-        : [...prevCheckedRows, _id];
-      console.log("업데이트된 선택된 행:", newCheckedRows);
-      return newCheckedRows;
-    });
+  const handleRowSelection = (_row) => {
+    console.log("onselectrow?", _row);
+    setCheckedRows(_row);
   };
 
   const deleteRow = async () => {
     try {
-      // 각 선택된 행에 대해 삭제 요청 수행
       for (const id of checkedRows) {
-        const rowToDelete = rows.find((row) => row.id === id);
-        if (rowToDelete) {
-          await deleteClass({ classId: rowToDelete.classId });
+        if (id) {
+          deleteClass({ classId: rows[id - 1].classId })
+            .then((result) => {
+              setShowAlert(true);
+              setTimeout(() => setShowAlert(false), 2000); // 2초 후 알림 숨김
+              setCheckedRows([]);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
         }
       }
 
-      // 삭제된 행을 UI에서 제거
-      setRows((prevRows) =>
-        prevRows.filter((row) => !checkedRows.includes(row.id))
-      );
-
+      console.log(rows, "현재 남은 row");
       // 성공적으로 삭제되었음을 알림
-      setShowAlert(true);
-      setTimeout(() => setShowAlert(false), 2000); // 2초 후 알림 숨김
-      setCheckedRows([]);
     } catch (err) {
       console.error("Failed to delete class:", err);
       window.alert("Failed to delete class.");
@@ -123,18 +122,6 @@ function CreateClass() {
   };
 
   const columns = [
-    {
-      field: "check",
-      headerName: "",
-      flex: 0.05,
-      renderCell: (params) => (
-        <Checkbox
-          {...label}
-          checked={checkedRows.includes(params.row.id)}
-          onChange={() => handleRowSelection(params.row.id)}
-        />
-      ),
-    },
     { field: "year", headerName: "Batch", flex: 0.25 },
     { field: "grade", headerName: "Grade", flex: 0.25 },
     { field: "section", headerName: "Section", flex: 0.25 },
@@ -226,9 +213,11 @@ function CreateClass() {
           <Table
             columns={columns}
             rows={rows}
+            checkboxSelection
+            // onSelectionModelChange={handleRowSelection}
             onRowSelection={handleRowSelection}
             getRowId={(row) => row.id}
-            checkedRows={checkedRows}
+            // checkedRows={checkedRows}
             isRadioButton={false}
           />
           <Box

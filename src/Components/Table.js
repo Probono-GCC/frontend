@@ -7,8 +7,8 @@ const Table = memo(
     columns,
     rows,
     onRowSelection,
+    onRowSelectedId,
     onRowDoubleClick,
-    getRowId,
     isRadioButton,
     id,
     isStudentTable,
@@ -16,15 +16,19 @@ const Table = memo(
     isReadOnly,
   }) => {
     const handleRowClick = (params) => {
-      console.log("table:", checkedRows);
-      if (isRadioButton) {
-        onRowSelection(params.row.id);
+      console.log("table:", params.row);
+      onRowSelection(params.row);
+    };
+    const handleRowSelection = (newSelection) => {
+      console.log("table selected rows:", newSelection);
+      if ((id = "student_select_body")) {
+        onRowSelectedId(newSelection); // 선택된 행 ID들을 상위 컴포넌트에 전달
       }
     };
-
     return (
       <div id={id ? styles[id] : ""}>
         <DataGrid
+          getRowId={(row) => row.id}
           sx={{
             "& .MuiDataGrid-columnHeader": {
               backgroundColor: "#D8EDFF", // 제목행(헤더) 배경색
@@ -39,29 +43,11 @@ const Table = memo(
               justifyContent: isStudentTable ? "flex-start" : "",
               flexDirection: isStudentTable ? "row-reverse" : "",
             },
-            // "& .MuiDataGrid-row": {
-            //   // 동적 스타일링
-            //   "&.MuiDataGrid-row": {
-            //     backgroundColor: (params) =>
-            //       checkedRows.includes(params.row.id)
-            //         ? "blue !important"
-            //         : "transparent",
-            //     color: (params) =>
-            //       checkedRows.includes(params.row.id) ? "white" : "inherit",
-            //   },
-            //   "&.Mui-selected": {
-            //     backgroundColor: "#e0f7fa !important", // 선택된 행의 배경색
-            //   },
-            // },
           }}
           rows={rows}
           columns={columns}
-          onRowClick={handleRowClick}
-          onRowSelectionModelChange={
-            isStudentTable
-              ? (newSelection) => onRowSelection(newSelection)
-              : undefined
-          }
+          onRowClick={handleRowClick} //한개씩 전달
+          onRowSelectionModelChange={handleRowSelection} //여러개 선택전달
           checkboxSelection={!(isRadioButton || isStudentTable || isReadOnly)} // 라디오 버튼 모드에 따라 체크박스 선택 여부 조절
           initialState={{
             pagination: {
@@ -70,7 +56,6 @@ const Table = memo(
           }}
           pageSizeOptions={[5, 10, 15]}
           onRowDoubleClick={onRowDoubleClick}
-          getRowId={getRowId}
         />
       </div>
     );

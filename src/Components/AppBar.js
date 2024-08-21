@@ -1,53 +1,60 @@
 import * as React from "react";
 import { styled, useTheme } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Badge from "@mui/material/Badge";
-import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import MoreIcon from "@mui/icons-material/MoreVert";
-import Drawer from "@mui/material/Drawer";
-import CssBaseline from "@mui/material/CssBaseline";
-import MuiAppBar from "@mui/material/AppBar";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import HomeIcon from "@mui/icons-material/Home";
-import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import BookIcon from "@mui/icons-material/Book";
-import SchoolIcon from "@mui/icons-material/School";
-import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
-import Avatar from "@mui/material/Avatar";
 import { useNavigate, useLocation } from "react-router-dom";
+import {
+  Box,
+  Toolbar,
+  IconButton,
+  Typography,
+  Badge,
+  MenuItem,
+  Menu,
+  Drawer,
+  CssBaseline,
+  AppBar as MuiAppBar,
+  List,
+  Divider,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Avatar,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from "@mui/material";
 
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import LogoutIcon from "@mui/icons-material/Logout";
+import {
+  Menu as MenuIcon,
+  AccountCircle,
+  Notifications as NotificationsIcon,
+  MoreVert as MoreIcon,
+  ChevronLeft as ChevronLeftIcon,
+  ChevronRight as ChevronRightIcon,
+  Home as HomeIcon,
+  FormatListBulleted as FormatListBulletedIcon,
+  AdminPanelSettings as AdminPanelSettingsIcon,
+  Book as BookIcon,
+  School as SchoolIcon,
+  AccountCircleRounded as AccountCircleRoundedIcon,
+  ExpandMore as ExpandMoreIcon,
+  Logout as LogoutIcon,
+} from "@mui/icons-material";
+
 import { useEffect, useState } from "react";
 import { getStudent, getTeacher, getProfileImage } from "../Apis/Api/User";
 import { useAuth } from "../store/AuthContext";
+import { getClassList } from "../Apis/Api/Class";
 function AppBar() {
   const { userRole, roleArray, userData } = useAuth();
   const [userName, setUserName] = React.useState("");
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [thumbnailImage, setThumnailImage] = useState("");
-  const [myClass, setMyClass] = useState("");
+  const [myClass, setMyClass] = useState([]); //[{grade:"Class1",section:"A"},{grade:"Class3",section:"B"}]
 
   const navigate = useNavigate();
+  const currentYear = new Date().getFullYear();
 
   const location = useLocation();
   const goHome = () => {
@@ -82,7 +89,7 @@ function AppBar() {
     navigate("/class-board");
   };
 
-  const goClassInfo = () => {
+  const goClassInfo = (classData) => {
     navigate("/private/class-info");
   };
 
@@ -186,14 +193,6 @@ function AppBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      {/* <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="error">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem> */}
       <MenuItem>
         <IconButton
           size="large"
@@ -280,19 +279,20 @@ function AppBar() {
     ...theme.mixins.toolbar,
     justifyContent: "flex-end",
   }));
-  // const [expanded, setExpanded] = useState(false);
 
-  // const handleAccordionChange = (panel) => (event, isExpanded) => {
-  //   setExpanded(isExpanded ? panel : false);
-  // };
   const [expanded, setExpanded] = useState({
-    userManagement: false,
-    classCourseManagement: false,
-    classes: false,
-    class1A: false,
-    class1B: false,
-    class10Physics: false,
+    Class: true,
   });
+  // myClass가 업데이트될 때 expanded 상태 동적으로 설정
+  useEffect(() => {
+    const newExpanded = { classes: true };
+    if (Array.isArray(myClass)) {
+      myClass.forEach((_, index) => {
+        newExpanded[`class${index}`] = false;
+      });
+      setExpanded(newExpanded);
+    }
+  }, [myClass]);
 
   const handleAccordionChange = (panel) => (event, isExpanded) => {
     setExpanded((prevExpanded) => ({
@@ -300,6 +300,12 @@ function AppBar() {
       [panel]: isExpanded,
     }));
   };
+  // const handleAccordionChange = (panel) => (event, isExpanded) => {
+  //   setExpanded((prevExpanded) => ({
+  //     ...prevExpanded,
+  //     [panel]: isExpanded,
+  //   }));
+  // };
 
   // 하위 경로 확인 및 Accordion 상태 설정 (classes 추후 수정 필요)
   useEffect(() => {
@@ -329,25 +335,83 @@ function AppBar() {
     }
     if (userRole == roleArray[0]) {
       setUserName("Administor");
+      getClassList(0, 100, currentYear + 60).then((result) => {
+        if (result && result.content) {
+          const myClassList = result.content.map((item) => ({
+            grade: item.grade,
+            section: item.section ? item.section : "",
+          }));
+          console.log("admin classlist", myClassList);
+          setMyClass(myClassList);
+        } else {
+          setMyClass([{ grade: "", section: "" }]);
+        }
+      });
     } else if (userRole == roleArray[1]) {
+      console.log("getTeacher");
       getTeacher(userData.username).then((result) => {
-        setUserName(result.name);
+        setUserName(result.name); //이름 설정
         if (result.imageId) {
+          //이미지 설정
           getProfileImage(result.imageId.imageId).then((res) => {
             setThumnailImage(res.imagePath);
             console.log(res, "resujlt");
           });
         }
+        //item형태
+        // "classId": {
+        //   "classId": 0,
+        //   "year": 0,
+        //   "grade": "PLAYGROUP",
+        //   "section": "A"
+        // },
+        if (result.classId && result.classId.grade && result.classId.section) {
+          // const myClassList = result.classId.map((item) => ({
+          //   grade: item.grade,
+          //   section: item.section ? item.section : "",
+          // }));
+          // setMyClass(myClassList);
+          setMyClass([
+            {
+              grade: result.classId.grade,
+              section: result.classId.section,
+            },
+          ]);
+        } else {
+          setMyClass([{ grade: "", section: "" }]);
+        }
       });
     } else if (userRole == roleArray[2]) {
       getStudent(userData.username).then((result) => {
-        setUserName(result.name);
-        setMyClass();
-        if (result.imageId) {
-          getProfileImage(result.imageId.imageId).then((res) => {
-            setThumnailImage(res.imagePath);
-            console.log(res, "resujlt");
-          });
+        console.log("getstudent?", result);
+        if (result) {
+          setUserName(result.name);
+          if (result.imageResponseDTO) {
+            getProfileImage(result.imageResponseDTO.imageId).then((res) => {
+              setThumnailImage(res.imagePath);
+              console.log(res, "resujlt");
+            });
+          }
+          if (
+            result.classResponse &&
+            result.classResponse.grade &&
+            result.classResponse.section
+          ) {
+            console.log(
+              "set class 를 하자",
+              result.classResponse.grade,
+              result.classResponse.section
+            );
+            setMyClass([
+              {
+                grade: result.classResponse.grade,
+                section: result.classResponse.section,
+              },
+            ]);
+            // handleMyClass({ grade: result.grade, section: result.section });
+          } else {
+            setMyClass({ grade: "", section: "" });
+          }
         }
       });
     }
@@ -371,15 +435,6 @@ function AppBar() {
             <Typography variant="h6" noWrap component="div"></Typography>
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: { xs: "none", md: "flex" } }}>
-              {/* <IconButton
-                size="large"
-                aria-label="show 4 new mails"
-                color="inherit"
-              >
-                <Badge badgeContent={4} color="error">
-                  <MailIcon />
-                </Badge>
-              </IconButton> */}
               <IconButton
                 size="large"
                 aria-label="show 17 new notifications"
@@ -790,126 +845,55 @@ function AppBar() {
                 <ListItemText primary={"Class"} />
               </AccordionSummary>
               <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
-                <Accordion
-                  sx={{
-                    boxShadow: "none",
-                    "&::before": { display: "none" },
-                    marginBottom: "0px",
-                  }}
-                  expanded={expanded.class1A}
-                  onChange={handleAccordionChange("class1A")}
-                >
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    sx={{
-                      padding: "0 16px",
-                      height: "48px",
-                      "&:hover": {
-                        backgroundColor: "#f5f5f5",
-                      },
-                      ...(expanded.class1A && {
-                        backgroundColor: "#e0e0e0",
-                      }),
-                      ...(expanded && {
-                        minHeight: "48px !important",
-                      }),
-                    }}
-                  >
-                    <ListItemText primary={"Class 1-A"} />
-                  </AccordionSummary>
-                  <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
-                    <ListItem key={"Class 1-A Info"} disablePadding>
-                      <ListItemButton sx={{ pl: 10 }} onClick={goClassInfo}>
-                        <ListItemText primary={"Class Info"} />
-                      </ListItemButton>
-                    </ListItem>
-                    <ListItem key={"Class 1-A Board"} disablePadding>
-                      <ListItemButton sx={{ pl: 10 }} onClick={goClassBoard}>
-                        <ListItemText primary={"Class Board"} />
-                      </ListItemButton>
-                    </ListItem>
-                  </AccordionDetails>
-                </Accordion>
-                <Accordion
-                  sx={{
-                    boxShadow: "none",
-                    "&::before": { display: "none" },
-                    marginBottom: "0px",
-                  }}
-                  expanded={expanded.class1B}
-                  onChange={handleAccordionChange("class1B")}
-                >
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    sx={{
-                      padding: "0 16px",
-                      height: "48px",
-                      "&:hover": {
-                        backgroundColor: "#f5f5f5",
-                      },
-                      ...(expanded.class1B && {
-                        backgroundColor: "#e0e0e0",
-                      }),
-                      ...(expanded && {
-                        minHeight: "48px !important",
-                      }),
-                    }}
-                  >
-                    <ListItemText primary={"Class 1-B"} />
-                  </AccordionSummary>
-                  <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
-                    <ListItem key={"Class 1-B Info"} disablePadding>
-                      <ListItemButton sx={{ pl: 10 }} onClick={goClassInfo}>
-                        <ListItemText primary={"Class Info"} />
-                      </ListItemButton>
-                    </ListItem>
-                    <ListItem key={"Class 1-B Board"} disablePadding>
-                      <ListItemButton sx={{ pl: 10 }} onClick={goClassBoard}>
-                        <ListItemText primary={"Class Board"} />
-                      </ListItemButton>
-                    </ListItem>
-                  </AccordionDetails>
-                </Accordion>
-                <Accordion
-                  sx={{
-                    boxShadow: "none",
-                    "&::before": { display: "none" },
-                    marginBottom: "0px",
-                  }}
-                  expanded={expanded.class10Physics}
-                  onChange={handleAccordionChange("class10Physics")}
-                >
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    sx={{
-                      padding: "0 16px",
-                      height: "48px",
-                      "&:hover": {
-                        backgroundColor: "#f5f5f5",
-                      },
-                      ...(expanded.class1B && {
-                        backgroundColor: "#e0e0e0",
-                      }),
-                      ...(expanded && {
-                        minHeight: "48px !important",
-                      }),
-                    }}
-                  >
-                    <ListItemText primary={"Class 10-Physics"} />
-                  </AccordionSummary>
-                  <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
-                    <ListItem key={"Class 10-Physics Info"} disablePadding>
-                      <ListItemButton sx={{ pl: 10 }} onClick={goSubjectInfo}>
-                        <ListItemText primary={"Class Info"} />
-                      </ListItemButton>
-                    </ListItem>
-                    <ListItem key={"Class 10-Physics Board"} disablePadding>
-                      <ListItemButton sx={{ pl: 10 }} onClick={goSubjectBoard}>
-                        <ListItemText primary={"Class Board"} />
-                      </ListItemButton>
-                    </ListItem>
-                  </AccordionDetails>
-                </Accordion>
+                {Array.isArray(myClass) &&
+                  myClass.map((classItem, index) => (
+                    <Accordion
+                      key={`class-${index}`}
+                      sx={{
+                        boxShadow: "none",
+                        "&::before": { display: "none" },
+                        marginBottom: "0px",
+                      }}
+                      expanded={expanded[`class${index}`]}
+                      onChange={handleAccordionChange(`class${index}`)}
+                    >
+                      <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        sx={{
+                          padding: "0 16px",
+                          height: "48px",
+                          "&:hover": {
+                            backgroundColor: "#f5f5f5",
+                          },
+                          ...(expanded[`class${index}`] && {
+                            backgroundColor: "#e0e0e0",
+                          }),
+                        }}
+                      >
+                        <ListItemText
+                          primary={`${classItem.grade}-${classItem.section}`}
+                        />
+                      </AccordionSummary>
+                      <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
+                        <ListItem key={`class-${index}-info`} disablePadding>
+                          <ListItemButton
+                            sx={{ pl: 10 }}
+                            onClick={() => goClassInfo(classItem)}
+                          >
+                            <ListItemText primary={"Class Info"} />
+                          </ListItemButton>
+                        </ListItem>
+                        <ListItem key={`class-${index}-board`} disablePadding>
+                          <ListItemButton
+                            sx={{ pl: 10 }}
+                            onClick={() => goClassBoard(classItem)}
+                          >
+                            <ListItemText primary={"Class Board"} />
+                          </ListItemButton>
+                        </ListItem>
+                      </AccordionDetails>
+                    </Accordion>
+                  ))}
               </AccordionDetails>
             </Accordion>
           </Box>
