@@ -35,7 +35,6 @@ export async function getClass(classData) {
   }
 }
 
-
 export async function getClasses(yearData) {
   try {
     const response = await axiosInstance.get(`/classes?year=${yearData}`);
@@ -71,9 +70,11 @@ export async function deleteClass(classData) {
   }
 }
 
-export async function getClassStudent(classId) {
+export async function getClassStudent(classId, page, size) {
   try {
-    const response = await axiosInstance.get(`class/${classId}/students`);
+    const response = await axiosInstance.get(
+      `class/${classId}/students?page=${page}&size=${size}`
+    );
     return response.data;
   } catch (err) {
     console.log(err);
@@ -109,9 +110,11 @@ export async function getClassList(page, size, year) {
     console.log(err);
   }
 }
-export async function getNotAssignedStudent(classId, grade) {
+export async function getNotAssignedStudent(grade, page, size) {
   try {
-    const response = await axiosInstance.get(`/notAssignStudents/${grade}`);
+    const response = await axiosInstance.get(
+      `/notAssignStudents?grade=${grade}&page=${page}&size=${size}`
+    );
     console.log(response);
     return response.data;
   } catch (err) {
