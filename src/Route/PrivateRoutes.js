@@ -91,7 +91,7 @@ const PrivateRoutes = () => (
     />
 
     <Route
-      path="/class-info"
+      path="/class-info/*"
       element={
         <PrivateRoute requiredRole={role[0]}>
           <ClassInfo />
