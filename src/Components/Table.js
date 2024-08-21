@@ -25,6 +25,7 @@ const Table = memo(
         onRowSelectedId(newSelection); // 선택된 행 ID들을 상위 컴포넌트에 전달
       }
     };
+
     return (
       <div id={id ? styles[id] : ""}>
         <DataGrid
@@ -49,13 +50,15 @@ const Table = memo(
           onRowClick={handleRowClick} //한개씩 전달
           onRowSelectionModelChange={handleRowSelection} //여러개 선택전달
           checkboxSelection={!(isRadioButton || isStudentTable || isReadOnly)} // 라디오 버튼 모드에 따라 체크박스 선택 여부 조절
+          onRowDoubleClick={onRowDoubleClick}
+          pagination={false} // 페이지네이션 비활성화
+          pageSize={rows.length} // 모든 데이터를 한 페이지에 표시
+          paginationMode="client" // 클라이언트 측 페이지네이션을 기본값으로 설정
           initialState={{
             pagination: {
-              paginationModel: { page: 0, pageSize: 10 },
+              paginationModel: { page: 0, pageSize: rows.length },
             },
           }}
-          // pageSizeOptions={[5, 10, 15]}
-          onRowDoubleClick={onRowDoubleClick}
         />
       </div>
     );
