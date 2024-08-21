@@ -11,12 +11,21 @@ import Checkbox from "@mui/material/Checkbox";
 import Modal from "../Components/Modal";
 import { Typography, Box } from "@mui/material";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
-import { getStudents, deleteStudent } from "../Apis/Api/User";
+import { getStudents, deleteStudent, getStudent } from "../Apis/Api/User";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
-function createData(sn, gender, name, birth, id, grade, phone_num) {
-  return { sn, gender, name, birth, id, grade, phone_num };
+function createData(
+  serialNumber,
+  gender,
+  name,
+  birth,
+  id,
+  grade,
+
+  phone_num
+) {
+  return { serialNumber, gender, name, birth, id, grade, phone_num };
 }
 
 function StudentView() {
@@ -31,7 +40,7 @@ function StudentView() {
   const basic_columns = isSmallScreen
     ? [
         {
-          field: "sn",
+          field: "serialNumber",
           headerName: "SN",
           flex: 0.25,
           cellClassName: styles.centerAlign,
@@ -42,7 +51,7 @@ function StudentView() {
       ]
     : [
         {
-          field: "sn",
+          field: "serialNumber",
           headerName: "SN",
           flex: 0.05,
           cellClassName: styles.centerAlign,
@@ -71,7 +80,7 @@ function StudentView() {
   //student detail modal에 들어가는 col
   const detail_columns = [
     {
-      field: "sn",
+      field: "serialNumber",
       headerName: "SN",
       flex: 0.05,
       cellClassName: styles.centerAlign,
@@ -81,6 +90,7 @@ function StudentView() {
     { field: "birth", headerName: "Birth", flex: 0.1 },
     { field: "id", headerName: "ID", flex: 0.2 },
     { field: "grade", headerName: "Grade", flex: 0.3 },
+
     { field: "phone_num", headerName: "Phone" },
   ];
 
@@ -137,17 +147,19 @@ function StudentView() {
 
       // 삭제된 행을 rows에서 제거
       setRows((prevRows) =>
-        prevRows.filter((row) => !checkedRows.includes(row.sn))
+        prevRows.filter((row) => !checkedRows.includes(row.serialNumber))
       );
     } catch (error) {
       console.error("Error deleting rows:", error);
     }
   };
+
   const fetchStudents = () => {
     getStudents().then((result) => {
       console.log(result);
       const students = result.content || []; // content 배열 가져오기
-      console.log(students);
+      // console.log(students);
+
       if (students.length > 0) {
         const tempRow = students.map((item) =>
           createData(
@@ -157,6 +169,7 @@ function StudentView() {
             item.birth,
             item.username,
             item.grade,
+
             item.phoneNum
           )
         );
@@ -224,7 +237,7 @@ function StudentView() {
       <Modal
         open={modalOpen}
         handleClose={handleModalClose}
-        title={"Detail Information"}
+        title={"Student Detail Info"}
         rowData={modalRowData}
         rowsHeader={detail_columns}
       />

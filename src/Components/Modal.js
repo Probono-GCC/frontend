@@ -1,15 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { styled, css } from "@mui/system";
 import { Modal as BaseModal, Backdrop } from "@mui/material";
 import { grey } from "../Styles/Color"; // 색상 팔레트 임포트
 import { useMediaQueryContext } from "../store/MediaQueryContext";
 
 import DetailTable from "./DetailTable";
-import ProfileImg from "../Assets/img/profile_temp.png";
+// import ProfileImg from "../Assets/img/profile_temp.png";
 
+//api
+import { getTeacher, getStudent } from "../Apis/Api/User";
 function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
   const { isSmallScreen } = useMediaQueryContext();
-
+  const [profileImgPath, setProfileImgPath] = useState("");
+  useEffect(() => {
+    if (title === "Teacher Detail Info") {
+      if (rowData && rowData.id) {
+        getTeacher(rowData.id).then((result) => {
+          if (result && result.imageId && result.imageId.imagePath) {
+            setProfileImgPath(result.imageId.imagePath);
+          }
+        });
+      }
+    } else if (title === "Student Detail Info") {
+      if (rowData && rowData.id) {
+        getStudent(rowData.id).then((result) => {
+          if (
+            result &&
+            result.imageResponseDTO &&
+            result.imageResponseDTO.imagePath
+          ) {
+            setProfileImgPath(result.imageResponseDTO.imagePath);
+          }
+        });
+      }
+    }
+    // console.log("recieveted", rowData);
+  }, [open, profileImgPath]);
   return (
     <div>
       <Modal
@@ -30,7 +56,7 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
           <h2 id="keep-mounted-modal-title" className="modal-title">
             {title}
           </h2>
-          <img src={ProfileImg} width="120px" height="120px" />
+          <img src={profileImgPath} width="120px" height="120px" />
           <TableContainer sx={{ width: isSmallScreen ? "280px" : "400" }}>
             <DetailTable data={rowData} rowsHeader={rowsHeader} />
           </TableContainer>
