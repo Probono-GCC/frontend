@@ -85,8 +85,9 @@ function AppBar() {
     navigate("/private/create-class");
   };
 
-  const goClassBoard = () => {
-    navigate("/class-board");
+  const goClassBoard = (id) => {
+    console.log("app bar class", id);
+    navigate(`/class-board/${id.grade}-${id.section}/`);
   };
 
   const goClassInfo = (classData) => {
@@ -280,12 +281,10 @@ function AppBar() {
     justifyContent: "flex-end",
   }));
 
-  const [expanded, setExpanded] = useState({
-    Class: true,
-  });
+  const [expanded, setExpanded] = useState({});
   // myClass가 업데이트될 때 expanded 상태 동적으로 설정
   useEffect(() => {
-    const newExpanded = { classes: true };
+    const newExpanded = {};
     if (Array.isArray(myClass)) {
       myClass.forEach((_, index) => {
         newExpanded[`class${index}`] = false;

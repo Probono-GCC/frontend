@@ -23,9 +23,9 @@ export async function getClass(classData) {
   }
 }
 
-export async function getClasses() {
+export async function getClasses(year) {
   try {
-    const response = await axiosInstance.get(`/classes?year=2084`);
+    const response = await axiosInstance.get(`/classes?year=${year}`);
     console.log(response);
     return response.data;
   } catch (err) {
@@ -90,6 +90,15 @@ export async function getClassList(page, size, year) {
     const response = await axiosInstance.get(
       `/classes?page=${page}&size=${size}&year=${year}`
     );
+    console.log(response);
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+}
+export async function getNotAssignedStudent(classId, grade) {
+  try {
+    const response = await axiosInstance.get(`/notAssignStudents/${grade}`);
     console.log(response);
     return response.data;
   } catch (err) {
