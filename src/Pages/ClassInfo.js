@@ -1,7 +1,7 @@
-import React, { useState, useNavigate } from "react";
+import React, { useState, useEffect } from "react";
 
 import AppBar from "../Components/AppBar";
-import Table from "../Components/Table";
+import Table from "../Components/ViewTable";
 import Button from "../Components/Button";
 import styles from "../Styles/css/Table.module.css";
 import IconButton from "@mui/material/IconButton";
@@ -15,7 +15,8 @@ import { maxWidth, textAlign } from "@mui/system";
 import { Typography, Box } from "@mui/material";
 import InfoBox from "../Components/InfoBox";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
-
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { getClassStudent, getClassTeacher } from "../Apis/Api/Class";
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 const courseRows = [
@@ -112,20 +113,6 @@ const rows = [
   },
 ];
 
-const fullColumns = [
-  {
-    field: "sn",
-    headerName: "SN",
-    flex: 0.05,
-    cellClassName: styles.centerAlign,
-  },
-  { field: "name", headerName: "Name", flex: 0.2 },
-  { field: "id", headerName: "ID", flex: 0.2 },
-  { field: "gender", headerName: "Gender", flex: 0.1 },
-  { field: "birth", headerName: "Birth", flex: 0.1 },
-  { field: "grade", headerName: "Grade", flex: 0.3 },
-];
-
 function ClassInfo() {
   // const [selectedRows, setSelectedRows] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
@@ -133,20 +120,56 @@ function ClassInfo() {
   const [alert, setAlert] = useState(false);
   const [checkedRows, setCheckedRows] = useState([]);
   const { isSmallScreen } = useMediaQueryContext();
+  const [classTeacher, setClassTeachers] = useState([]);
+  const [classStudents, setClassStudents] = useState([]);
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalRowCount, setTotalRowCount] = useState(0); //서버에서 총 학생수 받아와서 설정
 
-  const columns = [
+  const location = useLocation();
+  const classData = location.state;
+  //student view default table column
+  const basic_columns = isSmallScreen
+    ? [
+        {
+          field: "serialNumber",
+          headerName: "SN",
+          flex: 0.25,
+          cellClassName: styles.centerAlign,
+        },
+        { field: "name", headerName: "Name", flex: 0.4 },
+
+        { field: "id", headerName: "ID", flex: 0.35 },
+      ]
+    : [
+        {
+          field: "serialNumber",
+          headerName: "SN",
+          flex: 0.05,
+          cellClassName: styles.centerAlign,
+        },
+        { field: "name", headerName: "Name", flex: 0.2 },
+        { field: "gender", headerName: "Gender", flex: 0.1 },
+        { field: "birth", headerName: "Birth", flex: 0.1 },
+        { field: "id", headerName: "ID", flex: 0.2 },
+        { field: "grade", headerName: "Grade", flex: 0.3 },
+      ];
+
+  const detail_columns = [
     {
-      field: "sn",
+      field: "serialNumber",
       headerName: "SN",
       flex: 0.05,
       cellClassName: styles.centerAlign,
     },
     { field: "name", headerName: "Name", flex: 0.2 },
+    { field: "gender", headerName: "Gender", flex: 0.1 },
+    { field: "birth", headerName: "Birth", flex: 0.1 },
     { field: "id", headerName: "ID", flex: 0.2 },
-    !isSmallScreen && { field: "gender", headerName: "Gender", flex: 0.1 },
-    !isSmallScreen && { field: "birth", headerName: "Birth", flex: 0.1 },
-    !isSmallScreen && { field: "grade", headerName: "Grade", flex: 0.3 },
-  ].filter(Boolean);
+    { field: "grade", headerName: "Grade", flex: 0.3 },
+
+    { field: "phone_num", headerName: "Phone" },
+  ];
 
   const courseColumns = [
     !isSmallScreen && { field: "batch", headerName: "Batch", flex: 0.1 },
@@ -169,13 +192,24 @@ function ClassInfo() {
       },
     },
   ].filter(Boolean); // 배열에서 false, null, undefined 제거
+  // 페이지 변경 시 처리
+  const handlePageChange = (newPage, size) => {
+    setPage(newPage);
+    fetchStudents(newPage, size);
+  };
 
+  // 페이지 크기 변경 시 처리
+  const handlePageSizeChange = (page, newSize) => {
+    setPageSize(newSize);
+    fetchStudents(page, newSize);
+  };
+  const handleRowDoubleClick = (params) => {
+    handleModalOpen(params.row);
+  };
   const handleRowSelection = (id) => {
-    setCheckedRows((prevCheckedRows) =>
-      prevCheckedRows.includes(id)
-        ? prevCheckedRows.filter((rowId) => rowId !== id)
-        : [...prevCheckedRows, id]
-    );
+    if (!Array.isArray(id)) {
+      console.log(id, "idtyupe");
+    }
   };
 
   const handleModalOpen = (row) => {
@@ -188,6 +222,33 @@ function ClassInfo() {
     setModalRowData(null);
   };
 
+  const fetchStudents = (page, pageSize) => {
+    getClassStudent(classData.classId, page, pageSize).then((result) => {
+      if (result && result.totalElements) {
+        console.log(result.totalElements, "전체 클래스 학생?");
+        setTotalRowCount(result.totalElements);
+      }
+
+      if (result && result.content) {
+        const resultStudents = result.content.map((item) => ({
+          ...item,
+          id: item.username,
+        }));
+        // console.log(resultStudents);
+        setClassStudents(resultStudents);
+      }
+    });
+  };
+
+  useEffect(() => {
+    console.log("currentclss", classData, "currentclss");
+    getClassTeacher(classData.classId).then((result) => {
+      const resultTeachers = result.map((item) => item.name);
+      console.log(resultTeachers);
+      setClassTeachers(resultTeachers);
+    });
+    fetchStudents(page, pageSize);
+  }, []);
   return (
     <div id="page_content">
       <AppBar />
@@ -210,10 +271,10 @@ function ClassInfo() {
           </Typography>
         </Box>
         <InfoBox
-          batch={2084}
-          grade={1}
-          section={"A"}
-          teacher={"Mozart"}
+          batch={classData.year}
+          grade={classData.grade}
+          section={classData.section}
+          teacher={classTeacher}
           studentCount={9}
         />
         <Box
@@ -241,7 +302,6 @@ function ClassInfo() {
           getRowId={(row) => row.id}
           id={"table_body"}
         />
-
         <Box
           sx={{
             display: "flex",
@@ -259,16 +319,19 @@ function ClassInfo() {
             Student Info
           </Typography>
         </Box>
-
         <Table
-          columns={columns}
-          rows={rows}
-          onRowSelection={handleRowSelection}
-          onRowDoubleClick={(params) => handleModalOpen(params.row)}
-          getRowId={(row) => row.sn}
-          isStudentTable={true}
-          id={"table_body"}
+          columns={basic_columns}
+          rows={classStudents}
+          onSelectedAllRow={handleRowSelection}
+          onRowDoubleClick={handleRowDoubleClick}
+          getRowId={(row) => row.id}
+          totalRowCount={totalRowCount}
+          id={isSmallScreen ? "" : "table_body"}
+          isStudentTable={true} //row클릭시 체크박스 활성화 안되게 하기위해 커스텀
+          onPageChange={handlePageChange} // 페이지 변경 핸들러 추가
+          onPageSizeChange={handlePageSizeChange} // 페이지 크기 변경 핸들러 추가
         />
+        &nbsp;
       </div>
 
       <Modal
@@ -276,7 +339,7 @@ function ClassInfo() {
         handleClose={handleModalClose}
         title={"Detail Information"}
         rowData={modalRowData}
-        rowsHeader={fullColumns}
+        rowsHeader={detail_columns}
       />
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import styles from "../Styles/css/Table.module.css";
 import {
@@ -9,18 +9,31 @@ const Table = memo(
   ({
     columns, //table 열 구성
     rows, // table 행 data
+    totalRowCount,
     onSelectedAllRow, // table에서 선택된 row id를 넘겨주기 위한 파라미터
     onRowDoubleClick, //더블 클릭이 감지됨을 전달하는 파라미터
     getRowId,
     id, // 테이블 id 속성 지정 (css 설정을 위한)
     isStudentTable, // student view 특수 동작을 위해
+    onPageChange, // 페이지 변경 핸들러
+    onPageSizeChange, // 페이지 크기 변경 핸들러
   }) => {
     const { isSmallScreen } = useMediaQueryContext();
-    // const handleRowClick = (params) => {};
+    const [page, setPage] = useState(0);
+    const [pageSize, setPageSize] = useState(10);
+    const handlePageChange = (newPage) => {
+      setPage(newPage);
+      onPageChange(newPage, pageSize); // 페이지 변경 시 부모에게 전달
+    };
 
+    const handlePageSizeChange = (newPageSize) => {
+      setPageSize(newPageSize);
+      onPageSizeChange(page, newPageSize); // 페이지 크기 변경 시 부모에게 전달
+    };
     const handleAllRowSelection = (params) => {
       onSelectedAllRow(params);
     };
+
     return (
       <div id={id ? styles[id] : ""}>
         <DataGrid
@@ -46,14 +59,22 @@ const Table = memo(
           columns={columns}
           onRowSelectionModelChange={handleAllRowSelection}
           checkboxSelection={!(isStudentTable || isSmallScreen)} // 라디오 버튼 모드에 따라 체크박스 선택 여부 조절
+          onRowDoubleClick={onRowDoubleClick}
+          getRowId={getRowId}
+          //table pagination
           initialState={{
             pagination: {
               paginationModel: { page: 0, pageSize: 10 },
             },
           }}
+          rowCount={totalRowCount} // 총 데이터 수
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => handlePageSizeChange(newPageSize)}
+          page={page}
+          onPageChange={(newPage) => handlePageChange(newPage)}
+          pagination
+          paginationMode="server" //설정하지 않으면 Datagrid가 서버에서 모든 데이터를 한 번에 가져오는 것을 전제
           pageSizeOptions={[5, 10, 15]}
-          onRowDoubleClick={onRowDoubleClick}
-          getRowId={getRowId}
         />
       </div>
     );
