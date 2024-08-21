@@ -27,6 +27,7 @@ function NoticeBoard() {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalPosting, setTotalPosting] = useState(0);
   const itemsPerPage = 10;
   const { isSmallScreen } = useMediaQueryContext();
   const [rows, setRows] = useState([]);
@@ -42,6 +43,7 @@ function NoticeBoard() {
           console.log("새로운 페이지 컨텐츠 받아왔나?", result.content);
           setRows(result.content);
           setTotalPages(result.totalPages);
+          setTotalPosting(result.totalElements);
         } else {
           setRows([]);
           setTotalPages(1);
@@ -97,14 +99,12 @@ function NoticeBoard() {
     displayedPages.push(i);
   }
 
-  const displayedRows =
-    rows.length > 0
-      ? rows.slice((page - 1) * itemsPerPage, page * itemsPerPage)
-      : [];
+  // const displayedRows =
+  //   rows.length > 0
+  //     ? rows.slice((page - 1) * itemsPerPage, page * itemsPerPage)
+  //     : [];
   const getItemNumber = (index) => {
-    return (
-      (totalPages - page + 1) * itemsPerPage - (itemsPerPage - (index + 1))
-    );
+    return (page - 1) * itemsPerPage + totalPosting - index;
   };
 
   return (

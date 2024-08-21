@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Typography, Button, Paper, Divider, Grid } from "@mui/material";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import AppBar from "../Components/AppBar";
@@ -7,11 +7,11 @@ import PersonIcon from "@mui/icons-material/Person";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
 
 //api
-import { deleteNoticePost } from "../Apis/Api/Notice";
+import { deleteNoticePost, getNoticePost } from "../Apis/Api/Notice";
 
 function Post() {
   const navigate = useNavigate();
-
+  const [tempImageList, setTempImageList] = useState([]);
   const { isSmallScreen } = useMediaQueryContext();
   // const [postData, setPostData] = useState(null);
   const location = useLocation();
@@ -30,10 +30,23 @@ function Post() {
     }
   };
   useEffect(() => {
-    console.log(postData, "sdf");
-  });
+    getNoticePost(postData.noticeId).then((result) => {
+      if (result && result.imageList != null) {
+        postData.imageList = result.imageList;
+        setTempImageList(result.imageList);
+      } else {
+        setTempImageList([]);
+        postData.imageList = null;
+      }
+      console.log("postdagta", postData);
+    });
+  }, []);
+
   if (!postData) {
     return <div>Loading...</div>; // 데이터를 로딩 중일 때 보여줄 내용
+  }
+  if (!tempImageList) {
+    return <div>Loading...</div>;
   }
   return (
     <div>
@@ -134,18 +147,6 @@ function Post() {
               </Box>
             </Grid>
           </Grid>
-          <Divider sx={{ marginBottom: 5 }} />
-          {postData.imageList && postData.imageList.length != 0 ? (
-            <Box sx={{ textAlign: "center", marginBottom: 3 }}>
-              <img
-                src="./images/profile_temp.png"
-                alt="Notice Image"
-                style={{ width: "20%", maxWidth: "100%", height: "auto" }}
-              />
-            </Box>
-          ) : (
-            <div></div>
-          )}
 
           <Typography
             variant="body1"
@@ -153,14 +154,31 @@ function Post() {
               marginBottom: 3,
               marginLeft: 3,
               marginRight: 3,
-              minHeight: "50vh",
+              minHeight: "10vh",
               overflowY: "scroll",
-              borderBottom: "1px solid #e0e0e0", // 회색 실선 추가
             }}
           >
             {postData.content}
           </Typography>
 
+          {tempImageList && tempImageList.length !== 0 ? (
+            <Box sx={{ textAlign: "center", marginBottom: 3, width: "90vw" }}>
+              {tempImageList.map((image, index) => (
+                <img
+                  key={index} // 또는 image.imageId, 혹은 유일한 id 값을 사용하는 것이 좋습니다.
+                  src={image.imagePath}
+                  alt={`Image ${index + 1}`}
+                  style={{
+                    maxWidth: isSmallScreen ? "90%" : "100%",
+                    height: "auto",
+                    margin: "10px",
+                  }}
+                />
+              ))}
+            </Box>
+          ) : (
+            <div></div>
+          )}
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
             <Button
               variant="outlined"

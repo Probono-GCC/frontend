@@ -14,7 +14,7 @@ import {
   Snackbar,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { putStudent } from "../Apis/Api/User";
+import { resetPassword } from "../Apis/Api/User";
 
 // 비밀번호 정규표현식
 const pwRegex = /^(?=.*[a-zA-Z])[a-zA-Z\d!@#$%^*+=-]{4,20}$/;
@@ -41,11 +41,20 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
     }
 
     if (rowData) {
-      const updatedStudentData = { ...rowData, pw: password };
-      putStudent(updatedStudentData);
-      setPassword("");
-      setRePassword("");
-      handleClose();
+      console.log("???", rowData);
+      const updatedStudentData = { newPassword: password };
+      resetPassword(rowData.id, updatedStudentData)
+        .then((result) => {
+          if (result && result.status == 200) {
+            setPassword("");
+            setRePassword("");
+            alert("changed password successfully");
+            handleClose();
+          }
+        })
+        .catch((err) => {
+          alert("change password failed.");
+        });
     }
   };
 

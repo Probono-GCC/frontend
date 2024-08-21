@@ -61,8 +61,8 @@ function StudentView() {
       renderCell: (params) => (
         <Checkbox
           {...label}
-          checked={checkedRows.includes(params.row.sn)}
-          onChange={() => handleRowSelection(params.row.sn)}
+          checked={checkedRows.includes(params.row.id)}
+          onChange={() => handleRowSelection(params.row.id)}
         />
       ),
     },
@@ -84,15 +84,25 @@ function StudentView() {
     { field: "phone_num", headerName: "Phone" },
   ];
 
-  // 추후 수정 필요
   const handleRowSelection = (id) => {
-    setCheckedRows((prevCheckedRows) => {
-      const newCheckedRows = prevCheckedRows.includes(id)
-        ? prevCheckedRows.filter((rowId) => rowId !== id)
-        : [...prevCheckedRows, id];
-      console.log("업데이트된 선택된 행:", newCheckedRows);
-      return newCheckedRows;
-    });
+    if (!Array.isArray(id)) {
+      console.log(id, "idtyupe");
+      setCheckedRows((prevCheckedRows) => {
+        if (prevCheckedRows.includes(id)) {
+          // 이미 존재하는 id면 배열에서 제거
+          const newCheckedRows = prevCheckedRows.filter(
+            (rowId) => rowId !== id
+          );
+          console.log("업데이트된 선택된 행:", newCheckedRows);
+          return newCheckedRows;
+        } else {
+          // 존재하지 않으면 배열에 추가
+          const newCheckedRows = [...prevCheckedRows, id];
+          console.log("업데이트된 선택된 행:", newCheckedRows);
+          return newCheckedRows;
+        }
+      });
+    }
   };
 
   const handleModalOpen = (row) => {
@@ -112,22 +122,18 @@ function StudentView() {
   const deleteRow = async () => {
     try {
       // 선택된 각 행에 대해 삭제 로직을 수행
-      for (const rowIndex of checkedRows) {
-        const studentData = rows.find((row) => row.sn === rowIndex);
+      checkedRows.forEach((userId) => {
+        deleteStudent(userId).then((result) => {
+          console.log(result);
 
-        if (studentData) {
-          // 각 학생에 대해 deleteStudent 호출
-          await deleteStudent({ username: studentData.id });
-        }
-      }
-
-      console.log("Deleting rows:", checkedRows);
-
-      // 성공적으로 삭제 후 알림 표시
-      setAlert(true);
-      setTimeout(() => setAlert(false), 2000); // 2초 후 알림 숨김
-
-      setCheckedRows([]);
+          if (result.status == 200) {
+            fetchStudents();
+            setCheckedRows([]);
+            setAlert(true);
+            setTimeout(() => setAlert(false), 2000); // 2초 후 알림 숨김
+          }
+        });
+      });
 
       // 삭제된 행을 rows에서 제거
       setRows((prevRows) =>
@@ -137,8 +143,7 @@ function StudentView() {
       console.error("Error deleting rows:", error);
     }
   };
-
-  useEffect(() => {
+  const fetchStudents = () => {
     getStudents().then((result) => {
       console.log(result);
       const students = result.content || []; // content 배열 가져오기
@@ -156,8 +161,13 @@ function StudentView() {
           )
         );
         setRows(tempRow);
+      } else {
+        setRows([]);
       }
     });
+  };
+  useEffect(() => {
+    fetchStudents();
   }, []);
 
   return (
@@ -192,13 +202,11 @@ function StudentView() {
         <Table
           columns={isSmallScreen ? basic_columns : updatedColumns}
           rows={rows}
-          onRowSelection={handleRowSelection}
+          onSelectedAllRow={handleRowSelection}
           onRowDoubleClick={handleRowDoubleClick}
           getRowId={(row) => row.id}
           id={isSmallScreen ? "" : "table_body"}
-          isRadioButton={false}
           isStudentTable={true} //row클릭시 체크박스 활성화 안되게 하기위해 커스텀
-          checkedRows={checkedRows} // 체크된 행 상태 전달
         />
         {isSmallScreen ? (
           <div>&nbsp;</div>

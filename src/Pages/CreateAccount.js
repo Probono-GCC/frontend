@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AppBar from "../Components/AppBar";
 import {
   Typography,
@@ -18,6 +18,9 @@ import {
   postTeacher,
   getStudents,
   getTeachers,
+  checkDuplicatedStudentIdApi,
+  checkDuplicatedTeacherIdApi,
+  checkDuplicatedStudentSerialNumberApi,
 } from "../Apis/Api/User";
 
 function CreateAccount() {
@@ -69,21 +72,29 @@ function CreateAccount() {
   const handleIdDuplicateCheck = async () => {
     try {
       // studentsResponse에서 content 배열을 가져옴
-      const students = getStudents.content || [];
-      const teachers = getTeachers.content || [];
+      // const students = getStudents.content || [];
 
-      // students와 teachers의 username이 중복되는지 확인
-      const isDuplicate =
-        students.some((student) => student.username === id) ||
-        teachers.some((teacher) => teacher.username === id);
-
-      if (isDuplicate) {
-        alert("ID is already taken.");
-        setIsIdChecked(false);
-      } else {
-        alert("ID is available.");
-        setIsIdChecked(true);
-      }
+      const isDuplicate = checkDuplicatedStudentIdApi(id).then((result) => {
+        console.log("idreu", result);
+        if (result && result.status == 200) {
+          checkDuplicatedTeacherIdApi(id).then((result) => {
+            console.log("teacher id", result);
+            if (result && result.status == 200) {
+              //사용 가능
+              alert("ID is available.");
+              setIsIdChecked(true);
+            } else {
+              //사용 불가
+              alert("⚠️ID is already taken.⚠️");
+              setIsIdChecked(false);
+            }
+          });
+        } else {
+          //사용 불가
+          alert("⚠️ID is already taken.⚠️");
+          setIsIdChecked(false);
+        }
+      });
     } catch (error) {
       console.error("Error checking ID duplication:", error);
       setIsIdChecked(false);
@@ -94,20 +105,17 @@ function CreateAccount() {
     if (tabValue !== 0) return; // Teacher 등록 시에는 S/N 체크 필요 없음
 
     try {
-      const students = getStudents.content || [];
-      console.log(students);
-      console.log(sn);
-      const isDuplicate = students.some(
-        (student) => student.serialNumber == sn
-      );
-
-      if (isDuplicate) {
-        alert("Serial Number is already taken.");
-        setIsSnChecked(false);
-      } else {
-        alert("Serial Number is available.");
-        setIsSnChecked(true);
-      }
+      checkDuplicatedStudentSerialNumberApi(sn).then((result) => {
+        //사용 가능
+        if (result && result.status == 200) {
+          alert("Serial Number is available.");
+          setIsSnChecked(true);
+        } else {
+          //사용 불가능
+          alert("Serial Number is already taken.");
+          setIsSnChecked(false);
+        }
+      });
     } catch (error) {
       console.error("Error checking Serial Number duplication:", error);
       setIsSnChecked(false);
@@ -196,12 +204,19 @@ function CreateAccount() {
     if (tabValue === 0) {
       postStudent(studentBody).then((result) => {
         console.log(result);
-        alert("학생 가입 완료");
+        if (result && result.status == 201) {
+          alert("Student account created! ");
+        } else {
+          alert("Create failed");
+        }
       });
     } else {
       postTeacher(teacherBody).then((result) => {
-        console.log(result);
-        alert("선생님 가입 완료");
+        if (result && result.status == 201) {
+          alert("Teacher account created! ");
+        } else {
+          alert("Create failed");
+        }
       });
     }
 

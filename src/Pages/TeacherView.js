@@ -70,23 +70,33 @@ function TeacherView() {
   // 상세 정보 모달에 사용되는 컬럼 정의
   const detail_columns = [
     { field: "name", headerName: "Name", flex: 0.2 },
-    { field: "gender", headerName: "Gender", flex: 0.1 },
+    { field: "sex", headerName: "Gender", flex: 0.1 },
     { field: "birth", headerName: "Birth", flex: 0.1 },
     { field: "login_id", headerName: "ID", flex: 0.2 },
-    { field: "phone_num", headerName: "Phone" },
+    { field: "classId", headerName: "Phone" },
     { field: "home_room", headerName: "Home room" },
     { field: "course", headerName: "Course", flex: 0.3 },
   ];
 
-  // 추후 수정 필요
   const handleRowSelection = (id) => {
-    setCheckedRows((prevCheckedRows) => {
-      const newCheckedRows = prevCheckedRows.includes(id)
-        ? prevCheckedRows.filter((rowId) => rowId !== id)
-        : [...prevCheckedRows, id];
-      console.log("업데이트된 선택된 행:", newCheckedRows);
-      return newCheckedRows;
-    });
+    if (!Array.isArray(id)) {
+      console.log(id, "idtyupe");
+      setCheckedRows((prevCheckedRows) => {
+        if (prevCheckedRows.includes(id)) {
+          // 이미 존재하는 id면 배열에서 제거
+          const newCheckedRows = prevCheckedRows.filter(
+            (rowId) => rowId !== id
+          );
+          console.log("업데이트된 선택된 행:", newCheckedRows);
+          return newCheckedRows;
+        } else {
+          // 존재하지 않으면 배열에 추가
+          const newCheckedRows = [...prevCheckedRows, id];
+          console.log("업데이트된 선택된 행:", newCheckedRows);
+          return newCheckedRows;
+        }
+      });
+    }
   };
 
   const handleModalOpen = (row) => {
@@ -105,34 +115,28 @@ function TeacherView() {
 
   const deleteRow = async () => {
     try {
+      console.log("checkedros?", checkedRows);
       // 선택된 각 행에 대해 삭제 로직을 수행
-      for (const rowIndex of checkedRows) {
-        const teacherData = rows.find((row) => row.login_id === rowIndex);
-
-        if (teacherData) {
-          // 각 교사에 대해 deleteTeacher 호출
-          await deleteTeacher({ username: teacherData.login_id });
-        }
-      }
-
-      console.log("Deleting rows:", checkedRows);
-
-      // 성공적으로 삭제 후 알림 표시
-      setAlert(true);
-      setTimeout(() => setAlert(false), 2000); // 2초 후 알림 숨김
-
-      setCheckedRows([]);
+      checkedRows.forEach((userId) => {
+        deleteTeacher(userId).then((result) => {
+          if (result.status == 200) {
+            fetchTeacher();
+            setCheckedRows([]);
+            setAlert(true);
+            setTimeout(() => setAlert(false), 2000); // 2초 후 알림 숨김
+          }
+        });
+      });
 
       // 삭제된 행을 rows에서 제거
       setRows((prevRows) =>
-        prevRows.filter((row) => !checkedRows.includes(row.login_id))
+        prevRows.filter((row) => !checkedRows.includes(row.id))
       );
     } catch (error) {
       console.error("Error deleting rows:", error);
     }
   };
-
-  useEffect(() => {
+  const fetchTeacher = () => {
     getTeachers().then((result) => {
       console.log(result);
       const teachers = result.content || []; // content 배열 가져오기
@@ -149,8 +153,13 @@ function TeacherView() {
           )
         );
         setRows(tempRow);
+      } else {
+        setRows([]);
       }
     });
+  };
+  useEffect(() => {
+    fetchTeacher();
   }, []);
 
   return (
@@ -185,13 +194,20 @@ function TeacherView() {
         <Table
           columns={isSmallScreen ? basic_columns : updatedColumns}
           rows={rows}
-          onRowSelection={handleRowSelection}
+          onSelectedAllRow={handleRowSelection}
           onRowDoubleClick={handleRowDoubleClick}
           getRowId={(row) => row.login_id}
           id={isSmallScreen ? "" : "table_body"}
-          isRadioButton={false}
-          isStudentTable={true} // 필요에 따라 다른 커스텀 플래그를 사용할 수 있습니다.
-          checkedRows={checkedRows} // 체크된 행 상태 전달
+          isStudentTable={true} //row클릭시 체크박스 활성화 안되게 하기위해 커스텀
+          // columns={isSmallScreen ? basic_columns : updatedColumns}
+          // rows={rows}
+          // onRowSelection={handleRowSelection}
+          // onRowDoubleClick={handleRowDoubleClick}
+          // getRowId={(row) => row.login_id}
+          // id={isSmallScreen ? "" : "table_body"}
+          // isRadioButton={false}
+          // isStudentTable={true} // 필요에 따라 다른 커스텀 플래그를 사용할 수 있습니다.
+          // checkedRows={checkedRows} // 체크된 행 상태 전달
         />
         {isSmallScreen ? (
           <div>&nbsp;</div>

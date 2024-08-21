@@ -7,7 +7,8 @@ import { TextField, Typography, Box } from "@mui/material";
 import Button from "../Components/Button";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
 import { useAuth } from "../store/AuthContext";
-import { isFirstAccess } from "../Util/CheckFirstAccess";
+import { isFirstAccessStudent } from "../Util/CheckFirstAccess";
+import { isFirstAccessTeacher } from "../Util/checkFirstAccessTeacher";
 //api
 import { loginApi } from "../Apis/Api/User";
 function LoginContainer() {
@@ -46,15 +47,29 @@ function LoginContainer() {
           console.log("유저 정보", userData);
 
           //첫 접속인지 아닌지 판단
-          return isFirstAccess(userData.username).then((access) => {
-            console.log(access);
-            if (access && userData.role !== "ROLE_ADMIN") {
-              alert("Fill in the essential information on your profile");
-              navigate("/my-profile");
-            } else {
-              navigate("/home"); // 로그인 후 이동할 경로
-            }
-          });
+          if (userData.role == "ROLE_STUDENT") {
+            return isFirstAccessStudent(userData.username).then((access) => {
+              console.log("?", access);
+              if (access && userData.role !== "ROLE_ADMIN") {
+                alert("Fill in the essential information on your profile");
+                navigate("/my-profile");
+              } else {
+                navigate("/home"); // 로그인 후 이동할 경로
+              }
+            });
+          } else if (userData.role == "ROLE_TEACHER") {
+            return isFirstAccessTeacher(userData.username).then((access) => {
+              console.log("?", access);
+              if (access && userData.role !== "ROLE_ADMIN") {
+                alert("Fill in the essential information on your profile");
+                navigate("/my-profile");
+              } else {
+                navigate("/home"); // 로그인 후 이동할 경로
+              }
+            });
+          } else {
+            navigate("/home");
+          }
         }
         // 로그인 성공 시 입력 창 초기화
         setUserID("");

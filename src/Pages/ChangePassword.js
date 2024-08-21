@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import AppBar from "../Components/AppBar";
-import Table from "../Components/ViewTable";
+import Table from "../Components/Table";
 import Button from "../Components/Button";
 import styles from "../Styles/css/Table.module.css";
 import Modal from "../Components/ChangePasswordModal";
@@ -11,14 +11,16 @@ import Stack from "@mui/material/Stack";
 import Radio from "@mui/material/Radio";
 import { Typography, Box } from "@mui/material";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
-import { putStudent, getStudents } from "../Apis/Api/User";
+import { getTeachers, getStudents } from "../Apis/Api/User";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 function createData(sn, name, gender, birth, id, grade) {
   return { sn, name, gender, birth, id, grade };
 }
-
+function createTeacherData(name, gender, birth, id) {
+  return { name, gender, birth, id };
+}
 function ChangePassword() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalRowData, setModalRowData] = useState("default row data");
@@ -26,17 +28,22 @@ function ChangePassword() {
   const [checkedRowId, setCheckedRowId] = useState(null);
   const [checkedRowData, setCheckedRowData] = useState(null);
   const [allStudentData, setAllStudentDatas] = useState([]);
+  const [allTeacherData, setAllTeacherDatas] = useState([]);
   const [rows, setRows] = useState([]);
   const { isSmallScreen } = useMediaQueryContext();
 
   useEffect(() => {
-    getStudents().then((result) => {
-      console.log(result);
-      const students = result.content || []; // content 배열 가져오기
-      setAllStudentDatas(students);
-      console.log(students);
-      if (students.length > 0) {
-        const tempRow = students.map((item) =>
+    Promise.all([getStudents(), getTeachers()]).then(
+      ([studentsResult, teachersResult]) => {
+        const students = studentsResult.content || []; // 학생 데이터 추출
+        const teachers = teachersResult.content || []; // 교사 데이터 추출
+
+        // 상태 업데이트
+        setAllStudentDatas(students);
+        setAllTeacherDatas(teachers);
+
+        // 학생과 교사 데이터를 합치기
+        const studentRows = students.map((item) =>
           createData(
             item.serialNumber,
             item.name,
@@ -47,17 +54,34 @@ function ChangePassword() {
             item.phoneNum
           )
         );
-        setRows(tempRow);
+
+        const teacherRows = teachers.map((item) =>
+          createTeacherData(item.name, item.sex, item.birth, item.username)
+        );
+
+        // 학생과 교사 데이터를 합쳐서 상태 업데이트
+        setRows([...studentRows, ...teacherRows]);
       }
-    });
+    );
   }, []);
 
   useEffect(() => {
+    console.log("checkedRowId", checkedRowId);
     if (checkedRowId) {
+      //학생에서 찾기
       const selectedData = allStudentData.find(
         (item) => item.username === checkedRowId
       );
-      setCheckedRowData(selectedData);
+      if (selectedData) {
+        setCheckedRowData(selectedData);
+      }
+      //교사에서 찾기
+      else {
+        const selectedData = allTeacherData.find(
+          (item) => item.username === checkedRowId
+        );
+        setCheckedRowData(selectedData);
+      }
     }
   }, [checkedRowId, allStudentData]);
 
@@ -107,7 +131,7 @@ function ChangePassword() {
       renderCell: (params) => (
         <Radio
           {...label}
-          checked={checkedRowId === params.row.id}
+          checked={checkedRowId ? checkedRowId.id === params.row.id : ""}
           onChange={() => handleRowSelection(params.row.id)}
         />
       ),
@@ -147,12 +171,13 @@ function ChangePassword() {
           columns={updatedColumns}
           rows={rows}
           onRowSelection={handleRowSelection}
+          onRowSelectedId={() => {}}
           id={isSmallScreen ? "" : "table_body"}
-          onRowClick={handleRowSelection}
+          // onRowClick={handleRowSelection}
           onRowDoubleClick={(params) => handleModalOpen(params.row)}
           getRowId={(row) => row.id}
           isRadioButton={true}
-          checkedRows={(params) => null}
+          // checkedRows={(params) => null}
         />
         <Button
           title={"Change"}
@@ -167,7 +192,7 @@ function ChangePassword() {
         open={modalOpen}
         handleClose={handleModalClose}
         title={"Change Password"}
-        rowData={checkedRowData}
+        rowData={checkedRowId}
         rowsHeader={columns}
       />
     </div>
