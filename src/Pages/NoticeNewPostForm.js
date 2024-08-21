@@ -45,7 +45,7 @@ function NoticeNewPostForm() {
   const { isSmallScreen } = useMediaQueryContext();
   const location = useLocation();
   const postData = location.state;
-
+  // const [maintainImageIdList, setMaintainImageIdList] = useState([]);
   const [initialTitle, setInitialTitle] = useState("");
   const [initialContent, setInitialContent] = useState("");
   const [initialImageList, setInitialImageList] = useState([]);
@@ -77,8 +77,9 @@ function NoticeNewPostForm() {
     // }
 
     if (postData) {
+      formData.append("maintainImageList", initialImageList);
       putNoticePost(postData.noticeId, formData).then((result) => {
-        console.log(result);
+        // console.log("formData", formData);
         if (result) {
           alert("Edit complete");
           navigate("/notice-board");
