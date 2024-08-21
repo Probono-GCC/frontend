@@ -50,7 +50,7 @@ const PrivateRoutes = () => (
       }
     />
     <Route
-      path="/class-new-post-form"
+      path="/class-new-post-form/*"
       element={
         <PrivateRoute requiredRole={[role[0], role[1]]}>
           <ClassNewPostForm />

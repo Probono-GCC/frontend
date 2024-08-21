@@ -87,9 +87,11 @@ function AppBar() {
     navigate("/private/create-class");
   };
 
-  const goClassBoard = (id) => {
-    console.log("app bar class", id);
-    navigate(`/class-board/${id.grade}-${id.section}/`);
+  const goClassBoard = (classItem) => {
+    console.log("app bar class", classItem);
+    navigate(`/class-board/${classItem.grade}-${classItem.section}/`, {
+      state: classItem,
+    });
   };
 
   const goClassInfo = (classData) => {
@@ -341,11 +343,12 @@ function AppBar() {
           const myClassList = result.content.map((item) => ({
             grade: item.grade,
             section: item.section ? item.section : "",
+            classId: item.classId,
           }));
           console.log("admin classlist", myClassList);
           setMyClass(myClassList);
         } else {
-          setMyClass([{ grade: "", section: "" }]);
+          setMyClass([{ grade: "", section: "", classId: "" }]);
         }
       });
     } else if (userRole == roleArray[1]) {
@@ -366,7 +369,12 @@ function AppBar() {
         //   "grade": "PLAYGROUP",
         //   "section": "A"
         // },
-        if (result.classId && result.classId.grade && result.classId.section) {
+        if (
+          result.classId &&
+          result.classId.grade &&
+          result.classId.section &&
+          result.classId.classId
+        ) {
           // const myClassList = result.classId.map((item) => ({
           //   grade: item.grade,
           //   section: item.section ? item.section : "",
@@ -376,10 +384,11 @@ function AppBar() {
             {
               grade: result.classId.grade,
               section: result.classId.section,
+              classId: result.classId.classId,
             },
           ]);
         } else {
-          setMyClass([{ grade: "", section: "" }]);
+          setMyClass([{ grade: "", section: "", calssId: "" }]);
         }
       });
     } else if (userRole == roleArray[2]) {
@@ -396,22 +405,19 @@ function AppBar() {
           if (
             result.classResponse &&
             result.classResponse.grade &&
-            result.classResponse.section
+            result.classResponse.section &&
+            result.classResponse.classId
           ) {
-            console.log(
-              "set class 를 하자",
-              result.classResponse.grade,
-              result.classResponse.section
-            );
             setMyClass([
               {
                 grade: result.classResponse.grade,
                 section: result.classResponse.section,
+                classId: result.classResponse.classId,
               },
             ]);
             // handleMyClass({ grade: result.grade, section: result.section });
           } else {
-            setMyClass({ grade: "", section: "" });
+            setMyClass({ grade: "", section: "", classId: "" });
           }
         }
       });

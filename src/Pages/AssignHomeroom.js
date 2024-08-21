@@ -61,7 +61,9 @@ function AssignHomeroom() {
   const [newSelctedLeftStudent, setNewSelectedLeftStudent] = useState([]);
 
   const [newSelctedRightStudent, setNewSelectedRightStudent] = useState([]);
-  const currentYear = new Date().getFullYear();
+  const NepaliDate = require("nepali-date");
+  const todayNepaliDate = new NepaliDate();
+  const currentYear = todayNepaliDate.getYear();
   useEffect(() => {
     console.log("selecte left sutdnet 1", selectedLeftStudents);
     // Fetch classes and teachers data on component mount

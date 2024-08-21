@@ -77,13 +77,25 @@ function NoticeNewPostForm() {
     // }
 
     if (postData) {
-      formData.append("maintainImageList", initialImageList);
+      // initialImageList에서 imageId 값만 추출하여 새로운 배열로 만듦
+      const imageIdList = initialImageList.map((item) => item.imageId);
+
+      // 배열을 콤마로 구분된 문자열로 변환
+      const imageIdString = imageIdList.join(",");
+
+      // FormData 객체에 콤마로 구분된 imageId 문자열을 추가
+      formData.append("maintainImageList", imageIdString);
+
       putNoticePost(postData.noticeId, formData).then((result) => {
         // console.log("formData", formData);
         if (result) {
           alert("Edit complete");
           navigate("/notice-board");
         } else {
+          console.log("뭘보내는지");
+          for (const [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
+          }
           alert("Edit failed");
         }
       });
