@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -21,12 +21,20 @@ import Table from "../Components/Table";
 import CustomButton from "../Components/Button";
 import SelectButton from "../Components/SelectButton";
 import SelectButtonContainer from "../Components/SelectButtonContatiner";
+import { getTeacher, getTeachers, putTeacher } from "../Apis/Api/User";
 import {
   postCourse,
   getCourse,
   getCourses,
   deleteCourse,
 } from "../Apis/Api/Course";
+import { putClass, postClass, getClasses } from "../Apis/Api/Class";
+import {
+  postSubject,
+  getSubject,
+  getSubjects,
+  deleteSubject,
+} from "../Apis/Api/Subject";
 
 const modalStyle = {
   position: "absolute",
@@ -40,32 +48,17 @@ const modalStyle = {
   p: 4,
 };
 
-const teachers = [
-  { id: 1, name: "Jun", subject: "t1013" },
-  { id: 2, name: "Jin", subject: "t0108" },
-  { id: 3, name: "Euler", subject: "t0213" },
-  { id: 4, name: "Einstein", subject: "physics123" },
-  { id: 5, name: "Srinivasan", subject: "t0221" },
-  { id: 6, name: "Mozart", subject: "music123" },
-  { id: 7, name: "Gold", subject: "economy123" },
-  { id: 8, name: "Sunny", subject: "t1228" },
-  { id: 9, name: "Hello", subject: "t12" },
-  { id: 10, name: "Gcc", subject: "t122" },
-  { id: 11, name: "Sun", subject: "adfs8" },
-  { id: 12, name: "Su", subject: "t1" },
-  { id: 13, name: "Sunny", subject: "t" },
-];
+function createTeacherData(name, username, id) {
+  return { name, username, id };
+}
 
-const subjects = [
-  "English",
-  "Math",
-  "Nepali",
-  "Music",
-  "Science",
-  "History",
-  "Society",
-  "Sports",
-];
+function createSubjectData(subjectId, name, id) {
+  return { subjectId, name, id };
+}
+
+function createClassData(year, grade, section, classId, id) {
+  return { year, grade, section, classId, id };
+}
 
 const columns = [
   { field: "batch", headerName: "Batch", flex: 0.2 },
@@ -76,97 +69,11 @@ const columns = [
 ];
 
 const classColumns = [
-  { field: "batch", headerName: "Batch", flex: 0.2 },
+  { field: "year", headerName: "Batch", flex: 0.2 },
   { field: "grade", headerName: "Grade", flex: 0.2 },
   { field: "section", headerName: "Section", flex: 0.2 },
   { field: "teacher1", headerName: "Teacher1", flex: 0.2 },
   { field: "teacher2", headerName: "Teacher2", flex: 0.2 },
-];
-
-const initialRows = [
-  {
-    id: 1,
-    batch: 2084,
-    grade: "Class 1",
-    section: "A",
-    teacher: "Jin",
-    subject: "English",
-  },
-  {
-    id: 2,
-    batch: 2084,
-    grade: "Class 1",
-    section: "A",
-    teacher: "Sunny",
-    subject: "Math",
-  },
-  {
-    id: 3,
-    batch: 2084,
-    grade: "Class 2",
-    section: "A",
-    teacher: "Jin",
-    subject: "English",
-  },
-  {
-    id: 4,
-    batch: 2084,
-    grade: "Class 2",
-    section: "B",
-    teacher: "Jin",
-    subject: "English",
-  },
-  {
-    id: 5,
-    batch: 2084,
-    grade: "Class 2",
-    section: "B",
-    teacher: "Sunny",
-    subject: "Math",
-  },
-];
-
-const initialClassRows = [
-  {
-    id: 1,
-    batch: "2084",
-    grade: "PlayGroup",
-    section: "A",
-    teacher1: "Jimmy",
-    teacher2: "Sunny",
-  },
-  {
-    id: 2,
-    batch: "2084",
-    grade: "LowerKG",
-    section: "A",
-    teacher1: "James",
-    teacher2: "Sunny",
-  },
-  {
-    id: 3,
-    batch: "2084",
-    grade: "LowerKG",
-    section: "B",
-    teacher1: "Sunny",
-    teacher2: "James",
-  },
-  {
-    id: 4,
-    batch: "2084",
-    grade: "UpperKG",
-    section: "A",
-    teacher1: "Mozart",
-    teacher2: "Sunny",
-  },
-  {
-    id: 5,
-    batch: "2084",
-    grade: "UpperKG",
-    section: "B",
-    teacher1: "Jimmy",
-    teacher2: "Sunny",
-  },
 ];
 
 function CommonCourseManagement() {
@@ -174,13 +81,21 @@ function CommonCourseManagement() {
   const [selectedCourse, setselectedCourse] = useState(null);
   const [selectedTeachers, setSelectedTeachers] = useState([]);
   const [selectedSubjects, setSelectedSubjects] = useState([]);
-  const [rows, setRows] = useState(initialRows);
-  const [classRows, setClassRows] = useState(initialClassRows);
+  const [rows, setRows] = useState([]);
+  const [classRows, setClassRows] = useState([]);
   const [addMode, setAddMode] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [newSubject, setNewSubject] = useState("");
+
   const handleOpenModal = () => setModalOpen(true);
   const handleCloseModal = () => setModalOpen(false);
+
+  const [teachers, setTeachers] = useState([]);
+  const [subjects, setSubjects] = useState([]);
+
+  const NepaliDate = require("nepali-date");
+  const todayNepaliDate = new NepaliDate();
+  const currentYear = todayNepaliDate.getYear();
 
   const handleTeacherClick = (teacher) => {
     setSelectedTeachers([teacher]);
@@ -218,15 +133,110 @@ function CommonCourseManagement() {
   ];
 
   const handleDeleteSubjects = () => {
-    // Handle the deletion of selected subjects
+    if (selectedSubjects.length === 1) {
+      const selectedSubjectName = selectedSubjects[0];
+      const subjectToDelete = subjects.find(
+        (subject) => subject.name === selectedSubjectName
+      );
+
+      if (subjectToDelete) {
+        const subjectId = subjectToDelete.subjectId;
+        deleteSubject(subjectId).then(() => {
+          getSubjects(0, 10).then((result) => {
+            const tempSubject = result.content || [];
+            setSubjects(
+              tempSubject.map((item, index) =>
+                createSubjectData(item.subjectId, item.name, index + 1)
+              )
+            );
+            setSelectedSubjects([]);
+          });
+        });
+      }
+    } else {
+      console.log("과목을 하나만 선택해주세요.");
+    }
   };
 
   const handleAddSubject = () => {
     if (newSubject.trim() !== "") {
-      subjects.push(newSubject); // 새로운 과목을 배열에 추가
-      setNewSubject(""); // 입력창 초기화
+      const newSubjectData = {
+        name: newSubject,
+        elective: false,
+      };
+
+      postSubject(newSubjectData)
+        .then(() => {
+          setNewSubject("");
+          return getSubjects(0, 10);
+        })
+        .then((result) => {
+          const tempSubject = result.content || [];
+          setSubjects(
+            tempSubject.map((item, index) =>
+              createSubjectData(item.subjectId, item.name, index + 1)
+            )
+          );
+        })
+        .catch((error) => {
+          console.error("Failed to add subject:", error);
+        });
     }
   };
+
+  const fetchTeacher = () => {
+    getTeachers().then((result) => {
+      const teacherMap = result.content || [];
+      if (teacherMap.length > 0) {
+        const tempRow = teacherMap.map((item, index) =>
+          createTeacherData(item.name, item.username, index + 1)
+        );
+        setTeachers(tempRow);
+      } else {
+        setTeachers([]);
+      }
+    });
+  };
+
+  const fetchSubject = () => {
+    getSubjects(0, 50).then((result) => {
+      const subjectMap = result.content || [];
+      if (subjectMap.length > 0) {
+        const tempRow = subjectMap.map((item, index) =>
+          createSubjectData(item.subjectId, item.name, index + 1)
+        );
+        setSubjects(tempRow);
+      } else {
+        setTeachers([]);
+      }
+    });
+  };
+
+  const fetchClass = () => {
+    getClasses(currentYear).then((result) => {
+      const classMap = result.content || [];
+      if (classMap.length > 0) {
+        const tempRow = classMap.map((item, index) =>
+          createClassData(
+            item.year,
+            item.grade,
+            item.section,
+            item.classId,
+            index + 1
+          )
+        );
+        setClassRows(tempRow);
+      } else {
+        setClassRows([]);
+      }
+    });
+  };
+
+  useEffect(() => {
+    fetchClass();
+    fetchTeacher();
+    fetchSubject();
+  }, []);
 
   return (
     <div id="page_content">
@@ -310,7 +320,7 @@ function CommonCourseManagement() {
                     selected={selectedTeachers.includes(teacher.id)}
                     onClick={() => handleTeacherClick(teacher.id)}
                   >
-                    {teacher.name} <br /> ({teacher.subject})
+                    {teacher.name} <br /> ({teacher.username})
                   </SelectButton>
                 </Grid>
               ))}
@@ -320,16 +330,16 @@ function CommonCourseManagement() {
               variant="h4"
               sx={{ fontFamily: "Copperplate", marginTop: 10, marginBottom: 3 }}
             >
-              Select Elective Subject
+              Select Common Subject
             </Typography>
             <SelectButtonContainer>
               {subjects.map((subject) => (
-                <Grid item xs={2} key={subject}>
+                <Grid item xs={2} key={subject.subjectId}>
                   <SelectButton
-                    selected={selectedSubjects.includes(subject)}
-                    onClick={() => handleSubjectClick(subject)}
+                    selected={selectedSubjects.includes(subject.name)}
+                    onClick={() => handleSubjectClick(subject.name)}
                   >
-                    {subject}
+                    {subject.name} {/* subject.name을 직접 렌더링 */}
                   </SelectButton>
                 </Grid>
               ))}
@@ -427,11 +437,11 @@ function CommonCourseManagement() {
               sx={{ marginBottom: 1, fontFamily: "Copperplate" }}
             >
               Common Subject List
-            </Typography>{" "}
+            </Typography>
             <List sx={{ maxHeight: 150, overflowY: "auto" }}>
               {subjects.map((subject) => (
                 <ListItem
-                  key={subject}
+                  key={subject.subjectId} // 각 객체의 고유한 key로 subjectId 사용
                   disablePadding
                   sx={{
                     borderTop: "1px solid #ccc",
@@ -439,10 +449,10 @@ function CommonCourseManagement() {
                       borderBottom: "1px solid #ccc",
                     },
                   }}
-                  onClick={() => handleSubjectClick(subject)}
+                  onClick={() => handleSubjectClick(subject.name)}
                 >
                   <ListItemButton
-                    selected={selectedSubjects.includes(subject)}
+                    selected={selectedSubjects.includes(subject.name)}
                     sx={{
                       "&.Mui-selected": {
                         backgroundColor: "#D8EDFF",
@@ -450,7 +460,8 @@ function CommonCourseManagement() {
                       },
                     }}
                   >
-                    <ListItemText primary={subject} />
+                    <ListItemText primary={subject.name} />{" "}
+                    {/* 객체의 name 속성을 사용 */}
                   </ListItemButton>
                 </ListItem>
               ))}
@@ -472,12 +483,6 @@ function CommonCourseManagement() {
             >
               <CustomButton
                 title={"Back"}
-                variant="outlined"
-                onClick={handleCloseModal}
-              />
-
-              <CustomButton
-                title={"Save"}
                 variant="contained"
                 color="primary"
                 onClick={handleCloseModal}

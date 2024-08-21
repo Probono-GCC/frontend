@@ -1,6 +1,18 @@
 // src/Apis/Api/Class.js
 import { axiosInstance } from "../Utils/Axios";
 
+export async function putClass(classData) {
+  try {
+    const response = await axiosInstance.put(
+      `/class?id=${classData.classId}`,
+      classData
+    );
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 export async function postClass(classData) {
   try {
     const response = await axiosInstance.post("/class", classData);
