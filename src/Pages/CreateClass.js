@@ -36,8 +36,12 @@ const grades = [
 
 const sections = ["A", "B"];
 
+const NepaliDate = require("nepali-date");
+const todayNepaliDate = new NepaliDate();
+const currentYear = todayNepaliDate.getYear();
+
 const batchYears = [];
-for (let year = 2024 + 57; year <= 2030 + 57; year++) {
+for (let year = currentYear; year <= currentYear + 4; year++) {
   batchYears.push(year);
 }
 
@@ -53,7 +57,7 @@ function CreateClass() {
     setBatch(batchYears[0]);
 
     // Fetching class data when the component mounts
-    getClasses().then((result) => {
+    getClasses(currentYear).then((result) => {
       if (result && result.content) {
         const tempRow = result.content.map((item, index) => ({
           id: index + 1, // Assuming an index for table rows

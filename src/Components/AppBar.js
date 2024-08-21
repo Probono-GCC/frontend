@@ -54,7 +54,9 @@ function AppBar() {
   const [myClass, setMyClass] = useState([]); //[{grade:"Class1",section:"A"},{grade:"Class3",section:"B"}]
 
   const navigate = useNavigate();
-  const currentYear = new Date().getFullYear();
+  const NepaliDate = require("nepali-date");
+  const todayNepaliDate = new NepaliDate();
+  const currentYear = todayNepaliDate.getYear();
 
   const location = useLocation();
   const goHome = () => {
@@ -335,7 +337,7 @@ function AppBar() {
     }
     if (userRole == roleArray[0]) {
       setUserName("Administor");
-      getClassList(0, 100, currentYear + 60).then((result) => {
+      getClassList(0, 100, currentYear).then((result) => {
         if (result && result.content) {
           const myClassList = result.content.map((item) => ({
             grade: item.grade,

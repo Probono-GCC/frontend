@@ -1,6 +1,18 @@
 // src/Apis/Api/Class.js
 import { axiosInstance } from "../Utils/Axios";
 
+export async function putClass(classData) {
+  try {
+    const response = await axiosInstance.put(
+      `/class?id=${classData.classId}`,
+      classData
+    );
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 export async function postClass(classData) {
   try {
     const response = await axiosInstance.post("/class", classData);
@@ -23,9 +35,9 @@ export async function getClass(classData) {
   }
 }
 
-export async function getClasses() {
+export async function getClasses(yearData) {
   try {
-    const response = await axiosInstance.get(`/classes?year=2084`);
+    const response = await axiosInstance.get(`/classes?year=${yearData}`);
     console.log(response);
     return response.data;
   } catch (err) {
