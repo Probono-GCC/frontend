@@ -30,9 +30,11 @@ export async function postStudent(userData) {
   }
 }
 
-export async function getStudents() {
+export async function getStudents(page, size) {
   try {
-    const response = await axiosInstance.get("/students");
+    const response = await axiosInstance.get(
+      `/students?page=${page}&size=${size}`
+    );
     //console.log(response);
     return response.data;
   } catch (err) {
