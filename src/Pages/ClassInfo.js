@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import AppBar from "../Components/AppBar";
 import Table from "../Components/ViewTable";
+import CourseTable from "../Components/Table";
 import Button from "../Components/Button";
 import styles from "../Styles/css/Table.module.css";
 import IconButton from "@mui/material/IconButton";
@@ -294,13 +295,13 @@ function ClassInfo() {
             Course Info
           </Typography>
         </Box>
-        <Table
+        <CourseTable
           columns={courseColumns}
           rows={courseRows}
           onRowSelection={handleRowSelection}
           isReadOnly={true}
           getRowId={(row) => row.id}
-          id={"table_body"}
+          id={isSmallScreen ? "" : "table_body"}
         />
         <Box
           sx={{
