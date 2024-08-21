@@ -16,9 +16,25 @@ function Post() {
   // const [postData, setPostData] = useState(null);
   const location = useLocation();
   const postData = location.state;
+  // 현재 URL에서 경로(path)를 가져옴
+  const path = window.location.pathname;
 
+  // 경로를 슬래시(/)로 분리하여 배열로 변환
+  const pathSegments = path.split("/");
+
+  // 배열의 마지막 요소를 가져옴
+  const noticeName = pathSegments[pathSegments.length - 2];
+  const currentClassId = pathSegments[pathSegments.length - 1];
   const handleEdit = () => {
-    navigate("/private/notice-new-post-form", { state: postData });
+    if (noticeName == "class-notice") {
+      //class notice
+      navigate(`/private/class-new-post-form/${currentClassId}`, {
+        state: postData,
+      });
+    } else {
+      //전체 notice
+      navigate("/private/notice-new-post-form", { state: postData });
+    }
   };
 
   const handleDelete = () => {
@@ -30,6 +46,7 @@ function Post() {
     }
   };
   useEffect(() => {
+    console.log("postdagtaaaaa", postData);
     getNoticePost(postData.noticeId).then((result) => {
       if (result && result.imageList != null) {
         postData.imageList = result.imageList;
@@ -38,7 +55,6 @@ function Post() {
         setTempImageList([]);
         postData.imageList = null;
       }
-      console.log("postdagta", postData);
     });
   }, []);
 

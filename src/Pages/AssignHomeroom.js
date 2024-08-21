@@ -29,9 +29,9 @@ import {
 const label = { inputProps: { "aria-label": "Radio button demo" } };
 const checkLabel = { inputProps: { "aria-label": "Checkbox demo" } };
 
-function createData(serialNumber, sex, name, birth, username, grade) {
-  return { id: serialNumber, serialNumber, sex, name, birth, username, grade };
-}
+// function createData(serialNumber, sex, name, birth, username, grade) {
+//   return { id: serialNumber, serialNumber, sex, name, birth, username, grade };
+// }
 
 const studentColumns = [
   { field: "serialNumber", headerName: "SN", flex: 0.1 },
@@ -61,7 +61,9 @@ function AssignHomeroom() {
   const [newSelctedLeftStudent, setNewSelectedLeftStudent] = useState([]);
 
   const [newSelctedRightStudent, setNewSelectedRightStudent] = useState([]);
-  const currentYear = new Date().getFullYear();
+  const NepaliDate = require("nepali-date");
+  const todayNepaliDate = new NepaliDate();
+  const currentYear = todayNepaliDate.getYear();
   useEffect(() => {
     console.log("selecte left sutdnet 1", selectedLeftStudents);
     // Fetch classes and teachers data on component mount
@@ -105,7 +107,12 @@ function AssignHomeroom() {
     });
     console.log("selcted3", selectedLeftStudents);
   }, []);
-  // useEffect(() => {}, [selectedLeftStudents, selectedRightStudents]);
+  useEffect(() => {}, [
+    rightStudents,
+    leftStudents,
+    selectedLeftStudents,
+    selectedRightStudents,
+  ]);
 
   const handleRowSelection = (id) => {
     setCheckedRows((prevCheckedRows) =>
@@ -144,74 +151,46 @@ function AssignHomeroom() {
   };
   const handleSelectedClassRowData = (row) => {
     setSelectedClassRowData(row);
-    // console.log("selected row", row);
-    getNotAssignedStudent(row.grade).then((result) => {
+    // 할당되지 않은 학생 LEFT 테이블에
+    getNotAssignedStudent(row.grade, 0, 50).then((result) => {
       if (result && result.content) {
-        setLeftStudents(result.content);
-        console.log("setleft", result.content);
+        // 각 객체에 id 키를 인덱스로 추가한 새로운 배열 생성
+        const updatedStudents = result.content.map((student, index) => ({
+          ...student,
+          id: student.serialNumber, // id 키에 인덱스 값 할당
+        }));
+
+        //left table에 업데이트된 배열 저장
+        setLeftStudents(updatedStudents);
       }
     });
+    //할당된 학생 RIGHT 테이블에
+    if (row.classId) {
+      getClassStudent(row.classId, 0, 50).then((result) => {
+        console.log("너는 right student배열", result.content);
+        if (result && result.content) {
+          // 각 객체에 id 키를 인덱스로 추가한 새로운 배열 생성
+          const updatedStudents = result.content.map((student, index) => ({
+            ...student,
+            id: index, // id 키에 인덱스 값 할당
+          }));
+
+          //right table에 업데이트된 배열 저장
+          setRightStudents(updatedStudents);
+        }
+      });
+      //class 선생님 불러오기
+      getClassTeacher(row.classId).then((result) => {
+        console.log("class에 할당된 teacher get result ", result);
+
+        setInitalSelectedTeacher(result);
+        setSelectedTeachers(result.map((teacher) => teacher.username));
+      });
+    }
   };
   const handleClassRowIdSelection = (id) => {
     console.log(selectedClassRowData, "rowid???", id[0]);
     setSelectedClassRowId(id[0]);
-    // getNotAssignedStudent(id[0],)
-    // // 선택된 클래스의 GRADE 정보 가져오기
-    // const selectedClassData = classes.find((cls) => cls.id === id[0]);
-    // setSelectedClass(selectedClassData);
-    // // console.log("selectedClassData", selectedClassData);
-    // console.log(selectedClassData);
-    // if (selectedClassData) {
-    //   const selectedGrade = selectedClassData.grade;
-
-    //   //GRADE와 일치하는 학생들 필터링
-    //   const filteredGradeStudents = allStudentData
-    //     .filter((student) => student.grade === selectedGrade)
-    //     .map((student, idx) => ({
-    //       ...student,
-    //       id: student.serialNumber, //table get row id를 위해..
-    //     }));
-    //   //해당 클래스에 할당 된 학생 불러오기
-    //   getClassStudent(selectedClassData.classId).then((result) => {
-    //     console.log(
-    //       "classId",
-    //       selectedClassData.classId,
-    //       "class9 right student?:",
-    //       result
-    //     );
-    //     if (!result.content) {
-    //       const filteredRightStudents = result;
-    //       const updatedRightStudents = filteredRightStudents.map((student) => ({
-    //         ...student,
-    //         id: student.serialNumber, // table get row id를 위해 추가
-    //       }));
-
-    //       // console.log("class9 studnet?:", filteredGradeStudents);
-    //       setRightStudents(updatedRightStudents);
-    //       //Grade 학생중에 해당 학급 할당 안된 학생들 불러오기
-    //       const filteredLeftStudents = filteredGradeStudents.filter(
-    //         (student) =>
-    //           !filteredRightStudents.some(
-    //             (rightStudent) =>
-    //               rightStudent.serialNumber === student.serialNumber
-    //           )
-    //       );
-    //       const updatedLeftStudents = filteredLeftStudents.map((student) => ({
-    //         ...student,
-    //         id: student.serialNumber, // table get row id를 위해 추가
-    //       }));
-    //       // console.log("class9 left studnet?:", filteredLeftStudents);
-    //       setLeftStudents(updatedLeftStudents);
-    //     }
-    //   });
-    //class 선생님 불러오기
-    // getClassTeacher(selectedClassData.classId).then((result) => {
-    //   console.log("class에 할당된 teacher get result ", result);
-
-    //   setInitalSelectedTeacher(result);
-    //   setSelectedTeachers(result.map((teacher) => teacher.username));
-    // });
-    // }
   };
 
   const handleLeftStudentRowSelection = (_id) => {
@@ -318,33 +297,51 @@ function AssignHomeroom() {
     // console.log("selected left student", newSelctedLeftStudent);
 
     try {
-      // console.log("selectedLeftStudents", selectedLeftStudents);
-      newSelctedLeftStudent.map((item) => {
-        assignClassMember(selectedClass, item.username)
-          .then(() => {
-            setShowAlert(true);
-            setTimeout(() => setShowAlert(false), 2000); // 2초 후 알림 숨김
-          })
-          .catch((err) => {
-            alert(item.name, " student assigned failed.");
-          });
-      });
-      // console.log("selectedRightStudents", newSelctedRightStudent);
-      newSelctedRightStudent.map((item) => {
-        deleteClassMember(selectedClass, item.username)
-          .then((result) => {
-            console.log("delete ruelst", result);
-            setShowAlert(true);
-            setTimeout(() => setShowAlert(false), 2000); // 2초 후 알림 숨김
-          })
-          .catch((err) => {
-            alert(item.name, " student deallocated failed.");
-          });
-      });
+      console.log("selectedLeftStudents", selectedLeftStudents);
+      if (newSelctedLeftStudent) {
+        newSelctedLeftStudent.map((item) => {
+          console.log(
+            "assign에서 현재 클래스 아이디 불러오고싷ㅍ음 selectedClass",
+            selectedClassRowData.classId
+          );
+          assignClassMember(selectedClassRowData, item.username)
+            .then((result) => {
+              console.log("assign class member result", result);
+              setShowAlert(true);
+              setTimeout(() => setShowAlert(false), 2000); // 2초 후 알림 숨김
+            })
+            .catch((err) => {
+              alert(item.name, " student assigned failed.");
+            });
+        });
+      }
+      if (newSelctedRightStudent) {
+        //새롭게 선택된 학생 리스트
+        console.log(
+          "assign에서 현재 클래스 아이디 불러오고싷ㅍ음 selectedClass",
+          selectedClassRowData.classId
+        );
+        console.log("selectedRightStudents", newSelctedRightStudent);
+        newSelctedRightStudent.map((item) => {
+          deleteClassMember(selectedClassRowData, item.username)
+            .then((result) => {
+              if (result) {
+                console.log("delete class member result", result, "item name");
+                setShowAlert(true);
+                setTimeout(() => setShowAlert(false), 2000); // 2초 후 알림 숨김
+              } else {
+                alert(item.name, " student deallocated failed.");
+              }
+            })
+            .catch((err) => {
+              alert(err, item.name, " student deallocated failed.");
+            });
+        });
+      }
       // 이니셜에 있었는데 현재 선택된 리스트에 없는 경우 - 티쳐 삭제
       initalSelectedTeacher.forEach((initialTeacher) => {
         if (!selectedTeachers.includes(initialTeacher.username)) {
-          deleteClassMember(selectedClass, initialTeacher.username)
+          deleteClassMember(selectedClassRowData, initialTeacher.username)
             .then((result) => {
               setShowAlert(true);
               setTimeout(() => setShowAlert(false), 2000); // 2초 후 알림 숨김
@@ -368,7 +365,7 @@ function AssignHomeroom() {
             (initialTeacher) => initialTeacher.username === selectedTeacher
           )
         ) {
-          assignClassMember(selectedClass, selectedTeacher)
+          assignClassMember(selectedClassRowData, selectedTeacher)
             .then((result) => {
               setShowAlert(true);
               setTimeout(() => setShowAlert(false), 2000); // 2초 후 알림 숨김

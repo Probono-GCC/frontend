@@ -13,17 +13,17 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
-import { getNoticePostList } from "../Apis/Api/Notice";
+import { getNoticePostList } from "../Apis/Api/ClassNotice";
 import { useAuth } from "../store/AuthContext";
 
-function createData(title, date, type, author, viewCount) {
-  return { title, date, type, author, viewCount };
+function createData(title, date, author, viewCount) {
+  return { title, date, author, viewCount };
 }
 
 const rows = [
@@ -44,12 +44,18 @@ function ClassBoard() {
   const [rows, setRows] = useState([]);
   const { userRole } = useAuth();
   const [loading, setLoading] = useState(false);
+  const location = useLocation();
+  const currentClassItem = location.state;
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const result = await getNoticePostList(page - 1, itemsPerPage);
+        const result = await getNoticePostList(
+          currentClassItem.classId,
+          page - 1,
+          itemsPerPage
+        );
         if (result && Array.isArray(result.content)) {
           console.log("새로운 페이지 컨텐츠 받아왔나?", result.content);
           setRows(result.content);
@@ -77,7 +83,7 @@ function ClassBoard() {
   };
 
   const handleNewPost = () => {
-    navigate("/private/class-new-post-form");
+    navigate(`/private/class-new-post-form/${currentClassItem.classId}`);
   };
 
   const handlePreviousGroup = () => {
@@ -89,10 +95,11 @@ function ClassBoard() {
   };
 
   const handleRowClick = (rowData) => {
-    if (rowData.noticeId) {
+    console.log("rowData", rowData);
+    if (rowData && rowData.noticeId) {
       navigate(`/class-notice/${rowData.noticeId}`, { state: rowData });
     } else {
-      console.error("Row data does not contain an 'id' field:", rowData);
+      console.error("Row data does not contain an 'noticeId' field:", rowData);
     }
   };
 
@@ -138,7 +145,7 @@ function ClassBoard() {
       >
         <Table sx={{ tableLayout: "fixed", width: "100%" }}>
           <TableHead sx={{ backgroundColor: "#d8edff" }}>
-            <TableRow>
+            <TableRow sx={{ width: "100%" }}>
               <TableCell
                 sx={{
                   textAlign: "left",
@@ -153,21 +160,12 @@ function ClassBoard() {
                 sx={{
                   textAlign: "left",
                   fontWeight: "bold",
-                  width: isSmallScreen ? "65%" : "40%",
+                  width: isSmallScreen ? "65%" : "30%",
                 }}
               >
                 Title
               </TableCell>
-              <TableCell
-                sx={{
-                  textAlign: "left",
-                  fontWeight: "bold",
-                  width: "20%",
-                  padding: "5px",
-                }}
-              >
-                Type
-              </TableCell>
+
               {isSmallScreen ? (
                 <div></div>
               ) : (
@@ -176,7 +174,7 @@ function ClassBoard() {
                     sx={{
                       textAlign: "left",
                       fontWeight: "bold",
-                      width: "20%",
+                      width: "30%",
                       padding: "16px 30px 16px 16px",
                     }}
                   >
@@ -188,7 +186,7 @@ function ClassBoard() {
                 sx={{
                   textAlign: "right",
                   fontWeight: "bold",
-                  width: "12%",
+                  width: "25%",
                   padding: "16px 30px 16px 16px",
                 }}
               >
@@ -231,48 +229,35 @@ function ClassBoard() {
                 >
                   {row.title}
                 </TableCell>
+
+                {isSmallScreen ? (
+                  <div></div>
+                ) : (
+                  <TableCell
+                    sx={{
+                      padding: "16px 30px 16px 16px",
+                      textAlign: "left",
+                      borderBottom: "1px solid #e0e0e0",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {row.author}
+                  </TableCell>
+                )}
                 <TableCell
                   sx={{
-                    padding: "16px",
-                    textAlign: "left",
+                    padding: "16px 30px 16px 16px",
+                    textAlign: "right",
                     borderBottom: "1px solid #e0e0e0",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {row.type}
+                  {row.views}
                 </TableCell>
-                {isSmallScreen ? (
-                  <div></div>
-                ) : (
-                  <>
-                    <TableCell
-                      sx={{
-                        padding: "16px 30px 16px 16px",
-                        textAlign: "left",
-                        borderBottom: "1px solid #e0e0e0",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {row.author}
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        padding: "16px 30px 16px 16px",
-                        textAlign: "right",
-                        borderBottom: "1px solid #e0e0e0",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {row.views}
-                    </TableCell>
-                  </>
-                )}
               </TableRow>
             ))}
             {Array.from({
