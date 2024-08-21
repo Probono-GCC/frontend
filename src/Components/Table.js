@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import styles from "../Styles/css/Table.module.css";
 
@@ -25,7 +25,9 @@ const Table = memo(
         onRowSelectedId(newSelection); // 선택된 행 ID들을 상위 컴포넌트에 전달
       }
     };
-
+    useEffect(() => {
+      console.log("내가 받은 row", rows);
+    }, []);
     return (
       <div id={id ? styles[id] : ""}>
         <DataGrid
@@ -51,14 +53,10 @@ const Table = memo(
           onRowSelectionModelChange={handleRowSelection} //여러개 선택전달
           checkboxSelection={!(isRadioButton || isStudentTable || isReadOnly)} // 라디오 버튼 모드에 따라 체크박스 선택 여부 조절
           onRowDoubleClick={onRowDoubleClick}
-          pagination={false} // 페이지네이션 비활성화
-          pageSize={rows.length} // 모든 데이터를 한 페이지에 표시
-          paginationMode="client" // 클라이언트 측 페이지네이션을 기본값으로 설정
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: rows.length },
-            },
-          }}
+          pageSizeOptions={[]}
+          // pagination={false} // 페이지네이션 비활성화
+          // pageSize={rows.length} // 모든 데이터를 한 페이지에 표시
+          // paginationMode="server" // 클라이언트 측 페이지네이션을 기본값으로 설정
         />
       </div>
     );
