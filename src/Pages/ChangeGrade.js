@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import AppBar from "../Components/AppBar";
-import Table from "../Components/Table";
+import Table from "../Components/PaginationTable";
 import CustomButton from "../Components/Button";
 import styles from "../Styles/css/Table.module.css";
 import Modal from "../Components/ChangeGradeModal";
@@ -28,12 +28,16 @@ function ChangeGrade() {
   const [modalOpen, setModalOpen] = useState(false);
   const [warningModalOpen, setWarningModalOpen] = useState(false);
   const [modalRowData, setModalRowData] = useState("default row data");
-  const [alert, setAlert] = useState(false);
+  // const [alert, setAlert] = useState(false);
   const [checkedRowId, setCheckedRowId] = useState(null);
   const [checkedRowData, setCheckedRowData] = useState(null);
   const [rows, setRows] = useState([]);
   const [allStudentData, setAllStudentDatas] = useState([]);
   const { isSmallScreen } = useMediaQueryContext();
+  //pagination for table
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalRowCount, setTotalRowCount] = useState(0); //서버에서 총 학생수 받아와서 설정
 
   const columns = isSmallScreen
     ? [
@@ -66,7 +70,20 @@ function ChangeGrade() {
     setCheckedRowId(_loginId);
     setCheckedRowData(_loginId);
   };
+  // 페이지 변경 시 처리
+  const handlePageChange = (newPage, size) => {
+    console.log("page change", newPage, size);
+    setPage(newPage);
+    fetchStudents(newPage, size);
+  };
 
+  // 페이지 크기 변경 시 처리
+  const handlePageSizeChange = (page, newSize) => {
+    console.log("page change", newSize, page);
+
+    setPageSize(newSize);
+    fetchStudents(page, newSize);
+  };
   const handleModalOpen = () => {
     console.log("OPENING: ", checkedRowId);
     setModalOpen(true);
@@ -91,31 +108,36 @@ function ChangeGrade() {
       flex: 0.05,
       renderCell: (params) => (
         <Radio
-          checked={checkedRowId ? checkedRowId.id === params.row.id : ""}
+          checked={checkedRowId ? checkedRowId.id === params.row.id : null}
           // onChange={() => handleRowSelection(params.row.id)}
         />
       ),
     },
     ...columns,
   ];
-  const fetchStudents = () => {
-    getStudents().then((result) => {
-      const students = result.content || []; // content 배열 가져오기
-      setAllStudentDatas(students);
-      console.log(students);
-      if (students.length > 0) {
-        const tempRow = students.map((item) =>
-          createData(
-            item.serialNumber,
-            item.name,
-            item.sex,
-            item.birth,
-            item.username,
-            item.grade,
-            item.phoneNum
-          )
-        );
-        setRows(tempRow);
+  const fetchStudents = (page, pageSize) => {
+    getStudents(page, pageSize).then((result) => {
+      if (result && result.content) {
+        const students = result.content || []; // content 배열 가져오기
+        setAllStudentDatas(students);
+        console.log(result.totalElements, "??");
+        setTotalRowCount(result.totalElements);
+        if (students.length > 0) {
+          const tempRow = students.map((item) =>
+            createData(
+              item.serialNumber,
+              item.name,
+              item.sex,
+              item.birth,
+              item.username,
+              item.grade,
+              item.phoneNum
+            )
+          );
+          setRows(tempRow);
+        }
+      } else if (result.response.status == 400) {
+        alert("page error");
       }
     });
   };
@@ -172,18 +194,23 @@ function ChangeGrade() {
     return newGrade;
   };
   const handleChangeAllGrade = () => {
-    allStudentData.forEach((student) => {
-      const newGrade = advanceGrade(student.grade);
-      const updatedGradeData = { grade: newGrade };
-      changeGradeApi(updatedGradeData, student.username).then((result) => {
-        console.log(result);
-      });
-      fetchStudents();
-    });
-    handleClose();
+    // allStudentData.forEach((student) => {
+    //   const newGrade = advanceGrade(student.grade);
+    //   const updatedGradeData = { grade: newGrade };
+    //   changeGradeApi(updatedGradeData, student.username).then((result) => {
+    //     if (result && result.grade) {
+    //       console.log("page", page, pageSize);
+    //       fetchStudents(page, pageSize);
+    //       handleClose();
+    //     } else if (result && result.response && result.response.status == 400) {
+    //       alert("Changing grade failed");
+    //     }
+    //   });
+    // });
   };
   useEffect(() => {
-    fetchStudents();
+    console.log("page change", page, pageSize);
+    fetchStudents(page, pageSize);
   }, []);
 
   useEffect(() => {
@@ -201,16 +228,16 @@ function ChangeGrade() {
   return (
     <div id="page_content">
       <AppBar />
-      {alert ? (
+      {/* {alert ? (
         <Stack
           sx={{ width: "100%", position: "fixed", top: "65px" }}
           spacing={2}
         >
-          <Alert severity="success">This is a success Alert.</Alert>
+          <Alert severity="success">Work complete</Alert>
         </Stack>
       ) : (
         <div></div>
-      )}
+      )} */}
 
       <div id={styles.table_container}>
         <Box>
@@ -231,21 +258,25 @@ function ChangeGrade() {
         <Table
           columns={updatedColumns}
           rows={rows}
+          totalRowCount={totalRowCount}
           onRowSelection={handleRowSelection}
           onRowSelectedId={() => {}}
           id={isSmallScreen ? "" : "table_body"}
           // onRowClick={handleRowSelection}
-          onRowDoubleClick={(params) => handleModalOpen(params.row)}
+          onRowDoubleClick={() => {}}
           getRowId={(row) => row.id}
           isRadioButton={true}
+          onPageChange={handlePageChange} // 페이지 변경 핸들러 추가
+          onPageSizeChange={handlePageSizeChange} // 페이지 크기 변경 핸들러 추가
           // checkedRows={(params) => null}
         />
         <Grid container>
-          <Grid xs={6} sx={{ display: "flex", justifyContent: "flex-start" }}>
+          <Grid sx={{ display: "flex", justifyContent: "flex-start" }}>
             {isSmallScreen ? (
               <div></div>
             ) : (
               <CustomButton
+                disabled={true}
                 title={"Change All Grade"}
                 variant="contained"
                 color="primary"
@@ -301,7 +332,9 @@ function ChangeGrade() {
         handleClose={handleModalClose}
         title={"Change Grade"}
         rowData={checkedRowData}
-        onSave={fetchStudents}
+        onSave={() => {
+          fetchStudents(page, pageSize);
+        }}
       />
     </div>
   );

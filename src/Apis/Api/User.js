@@ -30,13 +30,16 @@ export async function postStudent(userData) {
   }
 }
 
-export async function getStudents() {
+export async function getStudents(page, size) {
   try {
-    const response = await axiosInstance.get("/students");
-    //console.log(response);
+    const response = await axiosInstance.get(
+      `/students?page=${page}&size=${size}`
+    );
+
     return response.data;
   } catch (err) {
-    console.log(err);
+    console.error("요청 중 오류 발생:", err); // 오류 메시지 로깅
+    return err;
   }
 }
 
@@ -59,6 +62,7 @@ export async function putStudent(userData) {
     return response;
   } catch (err) {
     console.log(err);
+    return err;
   }
 }
 export async function changeGradeApi(userData, userId) {
@@ -69,7 +73,8 @@ export async function changeGradeApi(userData, userId) {
     );
     return response;
   } catch (err) {
-    console.log(err);
+    console.error("요청 중 오류 발생:", err); // 오류 메시지 로깅
+    return err;
   }
 }
 export async function postProfileImage(userData, userId) {
@@ -202,6 +207,39 @@ export async function checkDuplicatedTeacherIdApi(userId) {
   try {
     const response = await axiosInstance.get(
       `/teachers/checkusername/${userId}`
+    );
+    return response;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export async function IsUserExistsApi(userId) {
+  try {
+    const response = await axiosInstance.get(
+      `/users/${userId}`
+    );
+    return response;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export async function IsPwAnswerRightApi(userId,answer) {
+  try {
+    const response = await axiosInstance.get(
+      `/checkPwAnswer/${userId}/${answer}`
+    );
+    return response;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export async function ResetPwApi(PwData,userID) {
+  try {
+    const response = await axiosInstance.put(
+      `/resetPassword/${userID}`,PwData
     );
     return response;
   } catch (err) {

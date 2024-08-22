@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import AppBar from "../Components/AppBar";
 import {
   Typography,
@@ -16,8 +16,6 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   postStudent,
   postTeacher,
-  getStudents,
-  getTeachers,
   checkDuplicatedStudentIdApi,
   checkDuplicatedTeacherIdApi,
   checkDuplicatedStudentSerialNumberApi,
@@ -71,30 +69,20 @@ function CreateAccount() {
 
   const handleIdDuplicateCheck = async () => {
     try {
-      // studentsResponse에서 content 배열을 가져옴
-      // const students = getStudents.content || [];
-
-      const isDuplicate = checkDuplicatedStudentIdApi(id).then((result) => {
-        console.log("idreu", result);
-        if (result && result.status == 200) {
-          checkDuplicatedTeacherIdApi(id).then((result) => {
-            console.log("teacher id", result);
-            if (result && result.status == 200) {
-              //사용 가능
-              alert("ID is available.");
-              setIsIdChecked(true);
-            } else {
-              //사용 불가
-              alert("⚠️ID is already taken.⚠️");
-              setIsIdChecked(false);
-            }
-          });
+      const result = await checkDuplicatedStudentIdApi(id);
+      if (result && result.status === 200) {
+        const teacherResult = await checkDuplicatedTeacherIdApi(id);
+        if (teacherResult && teacherResult.status === 200) {
+          alert("ID is available.");
+          setIsIdChecked(true);
         } else {
-          //사용 불가
           alert("⚠️ID is already taken.⚠️");
           setIsIdChecked(false);
         }
-      });
+      } else {
+        alert("⚠️ID is already taken.⚠️");
+        setIsIdChecked(false);
+      }
     } catch (error) {
       console.error("Error checking ID duplication:", error);
       setIsIdChecked(false);
@@ -102,124 +90,92 @@ function CreateAccount() {
   };
 
   const handleSnDuplicateCheck = async () => {
-    if (tabValue !== 0) return; // Teacher 등록 시에는 S/N 체크 필요 없음
+    if (tabValue !== 0) return; // Only for students
 
     try {
-      checkDuplicatedStudentSerialNumberApi(sn).then((result) => {
-        //사용 가능
-        if (result && result.status == 200) {
-          alert("Serial Number is available.");
-          setIsSnChecked(true);
-        } else {
-          //사용 불가능
-          alert("Serial Number is already taken.");
-          setIsSnChecked(false);
-        }
-      });
+      const result = await checkDuplicatedStudentSerialNumberApi(sn);
+      if (result && result.status === 200) {
+        alert("Serial Number is available.");
+        setIsSnChecked(true);
+      } else {
+        alert("Serial Number is already taken.");
+        setIsSnChecked(false);
+      }
     } catch (error) {
       console.error("Error checking Serial Number duplication:", error);
       setIsSnChecked(false);
     }
   };
 
-  const grades = [
-    { value: "PLAYGROUP", label: "PlayGroup" },
-    { value: "NURSERY", label: "Nursery" },
-    { value: "LOWERKG", label: "LowerKG" },
-    { value: "UPPERKG", label: "UpperKG" },
-    { value: "CLASS1", label: "Class 1" },
-    { value: "CLASS2", label: "Class 2" },
-    { value: "CLASS3", label: "Class 3" },
-    { value: "CLASS4", label: "Class 4" },
-    { value: "CLASS5", label: "Class 5" },
-    { value: "CLASS6", label: "Class 6" },
-    { value: "CLASS7", label: "Class 7" },
-    { value: "CLASS8", label: "Class 8" },
-    { value: "CLASS9", label: "Class 9" },
-    { value: "CLASS10", label: "Class 10" },
-  ];
-
-  // 정규표현식
-  // id: 4자 이상 20자 이하, 영어와 숫자만 사용 가능, 적어도 하나의 영어가 포함되어야 함
-  const idRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9]{4,20}$/;
-
-  // pw: 4자 이상 20자 이하, 영어와 숫자, 특수문자 [!@#$%^*+=-] 사용 가능, 적어도 하나의 영어가 포함되어야 함
-  const pwRegex = /^(?=.*[a-zA-Z])[a-zA-Z\d!@#$%^*+=-]{4,20}$/;
-
-  // sn: 자연수만 가능
-  const snRegex = /^[1-9]\d*$/;
-
-  // name: 숫자 및 특수문자 입력 불가능
-  const nameRegex = /^[a-zA-Z\s]+$/;
-
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (!isIdChecked) {
       alert("Please Check your ID");
       return;
     }
 
-    if (tabValue === 0 && !snRegex.test(sn) && !isSnChecked) {
-      alert("Please Check your S/N");
-      return;
-    }
-
-    if (!nameRegex.test(name)) {
-      alert("Name must contain only letters");
-      return;
-    }
-
-    if (!pwRegex.test(password)) {
-      alert(
-        "Password must be 4-20 characters long and contain letters, numbers, and special characters, with at least one letter and one number."
-      );
-      return;
-    }
-    if (password !== rePassword) {
-      alert("Re-type Password is different from original password!");
-      return;
-    }
-
     if (tabValue === 0) {
-      alert(
-        `[ID] ${id}\n[Name] ${name}\n[Grade] ${grade}\n\nStudent Register Success!`
-      );
-    } else {
-      alert(`[ID] ${id}\n[Name] ${name}\n\nTeacher Register Success!`);
-    }
+      if (!snRegex.test(sn) || !isSnChecked) {
+        alert("Please Check your S/N");
+        return;
+      }
 
-    const studentBody = {
-      username: id,
-      password: password,
-      name: name,
-      serialNumber: sn,
-      grade: grade,
-    };
+      if (!nameRegex.test(name)) {
+        alert("Name must contain only letters");
+        return;
+      }
 
-    const teacherBody = {
-      username: id,
-      password: password,
-      name: name,
-    };
+      if (!pwRegex.test(password)) {
+        alert(
+          "Password must be 4-20 characters long and contain letters, numbers, and special characters, with at least one letter and one number."
+        );
+        return;
+      }
 
-    if (tabValue === 0) {
-      postStudent(studentBody).then((result) => {
-        console.log(result);
-        if (result && result.status == 201) {
-          alert("Student account created! ");
+      if (password !== rePassword) {
+        alert("Re-type Password is different from original password!");
+        return;
+      }
+
+      const studentBody = {
+        username: id,
+        password: password,
+        name: name,
+        serialNumber: sn,
+        grade: grade,
+      };
+
+      try {
+        const result = await postStudent(studentBody);
+        if (result && result.status === 201) {
+          alert("Student account created!");
         } else {
           alert("Create failed");
         }
-      });
+      } catch (error) {
+        console.error("Error creating student:", error);
+        alert("Create failed");
+      }
     } else {
-      postTeacher(teacherBody).then((result) => {
-        if (result && result.status == 201) {
-          alert("Teacher account created! ");
+      const teacherBody = {
+        username: id,
+        password: password,
+        name: name,
+      };
+
+      try {
+        const result = await postTeacher(teacherBody);
+        if (result && result.status === 201) {
+          alert("Teacher account created!");
         } else {
           alert("Create failed");
         }
-      });
+      } catch (error) {
+        console.error("Error creating teacher:", error);
+        alert("Create failed");
+      }
     }
 
+    // Clear form
     setId("");
     setIsIdChecked(false);
     setSn("");
@@ -228,6 +184,21 @@ function CreateAccount() {
     setPassword("");
     setRePassword("");
   };
+
+  const grades = [
+    { value: "PLAYGROUP", label: "PlayGroup" },
+    { value: "NURSERY", label: "Nursery" },
+    { value: "LOWERKG", label: "LowerKG" },
+    { value: "UPPERKG", label: "UpperKG" },
+    { value: "CLASS1", label: "Class 1" },
+    // Add more grades as needed
+  ];
+
+  // Validation Regex
+  const idRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9]{4,20}$/;
+  const pwRegex = /^(?=.*[a-zA-Z])[a-zA-Z\d!@#$%^*+=-]{4,20}$/;
+  const snRegex = /^[1-9]\d*$/;
+  const nameRegex = /^[a-zA-Z\s]+$/;
 
   return (
     <div>
@@ -254,6 +225,7 @@ function CreateAccount() {
       </Box>
       <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
         <Grid container spacing={2} sx={{ maxWidth: 600 }}>
+          {/* ID Field */}
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -262,7 +234,7 @@ function CreateAccount() {
               value={id}
               onChange={(e) => {
                 setId(e.target.value);
-                setIsIdChecked(false); // ID 입력이 변경될 때 isIdChecked 해제
+                setIsIdChecked(false);
               }}
               InputProps={{
                 endAdornment: (
@@ -280,6 +252,8 @@ function CreateAccount() {
               }}
             />
           </Grid>
+
+          {/* Serial Number for Student Only */}
           {tabValue === 0 && (
             <Grid item xs={12}>
               <TextField
@@ -289,7 +263,7 @@ function CreateAccount() {
                 value={sn}
                 onChange={(e) => {
                   setSn(e.target.value);
-                  setIsSnChecked(false); // Serial Number 입력이 변경될 때 isSnChecked 해제
+                  setIsSnChecked(false);
                 }}
                 InputProps={{
                   endAdornment: (
@@ -309,6 +283,7 @@ function CreateAccount() {
             </Grid>
           )}
 
+          {/* Name Field */}
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -318,6 +293,8 @@ function CreateAccount() {
               onChange={(e) => setName(e.target.value)}
             />
           </Grid>
+
+          {/* Password Fields */}
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -366,6 +343,8 @@ function CreateAccount() {
               }}
             />
           </Grid>
+
+          {/* Grade Selector for Student */}
           {tabValue === 0 && (
             <Grid item xs={12}>
               <TextField
@@ -373,7 +352,7 @@ function CreateAccount() {
                 select
                 label="Grade"
                 value={grade}
-                onChange={(e) => setGrade(e.target.value)} // 사용자가 변경할 때 state를 업데이트
+                onChange={(e) => setGrade(e.target.value)}
               >
                 {grades.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -383,6 +362,8 @@ function CreateAccount() {
               </TextField>
             </Grid>
           )}
+
+          {/* Register Button */}
           <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
             <Button
               variant="contained"
