@@ -72,8 +72,8 @@ function AssignHomeroom() {
     // Fetch classes and teachers data on component mount
     // Fetching class data when the component mounts
     getClasses(page, pageSize, currentYear).then((result) => {
-      console.log(result);
       if (result && result.content) {
+        setTotalRowCount(result.totalElements);
         const tempRow = result.content.map((item, index) => ({
           id: item.classId, // Assuming an index for table rows
           year: item.year,

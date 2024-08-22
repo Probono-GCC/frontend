@@ -54,7 +54,7 @@ export async function getClass(classData) {
 export async function getClasses(page, pageSize, yearData) {
   try {
     const response = await axiosInstance.get(
-      `/classes?page=${page}&pageSize=${pageSize}&year=${yearData}`
+      `/classes?page=${page}&size=${pageSize}&year=${yearData}`
     );
     // console.log(response);
     return response.data;
