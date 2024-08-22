@@ -89,7 +89,7 @@ function AppBar() {
 
   const goClassBoard = (classItem) => {
     console.log("app bar class", classItem);
-    navigate(`/class-board/${classItem.grade}-${classItem.section}/`, {
+    navigate(`/class-board/${classItem.grade}-${classItem.section}`, {
       state: classItem,
     });
   };
