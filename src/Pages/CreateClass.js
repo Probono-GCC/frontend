@@ -61,7 +61,7 @@ function CreateClass() {
   const [totalRowCount, setTotalRowCount] = useState(0); //서버에서 총 학생수 받아와서 설정
 
   const fetchClass = () => {
-    getClasses(currentYear).then((result) => {
+    getClasses(page, pageSize, currentYear).then((result) => {
       if (result && result.content) {
         const tempRow = result.content.map((item, index) => ({
           id: item.classId, // Assuming an index for table rows

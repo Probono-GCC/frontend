@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
+  Alert,
+  Stack,
   Box,
   Typography,
   Paper,
@@ -24,11 +26,18 @@ import SelectButtonContainer from "../Components/SelectButtonContatiner";
 import { getTeacher, getTeachers, putTeacher } from "../Apis/Api/User";
 import {
   postCourse,
+  postCourseUser,
   getCourse,
   getCourses,
   deleteCourse,
 } from "../Apis/Api/Course";
-import { putClass, postClass, getClasses } from "../Apis/Api/Class";
+import {
+  putClass,
+  postClass,
+  getClasses,
+  getClassStudent,
+  getClassTeacher,
+} from "../Apis/Api/Class";
 import {
   postSubject,
   getSubject,
@@ -59,9 +68,12 @@ function createSubjectData(subjectId, name, id) {
 function createClassData(year, grade, section, classId, id) {
   return { year, grade, section, classId, id };
 }
-
+//id: courseId임
+function createCourseData(year, grade, section, subject, id) {
+  return { year, grade, section, subject, id };
+}
 const columns = [
-  { field: "batch", headerName: "Batch", flex: 0.2 },
+  { field: "year", headerName: "Batch", flex: 0.2 },
   { field: "grade", headerName: "Grade", flex: 0.2 },
   { field: "section", headerName: "Section", flex: 0.2 },
   { field: "teacher", headerName: "Teacher", flex: 0.2 },
@@ -79,34 +91,79 @@ const classColumns = [
 function CommonCourseManagement() {
   const [selectedClass, setselectedClass] = useState(null);
   const [selectedCourse, setselectedCourse] = useState(null);
-  const [selectedTeachers, setSelectedTeachers] = useState([]);
+  const [showAlert, setShowAlert] = useState(false);
+
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [selectedTeachers, setSelectedTeachers] = useState("");
   const [selectedSubjects, setSelectedSubjects] = useState([]);
-  const [rows, setRows] = useState([]);
+  const [selectedSubjectId, setSelectedSubjectId] = useState(0);
+  const [initalSelectedTeacher, setInitalSelectedTeacher] = useState([]); //기존 할당되어있던 교사
+  const [initalSelectedSubject, setInitalSelectedSubject] = useState([]); //기존 할당되어있던 교사
+  const [courseRows, setCourseRows] = useState([]);
   const [classRows, setClassRows] = useState([]);
   const [addMode, setAddMode] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [newSubject, setNewSubject] = useState("");
+  const [selectedCourseRowId, setSelectedCourseRowId] = useState(null); //class table에서 선택된 row id
 
+  const [selectedClassRowId, setSelectedClassRowId] = useState(null); //class table에서 선택된 row id
+  const [selectedClassRowData, setSelectedClassRowData] = useState(null); //class table에서 선택된 row data 전체 정보
   const handleOpenModal = () => setModalOpen(true);
   const handleCloseModal = () => setModalOpen(false);
 
   const [teachers, setTeachers] = useState([]);
   const [subjects, setSubjects] = useState([]);
+  //pagination for table
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(100);
+  const [totalRowCount, setTotalRowCount] = useState(0); //서버에서 총 학생수 받아와서 설정
 
   const NepaliDate = require("nepali-date");
   const todayNepaliDate = new NepaliDate();
   const currentYear = todayNepaliDate.getYear();
 
   const handleTeacherClick = (teacher) => {
-    setSelectedTeachers([teacher]);
+    console.log(teacher, "click한 티펴?");
+    setSelectedTeachers(teacher);
   };
 
   const handleSubjectClick = (subject) => {
+    console.log(subject, "선택한 subject");
     setSelectedSubjects([subject]);
   };
-
+  const handleSubjectIdClick = (id) => {
+    setSelectedSubjectId(id);
+  };
   const handleAddCourse = () => {
-    // 코스 추가 로직
+    const courseData = {
+      subjectId: selectedSubjectId,
+      classId: selectedClassRowId,
+    };
+    postCourse(courseData).then((result) => {
+      if (result && result.courseId) {
+        const courseUser = {
+          courseId: result.courseId,
+          username: selectedTeachers,
+        };
+        postCourseUser(courseUser).then((result) => {
+          if (result && result.courseUserId) {
+            alert("Course successfully created!");
+            setselectedClass(null);
+            setselectedCourse(null);
+            setSelectedClassRowData(null);
+            setSelectedClassRowId(null);
+            setSelectedSubjects([]);
+            setSelectedSubjectId(0);
+            setSelectedTeachers([]);
+            fetchCourse();
+          } else {
+            alert("Create course failed");
+          }
+        });
+      } else {
+        alert("Create course failed");
+      }
+    });
   };
 
   const handleRowSelection = (id) => {
@@ -124,8 +181,8 @@ function CommonCourseManagement() {
       flex: 0.1,
       renderCell: (params) => (
         <Radio
-          checked={selectedClass === params.row.id}
-          onChange={() => handleClassRowSelection(params.row.id)}
+          checked={selectedClassRowId === params.row.classId}
+          onChange={() => handleClassRowIdSelection(params.row.classId)}
         />
       ),
     },
@@ -211,9 +268,47 @@ function CommonCourseManagement() {
       }
     });
   };
+  const handleClassRowIdSelection = (id) => {
+    console.log("rowid???", id);
+    setSelectedClassRowId(id);
+  };
+  //선택된 course id 배열 받기
+  const handleCourseRowIdSelection = (id) => {
+    console.log("setid", id);
+    setSelectedCourseRowId(id);
+  };
 
+  const handleSelectedClassRowData = (row) => {
+    console.log("rowid???", row);
+    setSelectedClassRowId(row.classId);
+  };
+  //선택된 course Row
+  const handleSelectedCourseRowData = (row) => {
+    // if (row) {
+    //   setSelectedCourseRowData(row);
+    //   setSelectedCourseRowId(row.courseId);
+    // }
+  };
+  const handleDeleteCourse = () => {
+    console.log("selectdcourse", selectedCourseRowId);
+    if (selectedCourseRowId) {
+      selectedCourseRowId.map((item) => {
+        deleteCourse(item).then((result) => {
+          console.log(result);
+          if (result.status == 204) {
+            fetchCourse();
+            setShowAlert(true);
+            setTimeout(() => setShowAlert(false), 2000); // 2초 후 알림 숨김
+          } else {
+            setShowErrorAlert(true);
+            setTimeout(() => setShowErrorAlert(false), 2000); // 2초 후 알림 숨김
+          } //timeout 처리
+        });
+      });
+    }
+  };
   const fetchClass = () => {
-    getClasses(currentYear).then((result) => {
+    getClasses(page, pageSize, currentYear).then((result) => {
       const classMap = result.content || [];
       if (classMap.length > 0) {
         const tempRow = classMap.map((item, index) =>
@@ -222,7 +317,7 @@ function CommonCourseManagement() {
             item.grade,
             item.section,
             item.classId,
-            index + 1
+            item.classId
           )
         );
         setClassRows(tempRow);
@@ -231,16 +326,51 @@ function CommonCourseManagement() {
       }
     });
   };
-
+  const fetchCourse = () => {
+    getCourses(page, pageSize).then((result) => {
+      if (result && result.content) {
+        const NewCourses = result.content.map((courseItem) =>
+          createCourseData(
+            courseItem.classResponse.year,
+            courseItem.classResponse.grade,
+            courseItem.classResponse.section,
+            courseItem.subjectResponseDTO.name,
+            courseItem.courseId
+          )
+        );
+        //Todo선생님 연결필요
+        setCourseRows(NewCourses);
+      } else {
+        console.log("course fetch failed");
+      }
+    });
+  };
   useEffect(() => {
     fetchClass();
     fetchTeacher();
     fetchSubject();
+    fetchCourse();
   }, []);
 
   return (
     <div id="page_content">
       <AppBar />
+      {showAlert && (
+        <Stack
+          sx={{ width: "100%", position: "fixed", top: "65px", zIndex: 10 }}
+          spacing={2}
+        >
+          <Alert severity="success">Delete successful!</Alert>
+        </Stack>
+      )}
+      {showErrorAlert && (
+        <Stack
+          sx={{ width: "100%", position: "fixed", top: "65px", zIndex: 10 }}
+          spacing={2}
+        >
+          <Alert severity="error">Delete failed!</Alert>
+        </Stack>
+      )}
       <Box sx={{ maxWidth: "90%", margin: "0 auto" }}>
         <Typography
           variant="h3"
@@ -267,10 +397,13 @@ function CommonCourseManagement() {
             </Box>
             <Table
               columns={columns}
-              rows={rows}
+              rows={courseRows}
+              totalRowCount={totalRowCount}
+              onRowSelection={() => {}}
+              onRowSelectedId={handleCourseRowIdSelection}
+              isRadioButton={false}
+              id={"student_select_body"}
               getRowId={(row) => row.id}
-              onRowSelection={handleRowSelection}
-              id={"table_body"}
             />
             <Box
               sx={{
@@ -286,7 +419,11 @@ function CommonCourseManagement() {
                 onClick={() => setAddMode(true)}
                 size={"bg"}
               />
-              <CustomButton title={"Delete"} variant="contained" />
+              <CustomButton
+                title={"Delete"}
+                variant="contained"
+                onClick={handleDeleteCourse}
+              />
             </Box>
           </>
         )}
@@ -302,7 +439,8 @@ function CommonCourseManagement() {
               columns={updatedClassColumns}
               rows={classRows}
               getRowId={(row) => row.id}
-              onRowSelection={handleClassRowSelection}
+              onRowSelection={handleSelectedClassRowData}
+              onRowSelectedId={() => {}}
               isRadioButton={true}
               id={"table_body"}
             />
@@ -317,8 +455,8 @@ function CommonCourseManagement() {
               {teachers.map((teacher) => (
                 <Grid item xs={2} key={teacher.id}>
                   <SelectButton
-                    selected={selectedTeachers.includes(teacher.id)}
-                    onClick={() => handleTeacherClick(teacher.id)}
+                    selected={selectedTeachers.includes(teacher.username)}
+                    onClick={() => handleTeacherClick(teacher.username)}
                   >
                     {teacher.name} <br /> ({teacher.username})
                   </SelectButton>
@@ -336,8 +474,8 @@ function CommonCourseManagement() {
               {subjects.map((subject) => (
                 <Grid item xs={2} key={subject.subjectId}>
                   <SelectButton
-                    selected={selectedSubjects.includes(subject.name)}
-                    onClick={() => handleSubjectClick(subject.name)}
+                    selected={selectedSubjectId == subject.subjectId}
+                    onClick={() => handleSubjectIdClick(subject.subjectId)}
                   >
                     {subject.name} {/* subject.name을 직접 렌더링 */}
                   </SelectButton>
