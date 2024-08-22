@@ -14,6 +14,8 @@ import AppBar from "../Components/AppBar";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
+import { IconButton } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 //API
 import { postNewNotice, putNoticePost } from "../Apis/Api/ClassNotice";
@@ -98,7 +100,7 @@ function ClassNewPostForm() {
         if (result && imgURL) {
           console.log("result", result);
           alert("Post complete");
-          navigate("/notice-board");
+          navigate(-1);
         } else {
           alert("Post failed");
         }
@@ -107,7 +109,7 @@ function ClassNewPostForm() {
   };
 
   const handleCancel = () => {
-    navigate("/notice-board");
+    navigate(-1);
   };
   const imageHandler = async (e) => {
     const input = document.createElement("input");
@@ -192,10 +194,18 @@ function ClassNewPostForm() {
     "blockquote",
     "image",
   ];
-
+  const handleBack = () => {
+    navigate(-1); // Go back to the previous page
+  };
   return (
     <div>
       <AppBar />
+      <Box sx={{ width: "80%", margin: "0 auto" }}>
+        <IconButton onClick={handleBack} color="primary" aria-label="go back">
+          <ArrowBackIcon />
+        </IconButton>
+      </Box>
+
       <Box
         sx={{
           display: "flex",
@@ -205,11 +215,11 @@ function ClassNewPostForm() {
         }}
       >
         <Typography
-          variant="h4"
+          variant={isSmallScreen ? "h5" : "h4"}
           component="div"
           sx={{ fontFamily: "Copperplate" }}
         >
-          Notice Board
+          Class Notice Board
         </Typography>
       </Box>
       <Box

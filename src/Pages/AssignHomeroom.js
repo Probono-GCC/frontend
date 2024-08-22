@@ -37,7 +37,7 @@ const studentColumns = [
   { field: "serialNumber", headerName: "SN", flex: 0.1 },
   { field: "name", headerName: "Name", flex: 0.2 },
   { field: "sex", headerName: "Gender", flex: 0.1 },
-  { field: "birth", headerName: "Birth", flex: 0.2 },
+
   { field: "username", headerName: "ID", flex: 0.2 },
   { field: "grade", headerName: "Grade", flex: 0.2 },
 ];
@@ -71,7 +71,7 @@ function AssignHomeroom() {
     console.log("selecte left sutdnet 1", selectedLeftStudents);
     // Fetch classes and teachers data on component mount
     // Fetching class data when the component mounts
-    getClasses(currentYear).then((result) => {
+    getClasses(page, pageSize, currentYear).then((result) => {
       console.log(result);
       if (result && result.content) {
         const tempRow = result.content.map((item, index) => ({
@@ -177,7 +177,7 @@ function AssignHomeroom() {
           // 각 객체에 id 키를 인덱스로 추가한 새로운 배열 생성
           const updatedStudents = result.content.map((student, index) => ({
             ...student,
-            id: index, // id 키에 인덱스 값 할당
+            id: student.serialNumber, // id 키에 인덱스 값 할당
           }));
 
           //right table에 업데이트된 배열 저장
@@ -519,12 +519,6 @@ function AssignHomeroom() {
             <Box
               sx={{ display: "flex", justifyContent: "flex-end", marginTop: 3 }}
             >
-              <Box sx={{ marginRight: 2 }}>
-                <CustomButton
-                  title="Cancel"
-                  onClick={() => console.log("Cancelled")}
-                />
-              </Box>
               <CustomButton title="Save" onClick={handleSave} />
             </Box>
           </Box>
