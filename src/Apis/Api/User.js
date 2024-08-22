@@ -35,10 +35,11 @@ export async function getStudents(page, size) {
     const response = await axiosInstance.get(
       `/students?page=${page}&size=${size}`
     );
-    //console.log(response);
+
     return response.data;
   } catch (err) {
-    console.log(err);
+    console.error("요청 중 오류 발생:", err); // 오류 메시지 로깅
+    return err;
   }
 }
 
@@ -61,6 +62,7 @@ export async function putStudent(userData) {
     return response;
   } catch (err) {
     console.log(err);
+    return err;
   }
 }
 export async function changeGradeApi(userData, userId) {
@@ -71,7 +73,8 @@ export async function changeGradeApi(userData, userId) {
     );
     return response;
   } catch (err) {
-    console.log(err);
+    console.error("요청 중 오류 발생:", err); // 오류 메시지 로깅
+    return err;
   }
 }
 export async function postProfileImage(userData, userId) {
