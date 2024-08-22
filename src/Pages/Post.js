@@ -4,8 +4,10 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import AppBar from "../Components/AppBar";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import PersonIcon from "@mui/icons-material/Person";
-import { useMediaQueryContext } from "../store/MediaQueryContext";
+import { IconButton } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
+import { useMediaQueryContext } from "../store/MediaQueryContext";
 //api
 import { deleteNoticePost, getNoticePost } from "../Apis/Api/Notice";
 
@@ -41,7 +43,7 @@ function Post() {
     if (window.confirm("Do you want to delete the post?")) {
       deleteNoticePost(postData.noticeId).then(() => {
         window.alert("Deleted");
-        navigate("/notice-board");
+        navigate(-1);
       });
     }
   };
@@ -57,7 +59,9 @@ function Post() {
       }
     });
   }, []);
-
+  const handleBack = () => {
+    navigate(-1); // Go back to the previous page
+  };
   if (!postData) {
     return <div>Loading...</div>; // 데이터를 로딩 중일 때 보여줄 내용
   }
@@ -67,7 +71,18 @@ function Post() {
   return (
     <div>
       <AppBar />
+
       <Box>
+        <IconButton
+          sx={{
+            marginLeft: 2,
+          }}
+          onClick={handleBack}
+          color="primary"
+          aria-label="go back"
+        >
+          <ArrowBackIcon />
+        </IconButton>
         <Paper
           sx={{
             paddingTop: 1,
@@ -170,7 +185,7 @@ function Post() {
               marginBottom: 3,
               marginLeft: 3,
               marginRight: 3,
-              minHeight: "10vh",
+              minHeight: "60vh",
               overflowY: "scroll",
             }}
           >
@@ -199,12 +214,26 @@ function Post() {
             <Button
               variant="outlined"
               color="error"
-              sx={{ marginRight: 2 }}
+              sx={{
+                marginRight: 2,
+                minHeight: isSmallScreen ? "40px" : "50px",
+                minWidth: isSmallScreen ? "80px" : "120px",
+              }}
               onClick={handleDelete}
             >
               Delete
             </Button>
-            <Button variant="contained" color="primary" onClick={handleEdit}>
+
+            <Button
+              variant="contained"
+              sx={{
+                marginRight: isSmallScreen ? 0 : 2,
+                minHeight: isSmallScreen ? "40px" : "50px",
+                minWidth: isSmallScreen ? "80px" : "120px",
+              }}
+              color="primary"
+              onClick={handleEdit}
+            >
               Edit
             </Button>
           </Box>

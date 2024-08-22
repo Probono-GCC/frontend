@@ -18,6 +18,7 @@ import InfoBox from "../Components/InfoBox";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { getClassStudent, getClassTeacher } from "../Apis/Api/Class";
+import { getCourses } from "../Apis/Api/Course";
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 const courseRows = [
@@ -113,13 +114,17 @@ const rows = [
     grade: "UnderKG",
   },
 ];
-
+//id: courseId임
+function createCourseData(year, grade, section, subject, id) {
+  return { year, grade, section, subject, id };
+}
 function ClassInfo() {
   // const [selectedRows, setSelectedRows] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalRowData, setModalRowData] = useState("default row data");
   const [alert, setAlert] = useState(false);
   const [checkedRows, setCheckedRows] = useState([]);
+  const [courseRows, setCourseRows] = useState([]);
   const { isSmallScreen } = useMediaQueryContext();
   const [classTeacher, setClassTeachers] = useState([]);
   const [classStudents, setClassStudents] = useState([]);
@@ -235,12 +240,31 @@ function ClassInfo() {
           ...item,
           id: item.username,
         }));
+
         // console.log(resultStudents);
         setClassStudents(resultStudents);
       }
     });
   };
-
+  const fetchCourse = () => {
+    getCourses(page, pageSize).then((result) => {
+      if (result && result.content) {
+        const NewCourses = result.content.map((courseItem) =>
+          createCourseData(
+            courseItem.classResponse.year,
+            courseItem.classResponse.grade,
+            courseItem.classResponse.section,
+            courseItem.subjectResponseDTO.name,
+            courseItem.courseId
+          )
+        );
+        //Todo선생님 연결필요
+        setCourseRows(NewCourses);
+      } else {
+        console.log("course fetch failed");
+      }
+    });
+  };
   useEffect(() => {
     console.log("currentclss", classData, "currentclss");
     getClassTeacher(classData.classId).then((result) => {
@@ -275,8 +299,8 @@ function ClassInfo() {
           batch={classData.year}
           grade={classData.grade}
           section={classData.section}
-          teacher={classTeacher}
-          studentCount={9}
+          teacher={classTeacher.length != 0 ? classTeacher : "Not assigned yet"}
+          studentCount={totalRowCount ? totalRowCount : "Not assigned yet"}
         />
         <Box
           sx={{
