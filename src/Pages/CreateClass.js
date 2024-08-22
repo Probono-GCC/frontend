@@ -53,8 +53,13 @@ function CreateClass() {
   const [showAlert, setShowAlert] = useState(false);
   const [checkedRows, setCheckedRows] = useState([]);
   const [allCheckedRows, setAllCheckedRows] = useState([]);
-  const [totalRowCount, setTotalRowCount] = useState(0);
+
   const [rows, setRows] = useState([]);
+  //pagination for table
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(100);
+  const [totalRowCount, setTotalRowCount] = useState(0); //서버에서 총 학생수 받아와서 설정
+
   const fetchClass = () => {
     getClasses(currentYear).then((result) => {
       if (result && result.content) {
@@ -239,6 +244,7 @@ function CreateClass() {
           <Table
             columns={columns}
             rows={rows}
+            totalRowCount={totalRowCount}
             onRowSelectedId={handleClassRowIdSelection}
             onRowSelection={handleClassRowSelection}
             getRowId={(row) => row.id}

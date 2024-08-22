@@ -47,9 +47,8 @@ function AssignHomeroom() {
   const [teachers, setTeachers] = useState([]);
   const [selectedClassRowId, setSelectedClassRowId] = useState(null); //class table에서 선택된 row id
   const [selectedClassRowData, setSelectedClassRowData] = useState(null); //class table에서 선택된 row data 전체 정보
-  const [selectedClass, setSelectedClass] = useState(null);
-  const [selectedTeachers, setSelectedTeachers] = useState([]);
-  const [initalSelectedTeacher, setInitalSelectedTeacher] = useState([]);
+  const [selectedTeachers, setSelectedTeachers] = useState([]); //새롭게 선택된 교사
+  const [initalSelectedTeacher, setInitalSelectedTeacher] = useState([]); //기존 할당되어있던 교사
   const [leftStudents, setLeftStudents] = useState([]);
   const [rightStudents, setRightStudents] = useState([]);
   const [selectedLeftStudents, setSelectedLeftStudents] = useState([]);
@@ -59,6 +58,10 @@ function AssignHomeroom() {
   const [showAlert, setShowAlert] = useState(false);
   const [checkedRows, setCheckedRows] = useState([]);
   const [newSelctedLeftStudent, setNewSelectedLeftStudent] = useState([]);
+  //pagination for table
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(100);
+  const [totalRowCount, setTotalRowCount] = useState(0); //서버에서 총 학생수 받아와서 설정
 
   const [newSelctedRightStudent, setNewSelectedRightStudent] = useState([]);
   const NepaliDate = require("nepali-date");
@@ -72,7 +75,7 @@ function AssignHomeroom() {
       console.log(result);
       if (result && result.content) {
         const tempRow = result.content.map((item, index) => ({
-          id: index + 1, // Assuming an index for table rows
+          id: item.classId, // Assuming an index for table rows
           year: item.year,
           grade: item.grade,
           section: item.section,
@@ -150,6 +153,8 @@ function AssignHomeroom() {
     setSelectedRightStudents(selectedStudents);
   };
   const handleSelectedClassRowData = (row) => {
+    // console.log(row, "selected row");
+    setSelectedClassRowId(row.classId);
     setSelectedClassRowData(row);
     // 할당되지 않은 학생 LEFT 테이블에
     getNotAssignedStudent(row.grade, 0, 50).then((result) => {
@@ -190,7 +195,7 @@ function AssignHomeroom() {
   };
   const handleClassRowIdSelection = (id) => {
     console.log(selectedClassRowData, "rowid???", id[0]);
-    setSelectedClassRowId(id[0]);
+    // setSelectedClassRowId(id[0]);
   };
 
   const handleLeftStudentRowSelection = (_id) => {
@@ -213,7 +218,7 @@ function AssignHomeroom() {
         <Radio
           {...label}
           checked={selectedClassRowId === params.row.id}
-          // onChange={() => handleClassRowIdSelection(params)}
+          onChange={() => handleClassRowIdSelection(params.row.id)}
         />
       ),
     },
@@ -411,6 +416,7 @@ function AssignHomeroom() {
         <Table
           columns={updatedClassColumns}
           rows={classes}
+          totalRowCount={totalRowCount}
           onRowSelection={(row) => handleSelectedClassRowData(row)}
           onRowSelectedId={(rowId) => handleClassRowIdSelection(rowId)}
           isRadioButton={true}

@@ -9,7 +9,14 @@ export async function postCourse(courseData) {
     console.log(err);
   }
 }
-
+export async function postCourseUser(courseData) {
+  try {
+    const response = await axiosInstance.post("/courseUser", courseData);
+    return response.data;
+  } catch (err) {
+    return err;
+  }
+}
 export async function getCourse(courseData) {
   try {
     const response = await axiosInstance.get(`/course/${courseData.courseId}`);

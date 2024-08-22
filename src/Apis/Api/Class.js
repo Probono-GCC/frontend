@@ -94,6 +94,7 @@ export async function getClassStudent(classId, page, size) {
     return response.data;
   } catch (err) {
     console.log(err);
+    return err;
   }
 }
 export async function getClassTeacher(classId) {
