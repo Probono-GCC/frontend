@@ -7,21 +7,37 @@ export async function putClass(classData) {
       `/class?id=${classData.classId}`,
       classData
     );
-    return response.data;
+    if (response.status == 200) {
+      return response.data;
+    } else if (response.status == 409) {
+      //클래스 중복
+      console.log(response);
+      return response;
+    }
   } catch (err) {
     console.log(err);
   }
 }
-
 export async function postClass(classData) {
   try {
     const response = await axiosInstance.post("/class", classData);
+    console.log("Response:", response); // 응답 정보 로깅
     return response.data;
   } catch (err) {
-    console.log(err);
+    console.error("요청 중 오류 발생:", err); // 오류 메시지 로깅
+    return err;
+    // if (err.response) {
+    //   // 서버가 응답을 보냈으나 상태 코드가 오류를 나타냄
+    //   return { error: "서버 오류", details: err.response.data };
+    // } else if (err.request) {
+    //   // 요청이 서버에 도달했으나 응답이 없음
+    //   return { error: "네트워크 오류", details: err.request };
+    // } else {
+    //   // 오류 발생 원인 불명
+    //   return { error: "알 수 없는 오류", details: err.message };
+    // }
   }
 }
-
 export async function getClass(classData) {
   try {
     const response = await axiosInstance.get(
@@ -38,7 +54,7 @@ export async function getClass(classData) {
 export async function getClasses(yearData) {
   try {
     const response = await axiosInstance.get(`/classes?year=${yearData}`);
-    console.log(response);
+    // console.log(response);
     return response.data;
   } catch (err) {
     console.log(err);
