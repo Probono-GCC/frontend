@@ -135,7 +135,7 @@ function NoticeBoard() {
                 sx={{
                   textAlign: "left",
                   fontWeight: "bold",
-                  width: isSmallScreen ? "15%" : "6%",
+                  width: isSmallScreen ? "14%" : "6%",
                   padding: isSmallScreen ? "16px" : "16px 16px 16px 30px",
                 }}
               >
@@ -145,7 +145,7 @@ function NoticeBoard() {
                 sx={{
                   textAlign: "left",
                   fontWeight: "bold",
-                  width: isSmallScreen ? "65%" : "40%",
+                  width: isSmallScreen ? "63%" : "40%",
                 }}
               >
                 Title
@@ -154,8 +154,8 @@ function NoticeBoard() {
                 sx={{
                   textAlign: "right",
                   fontWeight: "bold",
-                  width: "12%",
-                  padding: "16px 30px 16px 16px",
+                  width: isSmallScreen ? "14%" : "12%",
+                  padding: "16px",
                 }}
               >
                 View
@@ -257,9 +257,8 @@ function NoticeBoard() {
         sx={{
           display: "flex",
           margin: "20px 0",
-          position: "fixed",
-          bottom: 20,
-          right: 20,
+          position: "relative",
+
           width: "100%",
           zIndex: 1000, // 다른 콘텐츠 위에 표시되도록 z-index를 조정
           justifyContent: "center",
