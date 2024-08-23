@@ -213,7 +213,7 @@ function AssignHomeroom() {
     {
       field: "radio",
       headerName: "",
-      flex: 0.05,
+      flex: 0.1,
       renderCell: (params) => (
         <Radio
           {...label}
@@ -224,7 +224,7 @@ function AssignHomeroom() {
     },
     { field: "year", headerName: "Batch", flex: 0.2 },
     { field: "grade", headerName: "Grade", flex: 0.2 },
-    { field: "section", headerName: "Section", flex: 0.2 },
+    { field: "section", headerName: "Section", flex: 0.1 },
     { field: "teacher1", headerName: "Teacher1", flex: 0.2 },
     { field: "teacher2", headerName: "Teacher2", flex: 0.2 },
   ];

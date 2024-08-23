@@ -14,7 +14,7 @@ import {
   IconButton,
   CircularProgress,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
@@ -22,10 +22,11 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import { useMediaQueryContext } from "../store/MediaQueryContext";
 import { getNoticePostList } from "../Apis/Api/Notice";
 import { useAuth } from "../store/AuthContext";
-
+import { convertDateFormat } from "../Util/DateUtils";
 function NoticeBoard() {
   const navigate = useNavigate();
-  const [page, setPage] = useState(1);
+  const { page: pageParam } = useParams(); // URL에서 페이지 번호 추출 path="/notice-board/:page?"
+  const [page, setPage] = useState(parseInt(pageParam) || 1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalPosting, setTotalPosting] = useState(0);
   const itemsPerPage = 10;
@@ -37,6 +38,7 @@ function NoticeBoard() {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
+
       try {
         const result = await getNoticePostList(page - 1, itemsPerPage);
         if (result && Array.isArray(result.content)) {
@@ -61,6 +63,7 @@ function NoticeBoard() {
 
   const handleChangePage = (event, newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
+      navigate(`/notice-board/${newPage}`);
       setPage(newPage);
     }
   };
@@ -100,7 +103,7 @@ function NoticeBoard() {
   }
 
   const getItemNumber = (index) => {
-    return (page - 1) * itemsPerPage + totalPosting - index;
+    return totalPosting - index - (page - 1) * 10;
   };
 
   return (
@@ -203,7 +206,15 @@ function NoticeBoard() {
                         whiteSpace: "nowrap",
                       }}
                     >
-                      {row.title}
+                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                        {row.title}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{ color: "gray", marginTop: "4px" }}
+                      >
+                        {convertDateFormat(row.createdAt)}
+                      </Typography>
                     </TableCell>
                     <TableCell
                       sx={{
@@ -219,7 +230,7 @@ function NoticeBoard() {
                 {Array.from({
                   length: itemsPerPage - rows.length,
                 }).map((_, index) => (
-                  <TableRow key={`empty-${index}`} sx={{ height: "50px" }}>
+                  <TableRow key={`empty-${index}`} sx={{ height: "81px" }}>
                     <TableCell colSpan={3}></TableCell>
                   </TableRow>
                 ))}

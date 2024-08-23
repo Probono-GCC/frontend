@@ -7,6 +7,8 @@ import PersonIcon from "@mui/icons-material/Person";
 import { IconButton } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
+import { convertDateFormat } from "../Util/DateUtils";
+
 import { useMediaQueryContext } from "../store/MediaQueryContext";
 //api
 import { deleteNoticePost, getNoticePost } from "../Apis/Api/Notice";
@@ -14,6 +16,7 @@ import { deleteNoticePost, getNoticePost } from "../Apis/Api/Notice";
 function Post() {
   const navigate = useNavigate();
   const [tempImageList, setTempImageList] = useState([]);
+  const [postedData, setPostedData] = useState([]); //서버에서 받아온 포스팅 데이터
   const { isSmallScreen } = useMediaQueryContext();
   // const [postData, setPostData] = useState(null);
   const location = useLocation();
@@ -57,6 +60,14 @@ function Post() {
         setTempImageList([]);
         postData.imageList = null;
       }
+      if (result) {
+        setPostedData({
+          title: result.title,
+          content: result.content,
+          updatedAt: result.updatedAt,
+          views: result.views,
+        });
+      }
     });
   }, []);
   const handleBack = () => {
@@ -72,7 +83,7 @@ function Post() {
     <div>
       <AppBar />
 
-      <Box>
+      <Box sx={{ width: "90vw", margin: "0 auto" }}>
         <IconButton
           sx={{
             marginLeft: 2,
@@ -112,7 +123,7 @@ function Post() {
           >
             <Grid item xs={12} sm={12} md={6} lg={8}>
               <Typography variant={isSmallScreen ? "h5" : "h4"}>
-                {postData.title}
+                {postedData.title}
               </Typography>
             </Grid>
             <Grid
@@ -147,7 +158,7 @@ function Post() {
           <Grid container>
             <Grid item xs={8} lg={8}>
               <Typography variant="subtitle2" sx={{ color: "#999" }}>
-                {postData.createdAt}
+                {convertDateFormat(postedData.updatedAt)}
               </Typography>
             </Grid>
             <Grid
@@ -169,7 +180,7 @@ function Post() {
                 <Typography
                   sx={{ marginRight: 0.5, color: isSmallScreen ? "grey" : "" }}
                 >
-                  {postData.views}
+                  {postedData.views}
                 </Typography>
                 <VisibilityIcon
                   sx={{ color: isSmallScreen ? "grey" : "" }}
@@ -183,14 +194,20 @@ function Post() {
             variant="body1"
             sx={{
               marginBottom: 3,
-              marginLeft: 3,
-              marginRight: 3,
+              marginTop: 2,
               minHeight: "60vh",
-              overflowY: "scroll",
+              maxWidth: "100vw", // 컨텐츠가 부모 요소를 넘지 않도록 함
+              // overflowY: "scroll",
+              border: "1px solid #e0e0e0",
+              // borderTop: "1px solid #e0e0e0",
+              // borderBottom: "1px solid #e0e0e0",
+              borderRadius: "8px",
+              padding: 2,
+              wordBreak: "break-word", // 긴 단어를 줄 바꿈하여 보더 밖으로 넘치지 않도록 함
+              boxSizing: "border-box", // 보더와 패딩을 포함하여 요소의 전체 크기를 계산
             }}
-          >
-            {postData.content}
-          </Typography>
+            dangerouslySetInnerHTML={{ __html: postedData.content }}
+          ></Typography>
 
           {tempImageList && tempImageList.length !== 0 ? (
             <Box sx={{ textAlign: "center", marginBottom: 3, width: "90vw" }}>
