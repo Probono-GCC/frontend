@@ -22,7 +22,7 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import { useMediaQueryContext } from "../store/MediaQueryContext";
 import { getNoticePostList } from "../Apis/Api/Notice";
 import { useAuth } from "../store/AuthContext";
-
+import { convertDateFormat } from "../Util/DateUtils";
 function NoticeBoard() {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
@@ -100,7 +100,7 @@ function NoticeBoard() {
   }
 
   const getItemNumber = (index) => {
-    return (page - 1) * itemsPerPage + totalPosting - index;
+    return totalPosting - index - (page - 1) * 10;
   };
 
   return (
@@ -203,7 +203,15 @@ function NoticeBoard() {
                         whiteSpace: "nowrap",
                       }}
                     >
-                      {row.title}
+                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                        {row.title}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{ color: "gray", marginTop: "4px" }}
+                      >
+                        {convertDateFormat(row.createdAt)}
+                      </Typography>
                     </TableCell>
                     <TableCell
                       sx={{
@@ -219,7 +227,7 @@ function NoticeBoard() {
                 {Array.from({
                   length: itemsPerPage - rows.length,
                 }).map((_, index) => (
-                  <TableRow key={`empty-${index}`} sx={{ height: "50px" }}>
+                  <TableRow key={`empty-${index}`} sx={{ height: "81px" }}>
                     <TableCell colSpan={3}></TableCell>
                   </TableRow>
                 ))}

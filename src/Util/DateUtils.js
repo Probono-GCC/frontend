@@ -16,7 +16,7 @@ export const convertDateFormat = (originalDateString) => {
   const minutes = originalDate.getMinutes().toString().padStart(2, "0");
   const seconds = originalDate.getSeconds().toString().padStart(2, "0");
 
-  const convertedDateString = `${year}-${month}-${day}`;
+  const convertedDateString = `${year}.${month}.${day}`;
   return convertedDateString;
 };
 export const convertTimeFormat = (originalDateString) => {
