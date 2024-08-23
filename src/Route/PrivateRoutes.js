@@ -2,6 +2,7 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import PrivateRoute from "../Pages/PrivateRoute";
+import Home from "../Pages/Home";
 import ChangePassword from "../Pages/ChangePassword";
 import ChangeGrade from "../Pages/ChangeGrade";
 
@@ -24,6 +25,14 @@ const role = ["ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"];
 
 const PrivateRoutes = () => (
   <Routes>
+    <Route
+      path="/home"
+      element={
+        <PrivateRoute requiredRole={[role[0], role[1], role[2]]}>
+          <Home />
+        </PrivateRoute>
+      }
+    />
     <Route
       path="/change-password"
       element={

@@ -54,7 +54,7 @@ function LoginContainer() {
                 alert("Fill in the essential information on your profile");
                 navigate("/my-profile");
               } else {
-                navigate("/home"); // 로그인 후 이동할 경로
+                navigate("/private/home"); // 로그인 후 이동할 경로
               }
             });
           } else if (userData.role == "ROLE_TEACHER") {
@@ -64,11 +64,11 @@ function LoginContainer() {
                 alert("Fill in the essential information on your profile");
                 navigate("/my-profile");
               } else {
-                navigate("/home"); // 로그인 후 이동할 경로
+                navigate("/private/home"); // 로그인 후 이동할 경로
               }
             });
           } else {
-            navigate("/home");
+            navigate("/private/home"); // 로그인 후 이동할 경로
           }
         }
         // 로그인 성공 시 입력 창 초기화
