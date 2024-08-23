@@ -60,7 +60,7 @@ function AppBar() {
 
   const location = useLocation();
   const goHome = () => {
-    navigate("/home");
+    navigate("/private/home");
   };
 
   const goNoticeBoard = () => {
