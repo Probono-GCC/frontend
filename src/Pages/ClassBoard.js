@@ -13,26 +13,18 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
-import { getNoticePostList } from "../Apis/Api/Notice";
+import { getNoticePostList } from "../Apis/Api/ClassNotice";
 import { useAuth } from "../store/AuthContext";
 
-function createData(title, date, type, author, viewCount) {
-  return { title, date, type, author, viewCount };
+function createData(title, date, author, viewCount) {
+  return { title, date, author, viewCount };
 }
-
-const rows = [
-  createData("Midterm Notice", "2024. 04. 24.", "Homeroom", "Mozart", 123),
-  createData("School Aniversary", "2024. 04. 21.", "Homeroom", "AMozart", 256),
-  createData("Library Open", "2023. 04. 04.", "English", "Euler", 7890),
-  createData("Summer Camp", "2023. 03. 03.", "Homeroom", "Mozart", 456),
-  createData("Parent Meeting", "2023. 02. 02.", "Nepali", "Fermat", 6781),
-];
 
 function ClassBoard() {
   const navigate = useNavigate();
@@ -44,14 +36,20 @@ function ClassBoard() {
   const [rows, setRows] = useState([]);
   const { userRole } = useAuth();
   const [loading, setLoading] = useState(false);
+  const location = useLocation();
+  const currentClassItem = location.state;
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const result = await getNoticePostList(page - 1, itemsPerPage);
+        const result = await getNoticePostList(
+          currentClassItem.classId,
+          page - 1,
+          itemsPerPage
+        );
         if (result && Array.isArray(result.content)) {
-          console.log("새로운 페이지 컨텐츠 받아왔나?", result.content);
+          console.log("view있는지 확인", result.content);
           setRows(result.content);
           setTotalPages(result.totalPages);
           setTotalPosting(result.totalElements);
@@ -77,7 +75,7 @@ function ClassBoard() {
   };
 
   const handleNewPost = () => {
-    navigate("/private/class-new-post-form");
+    navigate(`/private/class-new-post-form/${currentClassItem.classId}`);
   };
 
   const handlePreviousGroup = () => {
@@ -89,10 +87,11 @@ function ClassBoard() {
   };
 
   const handleRowClick = (rowData) => {
-    if (rowData.noticeId) {
+    console.log("rowData", rowData);
+    if (rowData && rowData.noticeId) {
       navigate(`/class-notice/${rowData.noticeId}`, { state: rowData });
     } else {
-      console.error("Row data does not contain an 'id' field:", rowData);
+      console.error("Row data does not contain an 'noticeId' field:", rowData);
     }
   };
 
@@ -131,19 +130,19 @@ function ClassBoard() {
       <TableContainer
         component={Paper}
         sx={{
-          width: isSmallScreen ? "100%" : "80%", // 반응형 설정
+          width: isSmallScreen ? "100%" : "80%",
           margin: "0 auto",
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <Table sx={{ tableLayout: "fixed", width: "100%" }}>
+        <Table sx={{ tableLayout: "auto", width: "100%" }}>
           <TableHead sx={{ backgroundColor: "#d8edff" }}>
             <TableRow>
               <TableCell
                 sx={{
                   textAlign: "left",
                   fontWeight: "bold",
-                  width: "15%",
+                  width: isSmallScreen ? "15%" : "6%",
                   padding: isSmallScreen ? "16px" : "16px 16px 16px 30px",
                 }}
               >
@@ -151,38 +150,17 @@ function ClassBoard() {
               </TableCell>
               <TableCell
                 sx={{
+                  width: isSmallScreen ? "75%" : "65%",
                   textAlign: "left",
                   fontWeight: "bold",
-                  width: isSmallScreen ? "65%" : "40%",
                 }}
               >
                 Title
               </TableCell>
-              <TableCell
-                sx={{
-                  textAlign: "left",
-                  fontWeight: "bold",
-                  width: "20%",
-                  padding: "5px",
-                }}
-              >
-                Type
-              </TableCell>
-              {isSmallScreen ? (
-                <div></div>
-              ) : (
-                <>
-                  <TableCell
-                    sx={{
-                      textAlign: "left",
-                      fontWeight: "bold",
-                      width: "20%",
-                      padding: "16px 30px 16px 16px",
-                    }}
-                  >
-                    Author
-                  </TableCell>
-                </>
+              {!isSmallScreen && (
+                <TableCell sx={{ width: "20%", fontWeight: "bold" }}>
+                  Author
+                </TableCell>
               )}
               <TableCell
                 sx={{
@@ -231,55 +209,43 @@ function ClassBoard() {
                 >
                   {row.title}
                 </TableCell>
+                {!isSmallScreen && (
+                  <TableCell
+                    sx={{
+                      padding: "16px 30px 16px 16px",
+                      textAlign: "left",
+                      borderBottom: "1px solid #e0e0e0",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {row.createdChargeId}
+                  </TableCell>
+                )}
+
                 <TableCell
                   sx={{
-                    padding: "16px",
-                    textAlign: "left",
+                    padding: "16px 30px 16px 16px",
+                    textAlign: "right",
                     borderBottom: "1px solid #e0e0e0",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {row.type}
+                  {row.views}
                 </TableCell>
-                {isSmallScreen ? (
-                  <div></div>
-                ) : (
-                  <>
-                    <TableCell
-                      sx={{
-                        padding: "16px 30px 16px 16px",
-                        textAlign: "left",
-                        borderBottom: "1px solid #e0e0e0",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {row.author}
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        padding: "16px 30px 16px 16px",
-                        textAlign: "right",
-                        borderBottom: "1px solid #e0e0e0",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {row.views}
-                    </TableCell>
-                  </>
-                )}
               </TableRow>
             ))}
             {Array.from({
               length: itemsPerPage - rows.length,
             }).map((_, index) => (
-              <TableRow key={`empty-${index}`} sx={{ height: "50px" }}>
-                <TableCell colSpan={3}></TableCell>
+              <TableRow
+                key={`empty-${index}`}
+                sx={{ height: "50px", width: "100%" }}
+              >
+                <TableCell colSpan={isSmallScreen ? 3 : 4}></TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -288,7 +254,7 @@ function ClassBoard() {
       {userRole === "ROLE_ADMIN" && (
         <Box
           sx={{
-            width: "80%",
+            width: isSmallScreen ? "98%" : "80%",
             margin: "20px auto",
             display: "flex",
 
@@ -301,6 +267,8 @@ function ClassBoard() {
               backgroundColor: "#1b8ef2",
               color: "white",
               "&:hover": { backgroundColor: "#1565c0" },
+              minWidth: isSmallScreen ? "80px" : "100px",
+              minHeight: isSmallScreen ? "30px" : "50px",
             }}
             onClick={handleNewPost}
           >

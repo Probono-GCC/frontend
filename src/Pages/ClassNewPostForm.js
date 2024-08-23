@@ -14,6 +14,8 @@ import AppBar from "../Components/AppBar";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
+import { IconButton } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 //API
 import { postNewNotice, putNoticePost } from "../Apis/Api/ClassNotice";
@@ -28,8 +30,12 @@ function ClassNewPostForm() {
   const [thumbnail, setThumbnail] = useState([]); //화면에 이미지 띄워주는 용도(url string형태)
   const { isSmallScreen } = useMediaQueryContext();
   const location = useLocation();
+  const path = window.location.pathname;
+  // 경로를 슬래시(/)로 분리하여 배열로 변환
+  const pathSegments = path.split("/");
+  const currentClassId = pathSegments[pathSegments.length - 1];
+
   const postData = location.state;
-  // const [maintainImageIdList, setMaintainImageIdList] = useState([]);
   const [initialTitle, setInitialTitle] = useState("");
   const [initialContent, setInitialContent] = useState("");
   const [initialImageList, setInitialImageList] = useState([]);
@@ -43,7 +49,9 @@ function ClassNewPostForm() {
     formData.append("title", title);
     formData.append("content", content.replace(/<\/?[^>]+(>|$)/g, ""));
     formData.append("type", "CLASS");
-    console.log(imgURL, "img있는지");
+    formData.append("classId", currentClassId);
+
+    // console.log(imgURL, "img있는지");
     if (imgURL) {
       console.log(imgURL);
       imgURL.forEach((url, index) => {
@@ -61,8 +69,19 @@ function ClassNewPostForm() {
     // }
 
     if (postData) {
-      formData.append("maintainImageList", initialImageList);
-      putNoticePost(postData.noticeId, formData).then((result) => {
+      // initialImageList에서 imageId 값만 추출하여 새로운 배열로 만듦
+      const imageIdList = initialImageList.map((item) => item.imageId);
+
+      // 배열을 콤마로 구분된 문자열로 변환
+      const imageIdString = imageIdList.join(",");
+
+      // FormData 객체에 콤마로 구분된 imageId 문자열을 추가
+      formData.append("maintainImageList", imageIdString);
+      console.log("initialImageList", initialImageList);
+      for (const [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+      }
+      putNoticePost(currentClassId, formData).then((result) => {
         // console.log("formData", formData);
         if (result) {
           alert("Edit complete");
@@ -81,7 +100,7 @@ function ClassNewPostForm() {
         if (result && imgURL) {
           console.log("result", result);
           alert("Post complete");
-          navigate("/notice-board");
+          navigate(-1);
         } else {
           alert("Post failed");
         }
@@ -90,7 +109,7 @@ function ClassNewPostForm() {
   };
 
   const handleCancel = () => {
-    navigate("/notice-board");
+    navigate(-1);
   };
   const imageHandler = async (e) => {
     const input = document.createElement("input");
@@ -117,6 +136,7 @@ function ClassNewPostForm() {
     };
   };
   useEffect(() => {
+    console.log(postData, "postData");
     if (postData) {
       setTitle(postData.title || "");
       setContent(postData.content || "");
@@ -174,10 +194,18 @@ function ClassNewPostForm() {
     "blockquote",
     "image",
   ];
-
+  const handleBack = () => {
+    navigate(-1); // Go back to the previous page
+  };
   return (
     <div>
       <AppBar />
+      <Box sx={{ width: "80%", margin: "0 auto" }}>
+        <IconButton onClick={handleBack} color="primary" aria-label="go back">
+          <ArrowBackIcon />
+        </IconButton>
+      </Box>
+
       <Box
         sx={{
           display: "flex",
@@ -187,11 +215,11 @@ function ClassNewPostForm() {
         }}
       >
         <Typography
-          variant="h4"
+          variant={isSmallScreen ? "h5" : "h4"}
           component="div"
           sx={{ fontFamily: "Copperplate" }}
         >
-          Notice Board
+          Class Notice Board
         </Typography>
       </Box>
       <Box

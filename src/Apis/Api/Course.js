@@ -9,7 +9,14 @@ export async function postCourse(courseData) {
     console.log(err);
   }
 }
-
+export async function postCourseUser(courseData) {
+  try {
+    const response = await axiosInstance.post("/courseUser", courseData);
+    return response.data;
+  } catch (err) {
+    return err;
+  }
+}
 export async function getCourse(courseData) {
   try {
     const response = await axiosInstance.get(`/course/${courseData.courseId}`);
@@ -23,7 +30,7 @@ export async function getCourse(courseData) {
 export async function getCourses(page, size) {
   try {
     const response = await axiosInstance.get(
-      `/courses?page=${page}?size=${size}`
+      `/courses?page=${page}&size=${size}`
     );
     console.log(response);
     return response.data;
@@ -32,15 +39,12 @@ export async function getCourses(page, size) {
   }
 }
 
-export async function deleteCourse(courseData) {
+export async function deleteCourse(courseId) {
   try {
-    const response = await axiosInstance.delete(
-      `/course/${courseData.courseId}`
-    );
-    console.log(response);
-    return response.data;
+    const response = await axiosInstance.delete(`/course/${courseId}`);
+    return response;
   } catch (err) {
-    console.log(err);
+    return err;
   }
 }
 

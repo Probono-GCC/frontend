@@ -35,7 +35,9 @@ function StudentView() {
   const [checkedRows, setCheckedRows] = useState([]);
   const [rows, setRows] = useState([]);
   const { isSmallScreen } = useMediaQueryContext();
-
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalRowCount, setTotalRowCount] = useState(0); //서버에서 총 학생수 받아와서 설정
   //student view default table column
   const basic_columns = isSmallScreen
     ? [
@@ -93,7 +95,17 @@ function StudentView() {
 
     { field: "phone_num", headerName: "Phone" },
   ];
+  // 페이지 변경 시 처리
+  const handlePageChange = (newPage, size) => {
+    setPage(newPage);
+    fetchStudents(newPage, size);
+  };
 
+  // 페이지 크기 변경 시 처리
+  const handlePageSizeChange = (page, newSize) => {
+    setPageSize(newSize);
+    fetchStudents(page, newSize);
+  };
   const handleRowSelection = (id) => {
     if (!Array.isArray(id)) {
       console.log(id, "idtyupe");
@@ -137,7 +149,7 @@ function StudentView() {
           console.log(result);
 
           if (result.status == 200) {
-            fetchStudents();
+            fetchStudents(page, pageSize);
             setCheckedRows([]);
             setAlert(true);
             setTimeout(() => setAlert(false), 2000); // 2초 후 알림 숨김
@@ -154,12 +166,12 @@ function StudentView() {
     }
   };
 
-  const fetchStudents = () => {
-    getStudents().then((result) => {
+  const fetchStudents = (page, pageSize) => {
+    getStudents(page, pageSize).then((result) => {
       console.log(result);
       const students = result.content || []; // content 배열 가져오기
       // console.log(students);
-
+      setTotalRowCount(result.totalElements);
       if (students.length > 0) {
         const tempRow = students.map((item) =>
           createData(
@@ -180,7 +192,7 @@ function StudentView() {
     });
   };
   useEffect(() => {
-    fetchStudents();
+    fetchStudents(page, pageSize);
   }, []);
 
   return (
@@ -215,11 +227,14 @@ function StudentView() {
         <Table
           columns={isSmallScreen ? basic_columns : updatedColumns}
           rows={rows}
+          totalRowCount={totalRowCount}
           onSelectedAllRow={handleRowSelection}
           onRowDoubleClick={handleRowDoubleClick}
           getRowId={(row) => row.id}
           id={isSmallScreen ? "" : "table_body"}
           isStudentTable={true} //row클릭시 체크박스 활성화 안되게 하기위해 커스텀
+          onPageChange={handlePageChange} // 페이지 변경 핸들러 추가
+          onPageSizeChange={handlePageSizeChange} // 페이지 크기 변경 핸들러 추가
         />
         {isSmallScreen ? (
           <div>&nbsp;</div>

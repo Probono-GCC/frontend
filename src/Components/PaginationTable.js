@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import styles from "../Styles/css/Table.module.css";
 
@@ -6,22 +6,44 @@ const Table = memo(
   ({
     columns,
     rows,
+    totalRowCount,
     onRowSelection,
     onRowSelectedId,
     onRowDoubleClick,
     isRadioButton,
     id,
     isStudentTable,
-    checkedRows,
     isReadOnly,
+
+    handlePageNumber, // 페이지 변경 핸들러
+    onPageSizeChange, // 페이지 크기 변경 핸들러
   }) => {
+    const [page, setPage] = useState(0);
+    const [pageSize, setPageSize] = useState(100);
+
+    // 페이지 변경 핸들러
+    const handlePageChange = (page, newPage) => {
+      console.log("handle page change", newPage);
+      setPage(newPage);
+      if (handlePageNumber) {
+        handlePageNumber(page, newPage); // 페이지 변경 시 부모에게 전달
+      }
+    };
+
+    // 페이지 크기 변경 핸들러
+    const handlePageSizeChange = (newPageSize) => {
+      console.log("handle page size change", newPageSize);
+      setPageSize(newPageSize);
+      if (onPageSizeChange) {
+        onPageSizeChange(page, newPageSize); // 페이지 크기 변경 시 부모에게 전달
+      }
+    };
     const handleRowClick = (params) => {
       console.log("table:", params.row);
       onRowSelection(params.row);
     };
     const handleRowSelection = (newSelection) => {
       console.log("table selected rows:", newSelection);
-
       if (id === "student_select_body") {
         onRowSelectedId(newSelection); // 선택된 행 ID들을 상위 컴포넌트에 전달
       }
@@ -54,10 +76,14 @@ const Table = memo(
           onRowSelectionModelChange={handleRowSelection} //여러개 선택전달
           checkboxSelection={!(isRadioButton || isStudentTable || isReadOnly)} // 라디오 버튼 모드에 따라 체크박스 선택 여부 조절
           onRowDoubleClick={onRowDoubleClick}
+          pageSize={pageSize}
+          onPageChange={handlePageChange}
+          //   onPageSizeChange={handlePageSizeChange}
           pageSizeOptions={[]}
-          // pagination={false} // 페이지네이션 비활성화
-          // pageSize={rows.length} // 모든 데이터를 한 페이지에 표시
-          // paginationMode="server" // 클라이언트 측 페이지네이션을 기본값으로 설정
+          rowCount={totalRowCount} // 총 데이터 수
+          page={page}
+          pagination
+          paginationMode="server" //설정하지 않으면 Datagrid가 서버에서 모든 데이터를 한 번에 가져오는 것을 전제
         />
       </div>
     );

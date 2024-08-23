@@ -87,13 +87,17 @@ function AppBar() {
     navigate("/private/create-class");
   };
 
-  const goClassBoard = (id) => {
-    console.log("app bar class", id);
-    navigate(`/class-board/${id.grade}-${id.section}/`);
+  const goClassBoard = (classItem) => {
+    console.log("app bar class", classItem);
+    navigate(`/class-board/${classItem.grade}-${classItem.section}`, {
+      state: classItem,
+    });
   };
 
-  const goClassInfo = (classData) => {
-    navigate("/private/class-info");
+  const goClassInfo = (classItem) => {
+    navigate(`/private/class-info/${classItem.grade}-${classItem.section}`, {
+      state: classItem,
+    });
   };
 
   const goSubjectBoard = () => {
@@ -341,11 +345,13 @@ function AppBar() {
           const myClassList = result.content.map((item) => ({
             grade: item.grade,
             section: item.section ? item.section : "",
+            classId: item.classId,
+            year: item.year,
           }));
           console.log("admin classlist", myClassList);
           setMyClass(myClassList);
         } else {
-          setMyClass([{ grade: "", section: "" }]);
+          setMyClass([{ grade: "", section: "", classId: "", year: "" }]);
         }
       });
     } else if (userRole == roleArray[1]) {
@@ -366,7 +372,13 @@ function AppBar() {
         //   "grade": "PLAYGROUP",
         //   "section": "A"
         // },
-        if (result.classId && result.classId.grade && result.classId.section) {
+        if (
+          result.classId &&
+          result.classId.grade &&
+          result.classId.section &&
+          result.classId.classId &&
+          result.classId.year
+        ) {
           // const myClassList = result.classId.map((item) => ({
           //   grade: item.grade,
           //   section: item.section ? item.section : "",
@@ -376,10 +388,12 @@ function AppBar() {
             {
               grade: result.classId.grade,
               section: result.classId.section,
+              classId: result.classId.classId,
+              year: result.classId.year,
             },
           ]);
         } else {
-          setMyClass([{ grade: "", section: "" }]);
+          setMyClass([{ grade: "", section: "", calssId: "", year: "" }]);
         }
       });
     } else if (userRole == roleArray[2]) {
@@ -396,22 +410,21 @@ function AppBar() {
           if (
             result.classResponse &&
             result.classResponse.grade &&
-            result.classResponse.section
+            result.classResponse.section &&
+            result.classResponse.classId &&
+            result.classResponse.year
           ) {
-            console.log(
-              "set class 를 하자",
-              result.classResponse.grade,
-              result.classResponse.section
-            );
             setMyClass([
               {
                 grade: result.classResponse.grade,
                 section: result.classResponse.section,
+                classId: result.classResponse.classId,
+                year: result.classResponse.year,
               },
             ]);
             // handleMyClass({ grade: result.grade, section: result.section });
           } else {
-            setMyClass({ grade: "", section: "" });
+            setMyClass({ grade: "", section: "", classId: "", year: "" });
           }
         }
       });
@@ -795,7 +808,7 @@ function AppBar() {
                   </ListItem>
                 </AccordionDetails>
               </Accordion>
-              <ListItem key={"Elective Course Management"} disablePadding>
+              {/* <ListItem key={"Elective Course Management"} disablePadding>
                 <ListItemButton
                   onClick={goElectiveCourseManagement}
                   sx={{ paddingLeft: "16px" }}
@@ -805,7 +818,7 @@ function AppBar() {
                   </ListItemIcon>
                   <ListItemText primary={"Elective Course Management"} />
                 </ListItemButton>
-              </ListItem>
+              </ListItem> */}
             </List>
           ) : (
             <div></div>

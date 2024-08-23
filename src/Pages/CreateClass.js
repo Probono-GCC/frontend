@@ -14,6 +14,7 @@ import {
 import AppBar from "../Components/AppBar";
 import Table from "../Components/Table";
 import { postClass, getClasses, deleteClass } from "../Apis/Api/Class";
+import { useAuth } from "../store/AuthContext";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
@@ -51,27 +52,37 @@ function CreateClass() {
   const [section, setSection] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [checkedRows, setCheckedRows] = useState([]);
+  const [allCheckedRows, setAllCheckedRows] = useState([]);
+
   const [rows, setRows] = useState([]);
+  //pagination for table
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(100);
+  const [totalRowCount, setTotalRowCount] = useState(0); //서버에서 총 학생수 받아와서 설정
 
-  useEffect(() => {
-    setBatch(batchYears[0]);
-
-    // Fetching class data when the component mounts
-    getClasses(currentYear).then((result) => {
+  const fetchClass = () => {
+    getClasses(page, pageSize, currentYear).then((result) => {
       if (result && result.content) {
         const tempRow = result.content.map((item, index) => ({
-          id: index + 1, // Assuming an index for table rows
+          id: item.classId, // Assuming an index for table rows
           year: item.year,
           grade: item.grade,
           section: item.section,
           classId: item.classId, // classId를 가져와서 삭제에 활용
         }));
+        console.log("temp row?", tempRow);
         setRows(tempRow);
+        setTotalRowCount(result.totalElements);
       } else {
+        console.log("결과없음", result);
         setRows([]);
       }
     });
-  }, [checkedRows]);
+  };
+  useEffect(() => {
+    fetchClass();
+    setBatch(batchYears[0]);
+  }, []);
 
   const handleCreate = async () => {
     const newClassData = {
@@ -80,41 +91,50 @@ function CreateClass() {
       section: section,
     };
     try {
-      const response = await postClass(newClassData);
-      setRows((prevRows) => [
-        ...prevRows,
-        { id: prevRows.length + 1, ...response },
-      ]);
-      setShowAlert(true);
-      setTimeout(() => setShowAlert(false), 2000); // 2초 후 알림 숨김
-      setBatch("");
-      setGrade("");
-      setSection("");
+      postClass(newClassData).then((result) => {
+        if (result && result.classId) {
+          setRows((prevRows) => [
+            ...prevRows,
+            { id: prevRows.length + 1, ...result },
+          ]);
+          console.log(result, "wnddy");
+          setShowAlert(true);
+          setTimeout(() => setShowAlert(false), 2000); // 2초 후 알림 숨김
+          setBatch("");
+          setGrade("");
+          setSection("");
+          fetchClass();
+        } else if (result && result.response && result.response.status == 409) {
+          alert("This class already exists");
+        }
+      });
     } catch (err) {
       console.error("Failed to create class:", err);
       window.alert("Failed to create class.");
     }
   };
 
-  const handleRowSelection = (_row) => {
-    console.log("onselectrow?", _row);
-    setCheckedRows(_row);
-  };
+  // const handleRowSelection = (_row) => {
+  //   console.log("onselectrow?", _row);
+  //   setCheckedRows(_row);
+  // };
 
-  const deleteRow = async () => {
+  const deleteRow = () => {
     try {
-      for (const id of checkedRows) {
-        if (id) {
-          deleteClass({ classId: rows[id - 1].classId })
+      console.log(checkedRows, "delete대상");
+      if (Array.isArray(checkedRows)) {
+        checkedRows.map((item) => {
+          deleteClass({ classId: item })
             .then((result) => {
               setShowAlert(true);
               setTimeout(() => setShowAlert(false), 2000); // 2초 후 알림 숨김
               setCheckedRows([]);
+              fetchClass();
             })
             .catch((error) => {
               console.log(error);
             });
-        }
+        });
       }
 
       console.log(rows, "현재 남은 row");
@@ -124,7 +144,14 @@ function CreateClass() {
       window.alert("Failed to delete class.");
     }
   };
-
+  const handleClassRowIdSelection = (id) => {
+    console.log("rowid???", id);
+    setCheckedRows(id);
+  };
+  const handleClassRowSelection = (data) => {
+    console.log("all checked", data);
+    setAllCheckedRows(data);
+  };
   const columns = [
     { field: "year", headerName: "Batch", flex: 0.25 },
     { field: "grade", headerName: "Grade", flex: 0.25 },
@@ -217,12 +244,14 @@ function CreateClass() {
           <Table
             columns={columns}
             rows={rows}
-            checkboxSelection
-            // onSelectionModelChange={handleRowSelection}
-            onRowSelection={handleRowSelection}
+            totalRowCount={totalRowCount}
+            onRowSelectedId={handleClassRowIdSelection}
+            onRowSelection={handleClassRowSelection}
             getRowId={(row) => row.id}
+            // onRowSelectedId={(rowId) => handleClassRowIdSelection(rowId)}
             // checkedRows={checkedRows}
             isRadioButton={false}
+            id={"student_select_body"}
           />
           <Box
             sx={{ display: "flex", justifyContent: "flex-end", marginTop: 3 }}
@@ -230,11 +259,13 @@ function CreateClass() {
             <Button
               variant="contained"
               sx={{
-                backgroundColor: checkedRows.length > 0 ? "#1976d2" : "#d8edff",
-                color: checkedRows.length > 0 ? "#fff" : "#1976d2",
+                backgroundColor:
+                  checkedRows && checkedRows.length > 0 ? "#1976d2" : "#d8edff",
+                color:
+                  checkedRows && checkedRows.length > 0 ? "#fff" : "#1976d2",
               }}
               onClick={deleteRow}
-              disabled={checkedRows.length === 0}
+              disabled={checkedRows && checkedRows.length === 0}
             >
               DELETE
             </Button>
