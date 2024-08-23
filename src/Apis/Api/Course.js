@@ -48,41 +48,13 @@ export async function deleteCourse(courseId) {
   }
 }
 
-// export async function getClassStudent(classId) {
-//   try {
-//     const response = await axiosInstance.get(`class/${classId}/students`);
-//     return response.data;
-//   } catch (err) {
-//     console.log(err);
-//   }
-// }
-// export async function getClassTeacher(classId) {
-//   try {
-//     const response = await axiosInstance.get(`class/${classId}/teachers`);
-//     return response.data;
-//   } catch (err) {
-//     console.log(err);
-//   }
-// }
-// export async function deleteClassMember(classData, username) {
-//   try {
-//     const response = await axiosInstance.delete(
-//       `/class/${classData.classId}/assignedUser/${username}`
-//     );
-//     console.log(response);
-//     return response.data;
-//   } catch (err) {
-//     console.log(err);
-//   }
-// }
-// export async function getClassList(page, size, year) {
-//   try {
-//     const response = await axiosInstance.get(
-//       `/classes?page=${page}&size=${size}&year=${year}`
-//     );
-//     console.log(response);
-//     return response.data;
-//   } catch (err) {
-//     console.log(err);
-//   }
-// }
+export async function getCourseTeachers(courseId) {
+  try {
+    const response = await axiosInstance.get(
+      `/courseUser/course/${courseId}/teacher`
+    );
+    return response;
+  } catch (err) {
+    return err;
+  }
+}
