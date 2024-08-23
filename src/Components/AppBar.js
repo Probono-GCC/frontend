@@ -362,7 +362,7 @@ function AppBar() {
           //이미지 설정
           getProfileImage(result.imageId.imageId).then((res) => {
             setThumnailImage(res.imagePath);
-            console.log(res, "resujlt");
+            console.log(res, "result");
           });
         }
         //item형태
@@ -468,7 +468,8 @@ function AppBar() {
                 onClick={goMyProfile} // 클릭 시 goToProfilePage 함수가 호출됩니다.
                 color="inherit"
               >
-                <AccountCircle />
+                <Avatar alt="User Image" src={thumbnailImage} />
+                {/* <AccountCircle /> */}
               </IconButton>
             </Box>
             <Box sx={{ display: { xs: "flex", md: "none" } }}>
