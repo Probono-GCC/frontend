@@ -14,7 +14,7 @@ import {
   IconButton,
   CircularProgress,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
@@ -25,7 +25,8 @@ import { useAuth } from "../store/AuthContext";
 import { convertDateFormat } from "../Util/DateUtils";
 function NoticeBoard() {
   const navigate = useNavigate();
-  const [page, setPage] = useState(1);
+  const { page: pageParam } = useParams(); // URL에서 페이지 번호 추출 path="/notice-board/:page?"
+  const [page, setPage] = useState(parseInt(pageParam) || 1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalPosting, setTotalPosting] = useState(0);
   const itemsPerPage = 10;
@@ -37,6 +38,7 @@ function NoticeBoard() {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
+
       try {
         const result = await getNoticePostList(page - 1, itemsPerPage);
         if (result && Array.isArray(result.content)) {
@@ -61,6 +63,7 @@ function NoticeBoard() {
 
   const handleChangePage = (event, newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
+      navigate(`/notice-board/${newPage}`);
       setPage(newPage);
     }
   };

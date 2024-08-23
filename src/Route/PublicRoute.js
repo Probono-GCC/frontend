@@ -18,7 +18,7 @@ const PublicRoutes = () => (
       element={<Login type={"forgot-password"} />}
     />
 
-    <Route path="/notice-board" element={<NoticeBoard />} />
+    <Route path="/notice-board/:page?" element={<NoticeBoard />} />
     <Route path="/my-profile" element={<MyProfile />} />
     <Route path="/notice/*" element={<Post />} />
     <Route path="/class-notice/*" element={<Post />} />
