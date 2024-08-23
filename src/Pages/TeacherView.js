@@ -23,6 +23,8 @@ function TeacherView() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalRowData, setModalRowData] = useState("default row data");
   const [alert, setAlert] = useState(false);
+
+  const [errorAlert, setErrorAlert] = useState(false);
   const [checkedRows, setCheckedRows] = useState([]);
   const [rows, setRows] = useState([]);
   const { isSmallScreen } = useMediaQueryContext();
@@ -32,7 +34,7 @@ function TeacherView() {
     ? [
         { field: "id", headerName: "ID", flex: 0.35 },
         { field: "name", headerName: "Name", flex: 0.35 },
-        { field: "home_room", headerName: "Home room", flex: 0.3 },
+        { field: "gender", headerName: "Gender", flex: 0.3 },
       ]
     : [
         { field: "id", headerName: "ID", flex: 0.2 },
@@ -58,26 +60,7 @@ function TeacherView() {
     },
     ...basic_columns,
   ];
-  // {
-  //   "username": "testTeacher1",
-  //   "role": "ROLE_TEACHER",
-  //   "name": "testteacer",
-  //   "birth": "2024-08-16",
-  //   "sex": "FEMALE",
-  //   "phoneNum": "1",
-  //   "pwAnswer": "tred",
-  //   "status": "ACTIVE",
-  //   "classId": {
-  //       "classId": 1,
-  //       "year": 2084,
-  //       "grade": "CLASS3",
-  //       "section": "B"
-  //   },
-  //   "imageId": {
-  //       "imageId": 5,
-  //       "imagePath": "https://probono-image-bucket.s3.ap-northeast-2.amazonaws.com/0b01456b-6IMG_5667.jpg",
-  //       "createdChargeId": "testTeacher1"
-  //   }
+
   // 상세 정보 모달에 사용되는 컬럼 정의
   const detail_columns = [
     { field: "name", headerName: "Name", flex: 0.2 },
@@ -129,19 +112,24 @@ function TeacherView() {
       // 선택된 각 행에 대해 삭제 로직을 수행
       checkedRows.forEach((userId) => {
         deleteTeacher(userId).then((result) => {
-          if (result.status == 200) {
+          console.log("status?", result);
+          if (result && result.status == 200) {
             fetchTeacher();
             setCheckedRows([]);
             setAlert(true);
             setTimeout(() => setAlert(false), 2000); // 2초 후 알림 숨김
+            setRows((prevRows) =>
+              prevRows.filter((row) => !checkedRows.includes(row.id))
+            );
+          }
+          if (result && result.response && result.response.status == 500) {
+            setErrorAlert(true);
+            setTimeout(() => setErrorAlert(false), 2000); // 2초 후 알림 숨김
           }
         });
       });
 
       // 삭제된 행을 rows에서 제거
-      setRows((prevRows) =>
-        prevRows.filter((row) => !checkedRows.includes(row.id))
-      );
     } catch (error) {
       console.error("Error deleting rows:", error);
     }
@@ -181,7 +169,17 @@ function TeacherView() {
           sx={{ width: "100%", position: "fixed", top: "65px" }}
           spacing={2}
         >
-          <Alert severity="success">This is a success Alert.</Alert>
+          <Alert severity="success">Delete Complete.</Alert>
+        </Stack>
+      ) : (
+        <div></div>
+      )}
+      {errorAlert ? (
+        <Stack
+          sx={{ width: "100%", position: "fixed", top: "65px" }}
+          spacing={2}
+        >
+          <Alert severity="error">Delete Failed. Try again</Alert>
         </Stack>
       ) : (
         <div></div>
