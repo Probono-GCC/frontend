@@ -464,7 +464,8 @@ function AppBar() {
                 aria-label="account of current user"
                 aria-controls={menuId}
                 aria-haspopup="true"
-                onClick={handleProfileMenuOpen}
+                //onClick={handleProfileMenuOpen}
+                onClick={goMyProfile} // 클릭 시 goToProfilePage 함수가 호출됩니다.
                 color="inherit"
               >
                 <AccountCircle />
