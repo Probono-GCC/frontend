@@ -30,6 +30,7 @@ import {
   getCourse,
   getCourses,
   deleteCourse,
+  getCourseTeachers,
 } from "../Apis/Api/Course";
 import {
   putClass,
@@ -65,12 +66,20 @@ function createSubjectData(subjectId, name, id) {
   return { subjectId, name, id };
 }
 
-function createClassData(year, grade, section, classId, id) {
-  return { year, grade, section, classId, id };
+function createClassData(
+  year,
+  grade,
+  section,
+  classId,
+  teacher1,
+  teacher2,
+  id
+) {
+  return { year, grade, section, classId, teacher1, teacher2, id };
 }
 //id: courseId임
-function createCourseData(year, grade, section, subject, id) {
-  return { year, grade, section, subject, id };
+function createCourseData(year, grade, section, subject, teacher, id) {
+  return { year, grade, section, subject, teacher, id };
 }
 const columns = [
   { field: "year", headerName: "Batch", flex: 0.2 },
@@ -84,8 +93,8 @@ const classColumns = [
   { field: "year", headerName: "Batch", flex: 0.2 },
   { field: "grade", headerName: "Grade", flex: 0.2 },
   { field: "section", headerName: "Section", flex: 0.2 },
-  { field: "teacher1", headerName: "Teacher1", flex: 0.2 },
-  { field: "teacher2", headerName: "Teacher2", flex: 0.2 },
+  { field: "teacher1", headerName: "Home Teacher1", flex: 0.2 },
+  { field: "teacher2", headerName: "Home Teacher2", flex: 0.2 },
 ];
 
 function CommonCourseManagement() {
@@ -104,8 +113,8 @@ function CommonCourseManagement() {
   const [addMode, setAddMode] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [newSubject, setNewSubject] = useState("");
-  const [selectedCourseRowId, setSelectedCourseRowId] = useState(null); //class table에서 선택된 row id
-
+  const [selectedCourseRowId, setSelectedCourseRowId] = useState(null);
+  const [courseTeachers, setCourseTeachers] = useState([]);
   const [selectedClassRowId, setSelectedClassRowId] = useState(null); //class table에서 선택된 row id
   const [selectedClassRowData, setSelectedClassRowData] = useState(null); //class table에서 선택된 row data 전체 정보
   const handleOpenModal = () => setModalOpen(true);
@@ -241,40 +250,12 @@ function CommonCourseManagement() {
     }
   };
 
-  const fetchTeacher = () => {
-    getTeachers().then((result) => {
-      const teacherMap = result.content || [];
-      if (teacherMap.length > 0) {
-        const tempRow = teacherMap.map((item, index) =>
-          createTeacherData(item.name, item.username, index + 1)
-        );
-        setTeachers(tempRow);
-      } else {
-        setTeachers([]);
-      }
-    });
-  };
-
-  const fetchSubject = () => {
-    getSubjects(0, 50).then((result) => {
-      const subjectMap = result.content || [];
-      if (subjectMap.length > 0) {
-        const tempRow = subjectMap.map((item, index) =>
-          createSubjectData(item.subjectId, item.name, index + 1)
-        );
-        setSubjects(tempRow);
-      } else {
-        setTeachers([]);
-      }
-    });
-  };
   const handleClassRowIdSelection = (id) => {
     console.log("rowid???", id);
     setSelectedClassRowId(id);
   };
   //선택된 course id 배열 받기
   const handleCourseRowIdSelection = (id) => {
-    console.log("setid", id);
     setSelectedCourseRowId(id);
   };
 
@@ -308,45 +289,164 @@ function CommonCourseManagement() {
     }
   };
   const fetchClass = () => {
-    getClasses(page, pageSize, currentYear).then((result) => {
+    getClasses(page, pageSize, currentYear).then(async (result) => {
       const classMap = result.content || [];
+      console.log("fetchclass", result.content);
       if (classMap.length > 0) {
-        const tempRow = classMap.map((item, index) =>
-          createClassData(
-            item.year,
-            item.grade,
-            item.section,
-            item.classId,
-            item.classId
-          )
-        );
-        setClassRows(tempRow);
+        const classPromise = classMap.map(async (classItem, index) => {
+          console.log("??", index, "\n", classItem);
+          const teachers = await fetchClassTeacher(classItem.classId);
+          if (teachers && teachers.length > 0) {
+            // teacher 배열이 비어있지 않을 때만 실행
+            // const teacherName =
+            //   teachers.length > 1
+            //     ? `${teachers[0]?.username || ""} & ${
+            //         teachers[1]?.username || ""
+            //       }`
+            //     : teachers[0]?.username || ""; // 안전하게 접근
+
+            // console.log("teachernmmmm", teacherName);
+            return createClassData(
+              classItem.year,
+              classItem.grade,
+              classItem.section,
+              classItem.classId,
+              teachers[0]?.username || "",
+              teachers[1]?.username || "",
+              classItem.classId
+            );
+          } else {
+            return createClassData(
+              classItem.year,
+              classItem.grade,
+              classItem.section,
+              classItem.classId,
+              "",
+              "",
+              classItem.classId
+            );
+          }
+        });
+        console.log("classPromise", classPromise);
+        const NewClasses = await Promise.all(classPromise);
+        setClassRows(NewClasses);
       } else {
         setClassRows([]);
       }
     });
   };
   const fetchCourse = () => {
-    getCourses(page, pageSize).then((result) => {
+    getCourses(page, pageSize).then(async (result) => {
       if (result && result.content) {
-        const NewCourses = result.content.map((courseItem) =>
-          createCourseData(
-            courseItem.classResponse.year,
-            courseItem.classResponse.grade,
-            courseItem.classResponse.section,
-            courseItem.subjectResponseDTO.name,
-            courseItem.courseId
-          )
-        );
-        //Todo선생님 연결필요
+        const coursePromises = result.content.map(async (courseItem) => {
+          const teachers = await fetchCourseTeachers(courseItem.courseId);
+          console.log("tea", teachers);
+          if (teachers) {
+            const teacherNames =
+              teachers && teachers.length > 1
+                ? `${teachers[0].username} & ${teachers[1].username}`
+                : teachers[0].username;
+
+            return createCourseData(
+              courseItem.classResponse.year,
+              courseItem.classResponse.grade,
+              courseItem.classResponse.section,
+              courseItem.subjectResponseDTO.name,
+              teacherNames,
+              courseItem.courseId
+            );
+          } else {
+            return createCourseData(
+              courseItem.classResponse.year,
+              courseItem.classResponse.grade,
+              courseItem.classResponse.section,
+              courseItem.subjectResponseDTO.name,
+              "",
+              courseItem.courseId
+            );
+          }
+        });
+
+        // 모든 courseItem의 정보를 Promise.all로 처리
+        const NewCourses = await Promise.all(coursePromises);
+
         setCourseRows(NewCourses);
       } else {
         console.log("course fetch failed");
       }
     });
   };
+
+  const fetchTeacher = () => {
+    getTeachers().then((result) => {
+      const teacherMap = result.content || [];
+      if (teacherMap.length > 0) {
+        const tempRow = teacherMap.map((item, index) =>
+          createTeacherData(item.name, item.username, index + 1)
+        );
+        setTeachers(tempRow);
+      } else {
+        setTeachers([]);
+      }
+    });
+  };
+
+  const fetchSubject = () => {
+    getSubjects(0, 50).then((result) => {
+      const subjectMap = result.content || [];
+      if (subjectMap.length > 0) {
+        const tempRow = subjectMap.map((item, index) =>
+          createSubjectData(item.subjectId, item.name, index + 1)
+        );
+        setSubjects(tempRow);
+      } else {
+        setTeachers([]);
+      }
+    });
+  };
+  const fetchCourseTeachers = (courseId) => {
+    return getCourseTeachers(courseId).then((result) => {
+      console.log("item", result);
+      if (result && result.data.userResponse) {
+        console.log("item", result.data.userResponse);
+        const userResponses = Array.isArray(result.data.userResponse)
+          ? result.data.userResponse
+          : [result.data.userResponse];
+
+        const teachers = userResponses
+          .filter((item) => item.role === "ROLE_TEACHER")
+          .map((item) => ({
+            username: item.username,
+            name: item.name,
+          }));
+
+        return teachers; // 여기서 teachers 배열을 반환
+      } else {
+        return []; // 교사가 없을 경우 빈 배열 반환
+      }
+    });
+  };
+  const fetchClassTeacher = (classId) => {
+    return getClassTeacher(classId).then((result) => {
+      console.log("clasteacher", result);
+      if (result) {
+        console.log("item", result);
+        const userResponses = Array.isArray(result) ? result : [result];
+
+        const teachers = userResponses
+          .filter((item) => item.role === "ROLE_TEACHER")
+          .map((item) => ({
+            username: item.username,
+            name: item.name,
+          }));
+
+        return teachers; // 여기서 teachers 배열을 반환
+      } else {
+        return []; // 교사가 없을 경우 빈 배열 반환
+      }
+    });
+  };
   useEffect(() => {
-    fetchClass();
     fetchTeacher();
     fetchSubject();
     fetchCourse();
@@ -416,7 +516,10 @@ function CommonCourseManagement() {
                 title={"Add Common Course"}
                 variant="contained"
                 color="primary"
-                onClick={() => setAddMode(true)}
+                onClick={() => {
+                  fetchClass();
+                  setAddMode(true);
+                }}
                 size={"bg"}
               />
               <CustomButton
