@@ -16,7 +16,9 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
     if (title === "Teacher Detail Info") {
       if (rowData && rowData.id) {
         getTeacher(rowData.id).then((result) => {
+          console.log("getteacher", result);
           if (result && result.imageId && result.imageId.imagePath) {
+            console.log("getteacher image pth", result.imageId.imagePath);
             setProfileImgPath(result.imageId.imagePath);
           }
         });
@@ -36,6 +38,10 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
     }
     // console.log("recieveted", rowData);
   }, [open, profileImgPath]);
+  // 이미지가 로드되지 않을 경우를 대비한 예외 처리
+  const handleImageError = (event) => {
+    event.target.src = DefaultImg; // 기본 이미지로 대체
+  };
   return (
     <div>
       <Modal
@@ -57,9 +63,12 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
             {title}
           </h2>
           <img
-            src={profileImgPath ? profileImgPath : DefaultImg}
+            src={profileImgPath || DefaultImg}
             width="120px"
             height="120px"
+            alt="loading"
+            onError={handleImageError}
+            style={modalImageStyle}
           />
           <TableContainer sx={{ width: isSmallScreen ? "280px" : "400" }}>
             <DetailTable data={rowData} rowsHeader={rowsHeader} />
@@ -73,7 +82,12 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
     </div>
   );
 }
-
+const modalImageStyle = {
+  borderRadius: "70%",
+  width: "120px" /* 원하는 크기로 설정 */,
+  height: "120px" /* 원하는 크기로 설정 */,
+  objectFit: "cover" /* 이미지 비율 유지 */,
+};
 const TableContainer = styled("div")(
   ({ theme }) => css`
     height: auto;

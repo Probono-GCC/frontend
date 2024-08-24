@@ -25,9 +25,23 @@ function Login({ type }) {
   const handleChange = (event) => {
     setLang(event.target.value);
   };
-  const moveForgotPassword = () => {
-    navigate("/forgot-password");
-  };
+
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      // 사용자에게 페이지를 떠나려고 할 때 경고 메시지를 표시
+      event.preventDefault();
+      event.returnValue = ""; // 일부 브라우저에서 작동
+      return ""; // 표준에 따라
+    };
+
+    // beforeunload 이벤트 리스너 등록
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    // cleanup 함수로 리스너 제거
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
   /**언어 선택 임시 선택상자 */
   const BackgroundSample = [
     { img: BackImage1, key: 1 },
@@ -59,8 +73,8 @@ function Login({ type }) {
                 sx={{ height: "5vh" }}
               >
                 <MenuItem value={10}>Eng</MenuItem>
-                <MenuItem value={20}>Nepali</MenuItem>
-                <MenuItem value={30}>Kor</MenuItem>
+                {/* <MenuItem value={20}>Nepali</MenuItem>
+                <MenuItem value={30}>Kor</MenuItem> */}
               </Select>
             </FormControl>
           </div>

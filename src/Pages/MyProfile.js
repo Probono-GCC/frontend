@@ -213,7 +213,8 @@ function MyProfile() {
           console.error("Image upload error:", error);
         });
     } else {
-      updateProfile();
+      alert("Profile image registration is required");
+      // updateProfile();
     }
   };
   const updateProfile = () => {
@@ -224,7 +225,7 @@ function MyProfile() {
           console.log("final teacher data", result);
           if (result && result.status == 200) {
             alert("Complete");
-            navigate("/home");
+            navigate("/private/home");
           }
         }
       );
@@ -243,7 +244,7 @@ function MyProfile() {
         (result) => {
           if (result && result.status == 200) {
             alert("Complete");
-            navigate("/home");
+            navigate("/private/home");
           }
         }
       );
@@ -290,7 +291,7 @@ function MyProfile() {
                 console.log("final teacher data", result);
                 if (result && result.status == 200) {
                   alert("Complete");
-                  navigate("/home");
+                  navigate("/private/home");
                 }
               }
             );
@@ -300,7 +301,7 @@ function MyProfile() {
               (result) => {
                 if (result && result.status == 200) {
                   alert("Complete");
-                  navigate("/home");
+                  navigate("/private/home");
                 }
               }
             );

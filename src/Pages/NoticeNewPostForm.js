@@ -57,7 +57,7 @@ function NoticeNewPostForm() {
 
     // 필수 필드 추가 PUT용
     formData.append("title", title);
-    formData.append("content", content.replace(/<\/?[^>]+(>|$)/g, ""));
+    formData.append("content", content);
     formData.append("type", "SCHOOL");
     console.log(imgURL, "img있는지");
     if (imgURL) {
@@ -90,7 +90,7 @@ function NoticeNewPostForm() {
         // console.log("formData", formData);
         if (result) {
           alert("Edit complete");
-          navigate("/notice-board");
+          navigate(-1);
         } else {
           console.log("뭘보내는지");
           for (const [key, value] of formData.entries()) {
