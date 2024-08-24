@@ -16,8 +16,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   postStudent,
   postTeacher,
-  checkDuplicatedStudentIdApi,
-  checkDuplicatedTeacherIdApi,
+  checkDuplicatedUserIdApi,
   checkDuplicatedStudentSerialNumberApi,
 } from "../Apis/Api/User";
 
@@ -69,16 +68,10 @@ function CreateAccount() {
 
   const handleIdDuplicateCheck = async () => {
     try {
-      const result = await checkDuplicatedStudentIdApi(id);
+      const result = await checkDuplicatedUserIdApi(id);
       if (result && result.status === 200) {
-        const teacherResult = await checkDuplicatedTeacherIdApi(id);
-        if (teacherResult && teacherResult.status === 200) {
-          alert("ID is available.");
-          setIsIdChecked(true);
-        } else {
-          alert("⚠️ID is already taken.⚠️");
-          setIsIdChecked(false);
-        }
+        alert("ID is available.");
+        setIsIdChecked(true);
       } else {
         alert("⚠️ID is already taken.⚠️");
         setIsIdChecked(false);
