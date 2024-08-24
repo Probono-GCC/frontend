@@ -181,18 +181,6 @@ export async function resetPassword(userId, userData) {
   }
 }
 
-export async function checkDuplicatedStudentIdApi(userId) {
-  try {
-    const response = await axiosInstance.get(
-      `/students/checkusername/${userId}`
-    );
-    return response;
-  } catch (err) {
-    console.log(err);
-    return err;
-  }
-}
-
 ///students/checkSerialNumber/{serialNumber}
 export async function checkDuplicatedStudentSerialNumberApi(userSn) {
   try {
@@ -205,7 +193,7 @@ export async function checkDuplicatedStudentSerialNumberApi(userSn) {
   }
 }
 
-export async function checkDuplicatedTeacherIdApi(userId) {
+export async function checkDuplicatedUserIdApi(userId) {
   try {
     const response = await axiosInstance.get(
       `/teachers/checkusername/${userId}`
