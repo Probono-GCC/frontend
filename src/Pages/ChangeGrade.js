@@ -16,7 +16,7 @@ import Radio from "@mui/material/Radio";
 import Button from "@mui/material/Button";
 import { Typography, Box, Grid } from "@mui/material";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
-import { getStudents, changeGradeApi } from "../Apis/Api/User";
+import { getStudents, changeAllGradeApi } from "../Apis/Api/User";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
@@ -44,12 +44,13 @@ function ChangeGrade() {
         {
           field: "sn",
           headerName: "SN",
-          flex: 0.25,
+          flex: 0.2,
           cellClassName: styles.centerAlign,
         },
-        { field: "name", headerName: "Name", flex: 0.4 },
+        { field: "name", headerName: "Name", flex: 0.3 },
 
-        { field: "id", headerName: "ID", flex: 0.35 },
+        { field: "id", headerName: "ID", flex: 0.2 },
+        { field: "grade", headerName: "Grade", flex: 0.3 },
       ]
     : [
         {
@@ -193,20 +194,21 @@ function ChangeGrade() {
     }
     return newGrade;
   };
-  const handleChangeAllGrade = () => {
-    // allStudentData.forEach((student) => {
-    //   const newGrade = advanceGrade(student.grade);
-    //   const updatedGradeData = { grade: newGrade };
-    //   changeGradeApi(updatedGradeData, student.username).then((result) => {
-    //     if (result && result.grade) {
-    //       console.log("page", page, pageSize);
-    //       fetchStudents(page, pageSize);
-    //       handleClose();
-    //     } else if (result && result.response && result.response.status == 400) {
-    //       alert("Changing grade failed");
-    //     }
-    //   });
-    // });
+  const handleChangeAllGrade = async () => {
+    try {
+      const result = await changeAllGradeApi();
+      if (result && result.status == 200) {
+        // 성공적으로 처리
+        fetchStudents(page, pageSize);
+        handleClose();
+      } else {
+        // 결과가 예상과 다를 때 처리
+        alert("Changing grade failed");
+      }
+    } catch (error) {
+      // 에러 처리
+      alert("An error occurred: " + error.message);
+    }
   };
   useEffect(() => {
     console.log("page change", page, pageSize);
@@ -254,29 +256,35 @@ function ChangeGrade() {
             Change Grade
           </Typography>
         </Box>
-
-        <Table
-          columns={updatedColumns}
-          rows={rows}
-          totalRowCount={totalRowCount}
-          onRowSelection={handleRowSelection}
-          onRowSelectedId={() => {}}
-          id={isSmallScreen ? "" : "table_body"}
-          // onRowClick={handleRowSelection}
-          onRowDoubleClick={() => {}}
-          getRowId={(row) => row.id}
-          isRadioButton={true}
-          onPageChange={handlePageChange} // 페이지 변경 핸들러 추가
-          onPageSizeChange={handlePageSizeChange} // 페이지 크기 변경 핸들러 추가
-          // checkedRows={(params) => null}
-        />
+        <Box
+          sx={{
+            height: "65vh",
+            overflowY: "auto", // 스크롤 추가
+            padding: "10px", // 패딩 추가 (선택사항)
+          }}
+        >
+          <Table
+            columns={isSmallScreen ? columns : updatedColumns}
+            rows={rows}
+            totalRowCount={totalRowCount}
+            onRowSelection={handleRowSelection}
+            onRowSelectedId={() => {}}
+            id={isSmallScreen ? "" : "table_body"}
+            // onRowClick={handleRowSelection}
+            onRowDoubleClick={() => {}}
+            getRowId={(row) => row.id}
+            isRadioButton={true}
+            onPageChange={handlePageChange} // 페이지 변경 핸들러 추가
+            onPageSizeChange={handlePageSizeChange} // 페이지 크기 변경 핸들러 추가
+            // checkedRows={(params) => null}
+          />
+        </Box>
         <Grid container>
           <Grid sx={{ display: "flex", justifyContent: "flex-start" }}>
             {isSmallScreen ? (
               <div></div>
             ) : (
               <CustomButton
-                disabled={true}
                 title={"Change All Grade"}
                 variant="contained"
                 color="primary"
