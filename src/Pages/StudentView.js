@@ -36,7 +36,7 @@ function StudentView() {
   const [rows, setRows] = useState([]);
   const { isSmallScreen } = useMediaQueryContext();
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(100);
   const [totalRowCount, setTotalRowCount] = useState(0); //서버에서 총 학생수 받아와서 설정
   //student view default table column
   const basic_columns = isSmallScreen
@@ -44,10 +44,10 @@ function StudentView() {
         {
           field: "serialNumber",
           headerName: "SN",
-          flex: 0.25,
+          flex: 0.3,
           cellClassName: styles.centerAlign,
         },
-        { field: "name", headerName: "Name", flex: 0.4 },
+        { field: "name", headerName: "Name", flex: 0.35 },
 
         { field: "id", headerName: "ID", flex: 0.35 },
       ]
@@ -55,10 +55,10 @@ function StudentView() {
         {
           field: "serialNumber",
           headerName: "SN",
-          flex: 0.05,
+          flex: 0.1,
           cellClassName: styles.centerAlign,
         },
-        { field: "name", headerName: "Name", flex: 0.2 },
+        { field: "name", headerName: "Name", flex: 0.15 },
         { field: "gender", headerName: "Gender", flex: 0.1 },
         { field: "birth", headerName: "Birth", flex: 0.1 },
         { field: "id", headerName: "ID", flex: 0.2 },
@@ -107,6 +107,7 @@ function StudentView() {
     fetchStudents(page, newSize);
   };
   const handleRowSelection = (id) => {
+    console.log(id, "idtyupe");
     if (!Array.isArray(id)) {
       console.log(id, "idtyupe");
       setCheckedRows((prevCheckedRows) => {
@@ -168,7 +169,7 @@ function StudentView() {
 
   const fetchStudents = (page, pageSize) => {
     getStudents(page, pageSize).then((result) => {
-      console.log(result);
+      console.log("????", result);
       const students = result.content || []; // content 배열 가져오기
       // console.log(students);
       setTotalRowCount(result.totalElements);

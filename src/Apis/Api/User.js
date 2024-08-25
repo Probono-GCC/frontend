@@ -10,9 +10,11 @@ export async function postTeacher(userData) {
   }
 }
 
-export async function getTeachers() {
+export async function getTeachers(page, size) {
   try {
-    const response = await axiosInstance.get("/teachers");
+    const response = await axiosInstance.get(
+      `/teachers?page=${page}&size=${size}`
+    );
     // console.log(response);
     return response.data;
   } catch (err) {

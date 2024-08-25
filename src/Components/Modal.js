@@ -37,6 +37,7 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
       }
     } else if (title === "Student Detail Info") {
       if (rowData && rowData.id) {
+        setDetailRowData(rowData);
         getStudent(rowData.id).then((result) => {
           if (
             result &&
