@@ -378,7 +378,7 @@ function CommonCourseManagement() {
   };
 
   const fetchTeacher = () => {
-    getTeachers().then((result) => {
+    getTeachers(0, 100).then((result) => {
       const teacherMap = result.content || [];
       if (teacherMap.length > 0) {
         const tempRow = teacherMap.map((item, index) =>
