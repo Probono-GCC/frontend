@@ -12,6 +12,7 @@ import { getTeacher, getStudent } from "../Apis/Api/User";
 function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
   const { isSmallScreen } = useMediaQueryContext();
   const [profileImgPath, setProfileImgPath] = useState("");
+  const [detailRowData, setDetailRowData] = useState();
   useEffect(() => {
     if (title === "Teacher Detail Info") {
       if (rowData && rowData.id) {
@@ -22,6 +23,15 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
             setProfileImgPath(result.imageId.imagePath);
           } else {
             setProfileImgPath("");
+          }
+
+          if (result && result.classId) {
+            const updatedRowData = {
+              ...rowData,
+              home_room: result.classId.grade + "-" + result.classId.section,
+            };
+            // 상태를 업데이트하여 UI에서 변경된 데이터를 사용
+            setDetailRowData(updatedRowData);
           }
         });
       }
@@ -78,8 +88,8 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
             onError={handleImageError}
             style={modalImageStyle}
           />
-          <TableContainer sx={{ width: isSmallScreen ? "280px" : "400" }}>
-            <DetailTable data={rowData} rowsHeader={rowsHeader} />
+          <TableContainer sx={{ width: isSmallScreen ? "270px" : "400px" }}>
+            <DetailTable data={detailRowData} rowsHeader={rowsHeader} />
           </TableContainer>
 
           {/* <p id="keep-mounted-modal-description" className="modal-description">
