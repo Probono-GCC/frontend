@@ -77,6 +77,15 @@ export async function changeGradeApi(userData, userId) {
     return err;
   }
 }
+export async function changeAllGradeApi() {
+  try {
+    const response = await axiosInstance.put(`/students/grade/increment`);
+    return response;
+  } catch (err) {
+    console.error("요청 중 오류 발생:", err); // 오류 메시지 로깅
+    return err;
+  }
+}
 export async function postProfileImage(userData, userId) {
   try {
     const response = await axiosInstance.post(
