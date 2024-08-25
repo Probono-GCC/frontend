@@ -151,6 +151,7 @@ function MyProfile() {
   };
   const handleProfileImageDelete = () => {
     setProfileImage("");
+    setInitialImageId(0);
     setThumnailImage("");
   };
   const validateForm = () => {
@@ -212,7 +213,11 @@ function MyProfile() {
         .catch((error) => {
           console.error("Image upload error:", error);
         });
+    } else if (initialImageId) {
+      changedFields.imageId = initialImageId;
+      updateProfile();
     } else {
+      console.log(initialImageId, "ini");
       alert("Profile image registration is required");
       // updateProfile();
     }
@@ -359,6 +364,7 @@ function MyProfile() {
         if (result.imageResponseDTO) {
           getProfileImage(result.imageResponseDTO.imageId).then((res) => {
             setThumnailImage(res.imagePath);
+            setInitialImageId(res.imageId);
           });
         }
         // 초기 값 설정
@@ -509,9 +515,9 @@ function MyProfile() {
           <Grid item xs={12}>
             <Divider />
           </Grid>
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <Typography sx={{ color: "red" }}>Fill in the blank</Typography>
-          </Grid>
+          </Grid> */}
           <Grid item xs={12}>
             <FormControl fullWidth>
               {decodedToken.role == role[0] ? (
@@ -576,6 +582,12 @@ function MyProfile() {
           </Grid>
 
           <Grid item xs={12}>
+            {decodedToken.role === role[2] && (
+              <FormHelperText>
+                At least one phone number (mother, father, or guardian) is
+                required.
+              </FormHelperText>
+            )}
             <TextField
               fullWidth
               variant="outlined"

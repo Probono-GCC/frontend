@@ -7,7 +7,11 @@ import {
   Grid,
   MenuItem,
   Paper,
+  IconButton,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+// import { IconButton } from '@mui/material';
+
 import { useNavigate, useLocation } from "react-router-dom";
 import AppBar from "../Components/AppBar";
 import ReactQuill from "react-quill";
@@ -55,31 +59,22 @@ function NoticeNewPostForm() {
   const handleSave = () => {
     const formData = new FormData();
 
-    // 필수 필드 추가 PUT용
+    // 필수 필드 추가
     formData.append("title", title);
     formData.append("content", content);
     formData.append("type", "SCHOOL");
     console.log(imgURL, "img있는지");
     if (imgURL) {
-      console.log(imgURL);
       imgURL.forEach((url, index) => {
         formData.append(`imageList`, url);
       });
     }
 
-    //Patch 의미(only바뀐것만)
-    // if (title !== initialTitle) formData.append("title", title);
-    // if (content !== initialContent) formData.append("content", content.replace(/<\/?[^>]+(>|$)/g, ""));
-    // if (imgURL.length > 0) {
-    //   imgURL.forEach((file) => {
-    //     formData.append("imageList", file);
-    //   });
-    // }
-
+    //수정인 경우
     if (postData) {
       // initialImageList에서 imageId 값만 추출하여 새로운 배열로 만듦
       const imageIdList = initialImageList.map((item) => item.imageId);
-
+      console.log("image id list", imageIdList);
       // 배열을 콤마로 구분된 문자열로 변환
       const imageIdString = imageIdList.join(",");
 
@@ -87,7 +82,11 @@ function NoticeNewPostForm() {
       formData.append("maintainImageList", imageIdString);
 
       putNoticePost(postData.noticeId, formData).then((result) => {
-        // console.log("formData", formData);
+        console.log("formData");
+        for (const [key, value] of formData.entries()) {
+          console.log(`${key}: ${value}`);
+        }
+        console.log("result", result);
         if (result) {
           alert("Edit complete");
           navigate(-1);
@@ -144,6 +143,15 @@ function NoticeNewPostForm() {
       reader.readAsDataURL(file); // 이미지 파일을 Data URL로 읽어들임
     };
   };
+  const handleDeletePrevImage = (index) => {
+    setPrevImage((prev) => prev.filter((_, i) => i !== index));
+    setInitialImageList((initial) => initial.filter((_, i) => i !== index));
+  };
+
+  const handleDeleteThumbnail = (index) => {
+    setThumbnail((thumbnail) => thumbnail.filter((_, i) => i !== index));
+    setImgURL((imgURL) => imgURL.filter((_, i) => i !== index));
+  };
   useEffect(() => {
     if (postData) {
       setTitle(postData.title || "");
@@ -154,16 +162,7 @@ function NoticeNewPostForm() {
       setInitialImageList(postData.imageList || []);
     }
   }, [postData]);
-  // useEffect(() => {
-  //   if (postData) {
-  //     setTitle(postData.title || "");
-  //     setContent(postData.content || "");
-  //     if (postData.imageList) {
-  //       setPrevImage(postData.imageList);
 
-  //     }
-  //   }
-  // }, [postData]);
   const checkImage = (file) => {
     let err = "";
 
@@ -288,40 +287,64 @@ function NoticeNewPostForm() {
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "start",
-                minHeight: "50px", // 기본 높이 설정
-                height: "auto", // 이미지에 따라 자동 조정
+                minHeight: "50px",
+                height: "auto",
                 border: "1px solid #ddd",
                 borderRadius: "8px",
                 padding: "8px",
               }}
             >
               {prevImage.map((item, index) => (
-                <img
-                  style={{
-                    maxWidth: "100%",
-                    maxHeight: "200px",
-                    borderRadius: "8px",
-                    objectFit: "cover",
-                    // margin: "0 5px",
-                  }}
-                  key={index}
-                  src={item.imagePath}
-                  alt={`Uploaded ${index}`}
-                />
+                <Box key={index} sx={{ position: "relative", marginRight: 2 }}>
+                  <img
+                    style={{
+                      maxWidth: "100%",
+                      maxHeight: "200px",
+                      borderRadius: "8px",
+                      objectFit: "cover",
+                    }}
+                    src={item.imagePath}
+                    alt={`Uploaded ${index}`}
+                  />
+                  <IconButton
+                    size="small"
+                    onClick={() => handleDeletePrevImage(index)}
+                    sx={{
+                      position: "absolute",
+                      top: 5,
+                      right: 5,
+                      color: "#f44336",
+                    }}
+                  >
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </Box>
               ))}
               {thumbnail.map((url, index) => (
-                <img
-                  style={{
-                    maxWidth: "100%",
-                    maxHeight: "200px",
-                    borderRadius: "8px",
-                    objectFit: "cover",
-                    // margin: "0 5px",
-                  }}
-                  key={index}
-                  src={url}
-                  alt={`Uploaded ${index}`}
-                />
+                <Box key={index} sx={{ position: "relative", marginRight: 2 }}>
+                  <img
+                    style={{
+                      maxWidth: "100%",
+                      maxHeight: "200px",
+                      borderRadius: "8px",
+                      objectFit: "cover",
+                    }}
+                    src={url}
+                    alt={`Uploaded ${index}`}
+                  />
+                  <IconButton
+                    size="small"
+                    onClick={() => handleDeleteThumbnail(index)}
+                    sx={{
+                      position: "absolute",
+                      top: 5,
+                      right: 5,
+                      color: "#f44336",
+                    }}
+                  >
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </Box>
               ))}
             </Box>
           </Grid>

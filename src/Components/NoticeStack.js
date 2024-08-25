@@ -8,14 +8,13 @@ import AddIcon from "@mui/icons-material/Add";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getNoticePostList } from "../Apis/Api/Notice";
 import { useEffect, useState } from "react";
-import CircularProgress from "@mui/material/CircularProgress"; 
-
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function NoticeStack() {
   const [rows, setRows] = useState([]); // Initialize rows state
   const [loading, setLoading] = useState(true); // Initialize loading state
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -120,7 +119,7 @@ export default function NoticeStack() {
           <NoticeDate>2024. 04. 19.</NoticeDate>
         </Item>
       </Stack> */}
-       {loading ? ( // 로딩 중일 때 로딩 스피너 표시
+      {loading ? ( // 로딩 중일 때 로딩 스피너 표시
         <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
           <CircularProgress />
         </Box>
@@ -129,7 +128,9 @@ export default function NoticeStack() {
           {rows.map((row, index) => (
             <Item key={index} onClick={() => handleRowClick(row)}>
               <NoticeTitle>{row.title}</NoticeTitle>
-              <NoticeDate>{new Date(row.createdAt).toLocaleDateString()}</NoticeDate>
+              <NoticeDate>
+                {new Date(row.updatedAt).toLocaleDateString()}
+              </NoticeDate>
             </Item>
           ))}
         </Stack>
