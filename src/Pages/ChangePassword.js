@@ -159,7 +159,7 @@ function ChangePassword() {
       ];
 
   const handleRowSelection = (_loginId) => {
-    console.log("rowselectuon프롭전달");
+    console.log("rowselectuon프롭전달", _loginId);
     setCheckedRowId(_loginId);
   };
 
@@ -175,12 +175,11 @@ function ChangePassword() {
     {
       field: "check",
       headerName: "",
-      flex: 0.05,
+      flex: 0.01,
       renderCell: (params) => (
         <Radio
           {...label}
           checked={checkedRowId ? checkedRowId.id === params.row.id : null}
-          onChange={() => handleRowSelection(params.row.id)}
         />
       ),
     },
@@ -241,21 +240,37 @@ function ChangePassword() {
             </Select>
           </FormControl>
         </Box>
-        <Table
-          columns={updatedColumns}
-          rows={rows}
-          onRowSelection={handleRowSelection}
-          onRowSelectedId={() => {}}
-          id={isSmallScreen ? "" : "table_body"}
-          totalRowCount={totalRowCount}
-          // onRowClick={handleRowSelection}
-          onRowDoubleClick={(params) => handleModalOpen(params.row)}
-          getRowId={(row) => row.id}
-          isRadioButton={true}
-          handlePageNumber={handlePageChange} // 페이지 변경 핸들러 추가
-          onPageSizeChange={handlePageSizeChange} // 페이지 크기 변경 핸들러 추가
-          // pageSizeOptions={[5, 10, 15]} // 여기서도 전달 가능
-        />
+        <Box
+          sx={{
+            height: "60vh",
+            overflowY: "auto", // 스크롤 추가
+            padding: "10px", // 패딩 추가 (선택사항)
+          }}
+        >
+          <Table
+            columns={isSmallScreen ? columns : updatedColumns}
+            rows={rows}
+            onRowSelection={handleRowSelection}
+            onRowSelectedId={() => {}}
+            id={isSmallScreen ? "" : "table_body"}
+            totalRowCount={totalRowCount}
+            // onRowClick={handleRowSelection}
+            onRowDoubleClick={(params) => handleModalOpen(params.row)}
+            getRowId={(row) => row.id}
+            isRadioButton={true}
+            handlePageNumber={handlePageChange} // 페이지 변경 핸들러 추가
+            onPageSizeChange={handlePageSizeChange} // 페이지 크기 변경 핸들러 추가
+            // pageSizeOptions={[5, 10, 15]} // 여기서도 전달 가능
+            // renderCell={(params) => (
+            //   <Radio
+            //     {...label}
+            //     checked={checkedRowId === params.row.id}
+            //     onChange={() => handleRowSelection(params.row.id)}
+            //   />
+            // )}
+          />
+        </Box>
+
         <Button
           title={"Change"}
           onClick={handleModalOpen}
