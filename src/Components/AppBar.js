@@ -462,30 +462,20 @@ function AppBar() {
             </IconButton>
             <Typography variant="h6" noWrap component="div"></Typography>
             <Box sx={{ flexGrow: 1 }} />
-            <Box sx={{ display: { xs: "none", md: "flex" } }}>
-              {/* <IconButton
-                size="large"
-                aria-label="show 17 new notifications"
-                color="inherit"
-              >
-                <Badge badgeContent={17} color="error">
-                  <NotificationsIcon />
-                </Badge>
-              </IconButton> */}
+            <Box sx={{ display: "flex" }}>
               <IconButton
-                size="large"
+                size="medium"
                 edge="end"
                 aria-label="account of current user"
                 aria-controls={menuId}
                 aria-haspopup="true"
-                onClick={goMyProfile} // 클릭 시 goToProfilePage 함수가 호출됩니다.
+                onClick={goMyProfile}
                 color="inherit"
               >
                 <Avatar alt="User Image" src={thumbnailImage} />
-                {/* <AccountCircle /> */}
               </IconButton>
             </Box>
-            <Box sx={{ display: { xs: "flex", md: "none" } }}>
+            {/* <Box sx={{ display: { xs: "flex", md: "none" } }}>
               <IconButton
                 size="large"
                 aria-label="show more"
@@ -496,7 +486,7 @@ function AppBar() {
               >
                 <MoreIcon />
               </IconButton>
-            </Box>
+            </Box> */}
           </Toolbar>
         </AppBar>
         <Drawer

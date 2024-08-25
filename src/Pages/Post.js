@@ -53,6 +53,7 @@ function Post() {
   useEffect(() => {
     console.log("postdagtaaaaa", postData);
     getNoticePost(postData.noticeId).then((result) => {
+      console.log("get notice post", result);
       if (result && result.imageList != null) {
         postData.imageList = result.imageList;
         setTempImageList(result.imageList);
@@ -195,7 +196,7 @@ function Post() {
             sx={{
               marginBottom: 3,
               marginTop: 2,
-              minHeight: "60vh",
+              minHeight: "20vh",
               maxWidth: "100vw", // 컨텐츠가 부모 요소를 넘지 않도록 함
               // overflowY: "scroll",
               border: "1px solid #e0e0e0",
@@ -210,16 +211,23 @@ function Post() {
           ></Typography>
 
           {tempImageList && tempImageList.length !== 0 ? (
-            <Box sx={{ textAlign: "center", marginBottom: 3, width: "90vw" }}>
+            <Box
+              sx={{
+                textAlign: "center",
+                marginBottom: 3,
+                maxWidth: "95%", // body1과 동일한 너비
+                margin: "0 auto", // 가운데 정렬
+              }}
+            >
               {tempImageList.map((image, index) => (
                 <img
-                  key={index} // 또는 image.imageId, 혹은 유일한 id 값을 사용하는 것이 좋습니다.
+                  key={index}
                   src={image.imagePath}
                   alt={`Image ${index + 1}`}
                   style={{
-                    maxWidth: isSmallScreen ? "90%" : "100%",
+                    maxWidth: "100%",
                     height: "auto",
-                    margin: "10px",
+                    margin: "10px 0", // 이미지 간격 조정
                   }}
                 />
               ))}
