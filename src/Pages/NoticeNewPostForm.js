@@ -74,7 +74,7 @@ function NoticeNewPostForm() {
     if (postData) {
       // initialImageList에서 imageId 값만 추출하여 새로운 배열로 만듦
       const imageIdList = initialImageList.map((item) => item.imageId);
-      console.log("image id list", imageIdList);
+      // console.log("image id list", imageIdList);
       // 배열을 콤마로 구분된 문자열로 변환
       const imageIdString = imageIdList.join(",");
 
@@ -82,11 +82,6 @@ function NoticeNewPostForm() {
       formData.append("maintainImageList", imageIdString);
 
       putNoticePost(postData.noticeId, formData).then((result) => {
-        console.log("formData");
-        for (const [key, value] of formData.entries()) {
-          console.log(`${key}: ${value}`);
-        }
-        console.log("result", result);
         if (result) {
           alert("Edit complete");
           navigate(-1);
