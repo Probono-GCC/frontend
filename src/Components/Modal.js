@@ -20,6 +20,8 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
           if (result && result.imageId && result.imageId.imagePath) {
             console.log("getteacher image pth", result.imageId.imagePath);
             setProfileImgPath(result.imageId.imagePath);
+          } else {
+            setProfileImgPath("");
           }
         });
       }
@@ -31,7 +33,13 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
             result.imageResponseDTO &&
             result.imageResponseDTO.imagePath
           ) {
+            console.log(
+              "get stud image pth",
+              result.imageResponseDTO.imagePath
+            );
             setProfileImgPath(result.imageResponseDTO.imagePath);
+          } else {
+            setProfileImgPath("");
           }
         });
       }
@@ -83,10 +91,12 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
   );
 }
 const modalImageStyle = {
-  borderRadius: "70%",
-  width: "120px" /* 원하는 크기로 설정 */,
-  height: "120px" /* 원하는 크기로 설정 */,
-  objectFit: "cover" /* 이미지 비율 유지 */,
+  borderRadius: "50%",
+  width: "120px",
+  height: "120px",
+  objectFit: "cover", // 비율 유지하면서 이미지 전체를 표시 cover or contain
+  display: "block",
+  margin: "auto",
 };
 const TableContainer = styled("div")(
   ({ theme }) => css`
