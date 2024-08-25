@@ -12,7 +12,7 @@ import Modal from "../Components/Modal";
 import { Typography, Box } from "@mui/material";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
 import { getTeachers, deleteTeacher } from "../Apis/Api/User"; // deleteTeacher 함수를 가져옵니다.
-
+import { getClassTeacher } from "../Apis/Api/Class";
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 function createData(gender, name, birth, id, phone_num, home_room) {
@@ -138,6 +138,10 @@ function TeacherView() {
     getTeachers().then((result) => {
       console.log("teacherinfo", result);
       const teachers = result.content || []; // content 배열 가져오기
+
+      // const homeRoom=getClassTeacher().then((result)=>{
+      //   return result.map((teacher) => teacher.username)
+      // })
       if (teachers.length > 0) {
         const tempRow = teachers.map((item) =>
           createData(
