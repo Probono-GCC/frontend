@@ -589,13 +589,6 @@ function CommonCourseManagement() {
               sx={{ display: "flex", justifyContent: "flex-end", marginTop: 3 }}
             >
               <CustomButton
-                title={"Cancel"}
-                variant="outlined"
-                onClick={() => setAddMode(false)}
-                sx={{ marginRight: 2 }}
-              />
-              <Box marginRight={2}></Box>
-              <CustomButton
                 title={"Save"}
                 variant="contained"
                 color="primary"
