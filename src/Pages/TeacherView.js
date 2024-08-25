@@ -15,8 +15,8 @@ import { getTeachers, deleteTeacher } from "../Apis/Api/User"; // deleteTeacher 
 import { getClassTeacher } from "../Apis/Api/Class";
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
-function createData(gender, name, birth, id, phone_num, home_room) {
-  return { gender, name, id, birth, phone_num, home_room };
+function createData(gender, name, birth, id, phone_num) {
+  return { gender, name, id, birth, phone_num };
 }
 
 function TeacherView() {
@@ -149,10 +149,7 @@ function TeacherView() {
             item.name,
             item.birth,
             item.username,
-            item.phoneNum,
-            item.classId && item.classId.grade && item.classId.section
-              ? item.classId.grade + " - " + item.classId.section
-              : ""
+            item.phoneNum
           )
         );
         setRows(tempRow);
