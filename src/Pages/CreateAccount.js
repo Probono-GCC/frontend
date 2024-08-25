@@ -31,6 +31,8 @@ function CreateAccount() {
   const [isIdChecked, setIsIdChecked] = useState(false);
   const [isSnChecked, setIsSnChecked] = useState(false);
   const [id, setId] = useState("");
+  const [isFocused, setIsFocused] = useState(false); // input의 포커스 상태를 추적
+
   const [sn, setSn] = useState("");
   const [name, setName] = useState("");
 
@@ -230,12 +232,17 @@ function CreateAccount() {
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label="ID"
+              label={
+                isFocused || id.length > 0 ? "ID" : "ID(4-20 characters long)"
+              }
               variant="outlined"
               value={id}
+              onFocus={() => setIsFocused(true)} // 포커스가 있을 때 isFocused를 true로 설정
+              onBlur={() => setIsFocused(false)} // 포커스가 벗어날 때 isFocused를 false로 설정
               onChange={(e) => {
-                setId(e.target.value);
-                setIsIdChecked(false);
+                const newId = e.target.value;
+                setId(newId);
+                setIsIdChecked(idRegex.test(newId));
               }}
               InputProps={{
                 endAdornment: (
