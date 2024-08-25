@@ -134,7 +134,7 @@ function AssignHomeroom() {
         }
 
         // Fetch teachers data
-        const teacherResult = await getTeachers();
+        const teacherResult = await getTeachers(0, 100);
         if (teacherResult && teacherResult.content) {
           const tempTeachers = teacherResult.content.map((item, index) => ({
             id: index + 1, // Assuming an index for table rows
