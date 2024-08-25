@@ -151,6 +151,7 @@ function MyProfile() {
   };
   const handleProfileImageDelete = () => {
     setProfileImage("");
+    setInitialImageId(0);
     setThumnailImage("");
   };
   const validateForm = () => {
@@ -212,7 +213,11 @@ function MyProfile() {
         .catch((error) => {
           console.error("Image upload error:", error);
         });
+    } else if (initialImageId) {
+      changedFields.imageId = initialImageId;
+      updateProfile();
     } else {
+      console.log(initialImageId, "ini");
       alert("Profile image registration is required");
       // updateProfile();
     }
@@ -359,6 +364,7 @@ function MyProfile() {
         if (result.imageResponseDTO) {
           getProfileImage(result.imageResponseDTO.imageId).then((res) => {
             setThumnailImage(res.imagePath);
+            setInitialImageId(res.imageId);
           });
         }
         // 초기 값 설정
