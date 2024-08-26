@@ -23,6 +23,8 @@ function Post() {
   // const [postData, setPostData] = useState(null);
   const location = useLocation();
   const postData = location.state;
+  const className = postData.className;
+
   // 현재 URL에서 경로(path)를 가져옴
   const path = window.location.pathname;
 
@@ -121,7 +123,7 @@ function Post() {
               marginBottom: 1,
             }}
           >
-            All
+            {className ? className : "All"}
           </Typography>
           <Grid
             container
