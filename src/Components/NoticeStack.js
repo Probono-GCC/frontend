@@ -10,11 +10,14 @@ import { getNoticePostList } from "../Apis/Api/Notice";
 import { useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 
+//다국어지원
+import { useTranslation } from "react-i18next";
+
 export default function NoticeStack() {
   const [rows, setRows] = useState([]); // Initialize rows state
   const [loading, setLoading] = useState(true); // Initialize loading state
   const navigate = useNavigate();
-
+  const { t } = useTranslation();
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -94,7 +97,7 @@ export default function NoticeStack() {
             fontFamily: "Copperplate",
           }}
         >
-          Notice Board
+          {t("noticeBoard")}
         </Box>
         <IconButton
           onClick={goNoticeBoard}
@@ -129,7 +132,7 @@ export default function NoticeStack() {
             <Item key={index} onClick={() => handleRowClick(row)}>
               <NoticeTitle>{row.title}</NoticeTitle>
               <NoticeDate>
-                {new Date(row.updatedAt).toLocaleDateString()}
+                {new Date(row.createdAt).toLocaleDateString()}
               </NoticeDate>
             </Item>
           ))}

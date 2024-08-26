@@ -11,7 +11,13 @@ import { isFirstAccessStudent } from "../Util/CheckFirstAccess";
 import { isFirstAccessTeacher } from "../Util/checkFirstAccessTeacher";
 //api
 import { loginApi } from "../Apis/Api/User";
+
+//다국어지원
+import React from "react";
+import { useTranslation } from "react-i18next";
+
 function LoginContainer() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [userID, setUserID] = useState("");
   const [userPW, setUserPW] = useState("");
@@ -22,6 +28,8 @@ function LoginContainer() {
   };
 
   const login = async () => {
+    //다국어지원
+
     // FormData 객체 생성
     const formData = new FormData();
 
@@ -93,7 +101,7 @@ function LoginContainer() {
           fontWeight: "bold",
         }}
       >
-        Welcome to visit
+        {t("welcome")}
         <Typography
           variant={isSmallWidth ? "h5" : "h4"}
           className={styles.title}
@@ -118,7 +126,7 @@ function LoginContainer() {
       >
         <div>
           <TextField
-            label="ID"
+            label={t("ID")}
             variant="outlined"
             onChange={(event) => {
               setUserID(event.target.value);
@@ -132,7 +140,7 @@ function LoginContainer() {
         </div>
         <div>
           <TextField
-            label="Password"
+            label={t("password")}
             variant="outlined"
             type="password"
             autoComplete="current-password"
@@ -154,11 +162,11 @@ function LoginContainer() {
             onClick={moveForgotPassword}
             style={{ color: "#1B3DA6" }}
           >
-            Forgot your password?
+            {t("forgotPw")}
           </p>
         </div>
         <Button
-          title={"login"}
+          title={t("login")}
           disabled={userPW.length === 0 || userID.length === 0}
           onClick={login}
           size={"bg"}
