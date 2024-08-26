@@ -15,6 +15,10 @@ import BackImage4 from "../Assets/img/BackgroundSample/sample_images_03.png";
 import BackImage5 from "../Assets/img/BackgroundSample/sample_images_04.png";
 import { Password } from "@mui/icons-material";
 
+//다국어지원
+import i18n from "../i18n/i18n"; // 경로는 파일의 위치에 따라 조정해야 합니다.
+import { useTranslation } from "react-i18next";
+import "../i18n/i18n.js"; // src/Pages에서 src/i18n으로 접근; // i18next 초기화 파일
 function Login({ type }) {
   const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(1);
@@ -23,7 +27,23 @@ function Login({ type }) {
   const [lang, setLang] = useState(10);
 
   const handleChange = (event) => {
+    const selectedLanguage = event.target.value;
     setLang(event.target.value);
+
+    console.log("event.target.value", event.target.value);
+
+    let languageCode;
+    if (selectedLanguage === 20) {
+      languageCode = "ne";
+    } else if (selectedLanguage === 10) {
+      languageCode = "en";
+    } else {
+      // 지원하지 않는 언어가 선택된 경우 기본값을 설정합니다.
+      languageCode = "en"; // 기본 언어 코드
+    }
+
+    // i18n을 사용하여 언어를 변경합니다.
+    i18n.changeLanguage(languageCode);
   };
 
   useEffect(() => {
@@ -73,8 +93,7 @@ function Login({ type }) {
                 sx={{ height: "5vh" }}
               >
                 <MenuItem value={10}>Eng</MenuItem>
-                {/* <MenuItem value={20}>Nepali</MenuItem>
-                <MenuItem value={30}>Kor</MenuItem> */}
+                <MenuItem value={20}>Nepali</MenuItem>
               </Select>
             </FormControl>
           </div>
@@ -93,7 +112,6 @@ function Login({ type }) {
               >
                 <MenuItem value={10}>Eng</MenuItem>
                 <MenuItem value={20}>Nepali</MenuItem>
-                <MenuItem value={30}>Kor</MenuItem>
               </Select>
             </FormControl>
           </div>
