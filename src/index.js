@@ -7,7 +7,7 @@ import { AuthProvider } from "./store/AuthContext";
 
 import PublicRoutes from "./Route/PublicRoute";
 import PrivateRoutes from "./Route/PrivateRoutes";
-import reportWebVitals from "./reportWebVitals";
+import reportWebVitals from "./reportWebVitals.js";
 import "./index.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -29,3 +29,4 @@ root.render(
 );
 
 reportWebVitals();
+
