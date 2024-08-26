@@ -356,8 +356,12 @@ function MyProfile() {
         console.log("result.imageId.imageId", result, userData);
         setBirth(result.birth);
         setName(result.name);
-        setGrade(result.classResponse.grade);
-        setSection(result.classResponse.section);
+        if (result.classResponse && result.classResponse.grade) {
+          setGrade(result.classResponse.grade);
+        }
+        if (result.classResponse && result.classResponse.section) {
+          setSection(result.classResponse.section);
+        }
         setGender(result.sex);
         setPhoneNum(result.phoneNum);
         setPwAnswer(result.pwAnswer);
