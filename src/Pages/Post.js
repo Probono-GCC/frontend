@@ -13,9 +13,12 @@ import { useMediaQueryContext } from "../store/MediaQueryContext";
 //api
 import { deleteNoticePost, getNoticePost } from "../Apis/Api/Notice";
 
+
 import { postTranslationData } from "../Apis/Api/Translate";
 
 import i18n from "../i18n/i18n";
+
+import { useAuth } from "../store/AuthContext";
 
 function Post() {
   const navigate = useNavigate();
@@ -29,8 +32,12 @@ function Post() {
   // const [postData, setPostData] = useState(null);
   const location = useLocation();
   const postData = location.state;
+  const className = postData.className;
+
   // 현재 URL에서 경로(path)를 가져옴
   const path = window.location.pathname;
+
+  const { userRole, roleArray, userData } = useAuth();
 
   // 경로를 슬래시(/)로 분리하여 배열로 변환
   const pathSegments = path.split("/");
@@ -118,6 +125,7 @@ function Post() {
       } catch (error) {
         console.error("Error fetching notice post:", error);
       }
+
     };
 
     fetchData(); // 데이터 불러오기 함수 호출
@@ -133,6 +141,8 @@ function Post() {
       }));
     }
   }, [translatedContent, translatedTitle]);
+
+
 
   const handleBack = () => {
     navigate(-1); // Go back to the previous page
@@ -178,7 +188,7 @@ function Post() {
               marginBottom: 1,
             }}
           >
-            All
+            {className ? className : "All"}
           </Typography>
           <Grid
             container
@@ -208,7 +218,7 @@ function Post() {
                 <Typography
                   sx={{ marginRight: 0.5, color: isSmallScreen ? "grey" : "" }}
                 >
-                  Administrator
+                  {postedData.author}
                 </Typography>
 
                 <PersonIcon
@@ -298,33 +308,37 @@ function Post() {
           ) : (
             <div></div>
           )}
-          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button
-              variant="outlined"
-              color="error"
-              sx={{
-                marginRight: 2,
-                minHeight: isSmallScreen ? "40px" : "50px",
-                minWidth: isSmallScreen ? "80px" : "120px",
-              }}
-              onClick={handleDelete}
-            >
-              Delete
-            </Button>
 
-            <Button
-              variant="contained"
-              sx={{
-                marginRight: isSmallScreen ? 0 : 2,
-                minHeight: isSmallScreen ? "40px" : "50px",
-                minWidth: isSmallScreen ? "80px" : "120px",
-              }}
-              color="primary"
-              onClick={handleEdit}
-            >
-              Edit
-            </Button>
-          </Box>
+          {(userRole === "ROLE_ADMIN" ||
+            (noticeName === "class-notice" && userRole === "ROLE_TEACHER")) && (
+            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+              <Button
+                variant="outlined"
+                color="error"
+                sx={{
+                  marginRight: 2,
+                  minHeight: isSmallScreen ? "40px" : "50px",
+                  minWidth: isSmallScreen ? "80px" : "120px",
+                }}
+                onClick={handleDelete}
+              >
+                Delete
+              </Button>
+
+              <Button
+                variant="contained"
+                sx={{
+                  marginRight: isSmallScreen ? 0 : 2,
+                  minHeight: isSmallScreen ? "40px" : "50px",
+                  minWidth: isSmallScreen ? "80px" : "120px",
+                }}
+                color="primary"
+                onClick={handleEdit}
+              >
+                Edit
+              </Button>
+            </Box>
+          )}
         </Paper>
       </Box>
     </div>

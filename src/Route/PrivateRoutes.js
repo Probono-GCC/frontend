@@ -102,7 +102,7 @@ const PrivateRoutes = () => (
     <Route
       path="/class-info/*"
       element={
-        <PrivateRoute requiredRole={role[0]}>
+        <PrivateRoute requiredRole={[role[0], role[1]]}>
           <ClassInfo />
         </PrivateRoute>
       }
@@ -111,7 +111,7 @@ const PrivateRoutes = () => (
     <Route
       path="/subject-info"
       element={
-        <PrivateRoute requiredRole={role[0]}>
+        <PrivateRoute requiredRole={(role[0], role[1])}>
           <SubjectInfo />
         </PrivateRoute>
       }
