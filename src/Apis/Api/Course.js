@@ -58,3 +58,15 @@ export async function getCourseTeachers(courseId) {
     return err;
   }
 }
+//class에 할당된 course가져오기
+export async function getClassCourse(classId, page, size) {
+  try {
+    const response = await axiosInstance.get(
+      `/courses/${classId}?page=${page}&size=${size}`
+    );
+    console.log(response);
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+}

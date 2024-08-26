@@ -86,7 +86,7 @@ function ClassNewPostForm() {
         // console.log("formData", formData);
         if (result) {
           alert("Edit complete");
-          navigate("/notice-board"); // 각 class로 보내야하는게 아닌지?
+          navigate(-1);
         } else {
           alert("Edit failed");
         }
