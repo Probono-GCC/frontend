@@ -189,7 +189,7 @@ function MyProfile() {
       changedFields.name = name;
     }
     if (gender !== initialValues.gender) {
-      changedFields.gender = gender;
+      changedFields.sex = gender;
     }
     if (birth !== initialValues.birth) {
       changedFields.birth = birth;
@@ -664,7 +664,7 @@ function MyProfile() {
             <Typography sx={{ fontSize: 20, fontWeight: "bold" }}>
               Password Recovery Question
             </Typography>
-            <Typography>What is your favorite color?</Typography>
+            <Typography>What is your favorite food?</Typography>
             <TextField
               fullWidth
               variant="outlined"
