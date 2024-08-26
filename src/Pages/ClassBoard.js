@@ -66,7 +66,7 @@ function ClassBoard() {
       }
     };
     fetchData();
-  }, [page]);
+  }, [page, currentClassItem]);
 
   const handleChangePage = (event, newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
