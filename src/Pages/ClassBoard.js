@@ -108,7 +108,7 @@ function ClassBoard() {
   }
 
   const getItemNumber = (index) => {
-    return (page - 1) * itemsPerPage + totalPosting - index;
+    return totalPosting - index - (page - 1) * 10;
   };
 
   return (
@@ -276,14 +276,12 @@ function ClassBoard() {
           </Button>
         </Box>
       )}
-
       <Box
         sx={{
           display: "flex",
           margin: "20px 0",
-          position: "fixed",
-          bottom: 20,
-          right: 20,
+          position: "relative",
+
           width: "100%",
           zIndex: 1000, // 다른 콘텐츠 위에 표시되도록 z-index를 조정
           justifyContent: "center",

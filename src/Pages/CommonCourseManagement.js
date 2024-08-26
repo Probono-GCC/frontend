@@ -378,7 +378,7 @@ function CommonCourseManagement() {
   };
 
   const fetchTeacher = () => {
-    getTeachers().then((result) => {
+    getTeachers(0, 100).then((result) => {
       const teacherMap = result.content || [];
       if (teacherMap.length > 0) {
         const tempRow = teacherMap.map((item, index) =>
@@ -588,13 +588,6 @@ function CommonCourseManagement() {
             <Box
               sx={{ display: "flex", justifyContent: "flex-end", marginTop: 3 }}
             >
-              <CustomButton
-                title={"Cancel"}
-                variant="outlined"
-                onClick={() => setAddMode(false)}
-                sx={{ marginRight: 2 }}
-              />
-              <Box marginRight={2}></Box>
               <CustomButton
                 title={"Save"}
                 variant="contained"

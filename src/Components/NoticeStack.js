@@ -18,7 +18,6 @@ export default function NoticeStack() {
   const [loading, setLoading] = useState(true); // Initialize loading state
   const navigate = useNavigate();
   const { t } = useTranslation();
-
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);

@@ -12,11 +12,11 @@ import Modal from "../Components/Modal";
 import { Typography, Box } from "@mui/material";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
 import { getTeachers, deleteTeacher } from "../Apis/Api/User"; // deleteTeacher 함수를 가져옵니다.
-
+import { getClassTeacher } from "../Apis/Api/Class";
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
-function createData(gender, name, birth, id, phone_num, home_room) {
-  return { gender, name, id, birth, phone_num, home_room };
+function createData(gender, name, birth, id, phone_num) {
+  return { gender, name, id, birth, phone_num };
 }
 
 function TeacherView() {
@@ -28,6 +28,10 @@ function TeacherView() {
   const [checkedRows, setCheckedRows] = useState([]);
   const [rows, setRows] = useState([]);
   const { isSmallScreen } = useMediaQueryContext();
+  //pagination
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(100);
+  const [totalRowCount, setTotalRowCount] = useState(0); //서버에서 총 학생수 받아와서 설정
 
   // 기본 컬럼 정의
   const basic_columns = isSmallScreen
@@ -114,7 +118,7 @@ function TeacherView() {
         deleteTeacher(userId).then((result) => {
           console.log("status?", result);
           if (result && result.status == 200) {
-            fetchTeacher();
+            fetchTeacher(page, pageSize);
             setCheckedRows([]);
             setAlert(true);
             setTimeout(() => setAlert(false), 2000); // 2초 후 알림 숨김
@@ -135,9 +139,14 @@ function TeacherView() {
     }
   };
   const fetchTeacher = () => {
-    getTeachers().then((result) => {
+    getTeachers(page, pageSize).then((result) => {
       console.log("teacherinfo", result);
       const teachers = result.content || []; // content 배열 가져오기
+      setTotalRowCount(result.totalElements);
+
+      // const homeRoom=getClassTeacher().then((result)=>{
+      //   return result.map((teacher) => teacher.username)
+      // })
       if (teachers.length > 0) {
         const tempRow = teachers.map((item) =>
           createData(
@@ -145,10 +154,7 @@ function TeacherView() {
             item.name,
             item.birth,
             item.username,
-            item.phoneNum,
-            item.classId && item.classId.grade && item.classId.section
-              ? item.classId.grade + " - " + item.classId.section
-              : ""
+            item.phoneNum
           )
         );
         setRows(tempRow);
@@ -201,6 +207,7 @@ function TeacherView() {
           </Typography>
         </Box>
         <Table
+          totalRowCount={totalRowCount}
           columns={isSmallScreen ? basic_columns : updatedColumns}
           rows={rows}
           onSelectedAllRow={handleRowSelection}

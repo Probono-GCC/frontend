@@ -10,9 +10,11 @@ export async function postTeacher(userData) {
   }
 }
 
-export async function getTeachers() {
+export async function getTeachers(page, size) {
   try {
-    const response = await axiosInstance.get("/teachers");
+    const response = await axiosInstance.get(
+      `/teachers?page=${page}&size=${size}`
+    );
     // console.log(response);
     return response.data;
   } catch (err) {
@@ -71,6 +73,15 @@ export async function changeGradeApi(userData, userId) {
       `/changeGrade/${userId}`,
       userData
     );
+    return response;
+  } catch (err) {
+    console.error("요청 중 오류 발생:", err); // 오류 메시지 로깅
+    return err;
+  }
+}
+export async function changeAllGradeApi() {
+  try {
+    const response = await axiosInstance.put(`/students/grade/increment`);
     return response;
   } catch (err) {
     console.error("요청 중 오류 발생:", err); // 오류 메시지 로깅

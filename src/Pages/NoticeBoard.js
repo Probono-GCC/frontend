@@ -213,7 +213,7 @@ function NoticeBoard() {
                         variant="body2"
                         sx={{ color: "gray", marginTop: "4px" }}
                       >
-                        {convertDateFormat(row.createdAt)}
+                        {convertDateFormat(row.updatedAt)}
                       </Typography>
                     </TableCell>
                     <TableCell

@@ -1,6 +1,7 @@
 import React, { memo, useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import styles from "../Styles/css/Table.module.css";
+import { useMediaQueryContext } from "../store/MediaQueryContext";
 
 const Table = memo(
   ({
@@ -20,6 +21,7 @@ const Table = memo(
   }) => {
     const [page, setPage] = useState(0);
     const [pageSize, setPageSize] = useState(100);
+    const { isSmallScreen } = useMediaQueryContext();
 
     // 페이지 변경 핸들러
     const handlePageChange = (page, newPage) => {
@@ -68,6 +70,9 @@ const Table = memo(
             "& .MuiDataGrid-footerContainer": {
               justifyContent: isStudentTable ? "flex-start" : "",
               flexDirection: isStudentTable ? "row-reverse" : "",
+            },
+            "& .MuiDataGrid-menuIcon": {
+              display: isSmallScreen ? "none" : "block", // 화면 크기에 따라 아이콘 숨기기
             },
           }}
           rows={rows}
