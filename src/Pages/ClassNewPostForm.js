@@ -17,12 +17,16 @@ import "react-quill/dist/quill.snow.css";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
 import { IconButton } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { jwtDecode } from "jwt-decode";
+
+import { getTeacher } from "../Apis/Api/User";
 
 //API
 import { postNewNotice, putNoticePost } from "../Apis/Api/ClassNotice";
 
 function ClassNewPostForm() {
   const navigate = useNavigate();
+  const role = ["ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"];
   const [title, setTitle] = useState("");
   // const [grade, setGrade] = useState("All");
   const [content, setContent] = useState("");
@@ -41,7 +45,12 @@ function ClassNewPostForm() {
   const [initialContent, setInitialContent] = useState("");
   const [initialImageList, setInitialImageList] = useState([]);
 
+  const [authorName, setAuthorName] = useState("");
+
   const quillRef = useRef();
+
+  const storedToken = localStorage.getItem("jwt");
+  const decodedToken = jwtDecode(storedToken);
 
   const handleSave = () => {
     const formData = new FormData();
@@ -77,7 +86,7 @@ function ClassNewPostForm() {
         // console.log("formData", formData);
         if (result) {
           alert("Edit complete");
-          navigate("/notice-board");
+          navigate(-1);
         } else {
           alert("Edit failed");
         }
@@ -136,7 +145,17 @@ function ClassNewPostForm() {
     setThumbnail((thumbnail) => thumbnail.filter((_, i) => i !== index));
     setImgURL((imgURL) => imgURL.filter((_, i) => i !== index));
   };
+
   useEffect(() => {
+    if (decodedToken.role == role[0]) {
+      setAuthorName("Admin");
+    }
+    if (decodedToken.role == role[1]) {
+      getTeacher(decodedToken.username).then((result) => {
+        setAuthorName(result.name);
+      });
+    }
+
     console.log(postData, "postData");
     if (postData) {
       setTitle(postData.title || "");
@@ -242,7 +261,7 @@ function ClassNewPostForm() {
               fullWidth
               label="Author"
               variant="outlined"
-              value="Admin"
+              value={authorName} // 현재 접속한 사용자의 이름
               InputProps={{
                 readOnly: true,
               }}

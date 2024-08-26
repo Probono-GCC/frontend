@@ -44,6 +44,8 @@ function MyProfile() {
   const role = ["ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"];
   const [name, setName] = useState("");
   const [gender, setGender] = useState("");
+  const [grade, setGrade] = useState("");
+  const [section, setSection] = useState("");
   const [birth, setBirth] = useState(null);
   const [phoneNum, setPhoneNum] = useState("");
   const [fatherPhoneNum, setFatherPhoneNum] = useState("");
@@ -354,6 +356,8 @@ function MyProfile() {
         console.log("result.imageId.imageId", result, userData);
         setBirth(result.birth);
         setName(result.name);
+        setGrade(result.classResponse.grade);
+        setSection(result.classResponse.section);
         setGender(result.sex);
         setPhoneNum(result.phoneNum);
         setPwAnswer(result.pwAnswer);
@@ -461,7 +465,6 @@ function MyProfile() {
           <Grid item xs={12}>
             <TextField
               fullWidth
-              disabled={decodedToken.role === role[0]}
               label="ID"
               defaultValue={decodedToken.username}
               variant="outlined"
@@ -485,31 +488,31 @@ function MyProfile() {
           <Grid item xs={12}>
             <TextField
               fullWidth
-              disabled
               label={
                 decodedToken.role === role[0] || decodedToken.role === role[1]
                   ? "Grade field for student"
-                  : "Non Grade"
+                  : "Grade"
               }
               variant="outlined"
               InputProps={{
                 readOnly: true,
               }}
+              value={grade ? grade : ""}
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
               fullWidth
-              disabled
               label={
                 decodedToken.role === role[0] || decodedToken.role === role[1]
                   ? "Section field for student"
-                  : "Non Section"
+                  : "Section"
               }
               variant="outlined"
               InputProps={{
                 readOnly: true,
               }}
+              value={section ? section : ""}
             />
           </Grid>
           <Grid item xs={12}>
