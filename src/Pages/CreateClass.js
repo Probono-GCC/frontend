@@ -12,6 +12,8 @@ import {
   Checkbox,
 } from "@mui/material";
 import AppBar from "../Components/AppBar";
+import CustomButton from "../Components/Button";
+
 import Table from "../Components/Table";
 import { postClass, getClasses, deleteClass } from "../Apis/Api/Class";
 import { useAuth } from "../store/AuthContext";
@@ -231,14 +233,11 @@ function CreateClass() {
                 </MenuItem>
               ))}
             </Select>
-            <Button
-              variant="contained"
-              color="primary"
+            <CustomButton
+              title={"Create"}
+              disabled={!batch || !grade || !section}
               onClick={handleCreate}
-              sx={{ flex: "none" }}
-            >
-              Create
-            </Button>
+            />
           </Box>
           <Divider sx={{ marginTop: 5, marginBottom: 5 }} />
           <Table
@@ -253,24 +252,23 @@ function CreateClass() {
             isRadioButton={false}
             id={"student_select_body"}
           />
-          <Box
-            sx={{ display: "flex", justifyContent: "flex-end", marginTop: 3 }}
-          >
-            <Button
-              variant="contained"
-              sx={{
-                backgroundColor:
-                  checkedRows && checkedRows.length > 0 ? "#1976d2" : "#d8edff",
-                color:
-                  checkedRows && checkedRows.length > 0 ? "#fff" : "#1976d2",
-              }}
-              onClick={deleteRow}
-              disabled={checkedRows && checkedRows.length === 0}
-            >
-              DELETE
-            </Button>
-          </Box>
+          {/* <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+            }}
+          > */}
+          <CustomButton
+            title={"Delete"}
+            id={"view_btn"}
+            size={"bg"}
+            onClick={deleteRow}
+            disabled={checkedRows && checkedRows.length === 0}
+          />
+          &nbsp;
+          {/* </Box> */}
         </Paper>
+        &nbsp;
       </Box>
     </div>
   );
