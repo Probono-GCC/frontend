@@ -684,7 +684,7 @@ function MyProfile() {
             <Typography sx={{ fontSize: 20, fontWeight: "bold" }}>
               Password Recovery Question
             </Typography>
-            <Typography>What is your favorite food?</Typography>
+            <Typography>What is your most favorite food?</Typography>
             <TextField
               fullWidth
               variant="outlined"

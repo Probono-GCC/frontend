@@ -183,7 +183,7 @@ function Post() {
               padding: "4px 8px",
               borderRadius: "8px",
               color: "#1976d2",
-              fontSize: "16px",
+              fontSize: isSmallScreen ? "12px" : "16px",
               display: "inline-block",
               marginBottom: 1,
             }}
@@ -196,7 +196,10 @@ function Post() {
             sx={{ marginBottom: isSmallScreen ? 0 : 1 }}
           >
             <Grid item xs={12} sm={12} md={6} lg={8}>
-              <Typography variant={isSmallScreen ? "h5" : "h4"}>
+              <Typography
+                variant={isSmallScreen ? "body1" : "h4"}
+                style={isSmallScreen ? { fontWeight: "bold" } : {}}
+              >
                 {postedData.title}
               </Typography>
             </Grid>
