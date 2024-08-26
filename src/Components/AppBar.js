@@ -162,96 +162,6 @@ function AppBar() {
   };
 
   const menuId = "primary-search-account-menu";
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-    </Menu>
-  );
-
-  const mobileMenuId = "primary-search-account-menu-mobile";
-  const renderMobileMenu = (
-    <Menu
-      anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      id={mobileMenuId}
-      keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={isMobileMenuOpen}
-      onClose={handleMobileMenuClose}
-    >
-      {/* <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
-        >
-          <Badge badgeContent={17} color="error">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem> */}
-      <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-          onClick={goMyProfile}
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-          onClick={handleLogout}
-        >
-          <LogoutIcon />
-        </IconButton>
-        <p>Logout</p>
-      </MenuItem>
-    </Menu>
-  );
 
   const drawerWidth = 280;
 
@@ -319,13 +229,22 @@ function AppBar() {
       [panel]: isExpanded,
     }));
   };
-  // const handleAccordionChange = (panel) => (event, isExpanded) => {
-  //   setExpanded((prevExpanded) => ({
-  //     ...prevExpanded,
-  //     [panel]: isExpanded,
-  //   }));
-  // };
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Drawer가 열려 있고, 클릭한 영역이 Drawer 외부인 경우 Drawer를 닫음
+      if (open && !document.getElementById("drawer").contains(event.target)) {
+        handleDrawerClose();
+      }
+    };
 
+    // 문서에 클릭 이벤트 추가
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      // 컴포넌트 언마운트 시 이벤트 리스너 제거
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [open]);
   // 하위 경로 확인 및 Accordion 상태 설정 (classes 추후 수정 필요)
   useEffect(() => {
     const userManagementPaths = [
@@ -379,13 +298,7 @@ function AppBar() {
             console.log(res, "result");
           });
         }
-        //item형태
-        // "classId": {
-        //   "classId": 0,
-        //   "year": 0,
-        //   "grade": "PLAYGROUP",
-        //   "section": "A"
-        // },
+
         if (
           result.classId &&
           result.classId.grade &&
@@ -393,11 +306,6 @@ function AppBar() {
           result.classId.classId &&
           result.classId.year
         ) {
-          // const myClassList = result.classId.map((item) => ({
-          //   grade: item.grade,
-          //   section: item.section ? item.section : "",
-          // }));
-          // setMyClass(myClassList);
           setMyClass([
             {
               grade: result.classId.grade,
@@ -436,7 +344,6 @@ function AppBar() {
                 year: result.classResponse.year,
               },
             ]);
-            // handleMyClass({ grade: result.grade, section: result.section });
           } else {
             setMyClass({ grade: "", section: "", classId: "", year: "" });
           }
@@ -501,6 +408,7 @@ function AppBar() {
           variant="persistent"
           anchor="left"
           open={open}
+          id="drawer"
         >
           <DrawerHeader>
             <IconButton onClick={handleDrawerClose}>

@@ -18,105 +18,12 @@ import InfoBox from "../Components/InfoBox";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { getClassStudent, getClassTeacher } from "../Apis/Api/Class";
-import { getCourses } from "../Apis/Api/Course";
+import { getClassCourse, getCourseTeachers } from "../Apis/Api/Course";
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
-const courseRows = [
-  {
-    id: 1,
-    batch: 2084,
-    grade: "Class 10",
-    section: "A",
-    teacher: "Mozart",
-    subject: "Nepali",
-  },
-  {
-    id: 2,
-    batch: 2084,
-    grade: "Class 10",
-    section: "A",
-    teacher: "Fermat",
-    subject: "Math",
-  },
-];
-
-const rows = [
-  {
-    sn: 1,
-    gender: "Male",
-    name: "Jon",
-    birth: "20.02.24",
-    id: "a0000",
-    grade: "PlayGroup",
-  },
-  {
-    sn: 2,
-    gender: "Female",
-    name: "Cersei",
-    birth: "20.01.04",
-    id: "a0001",
-    grade: "PlayGroup",
-  },
-  {
-    sn: 3,
-    gender: "Male",
-    name: "Jaime",
-    birth: "20.12.24",
-    id: "a0002",
-    grade: "PlayGroup",
-  },
-  {
-    sn: 4,
-    gender: "Male",
-    name: "Arya",
-    birth: "20.05.27",
-    id: "a0003",
-    grade: "PlayGroup",
-  },
-  {
-    sn: 5,
-    gender: "Male",
-    name: "Daenerys",
-    birth: "20.08.14",
-    id: "a0004",
-    grade: "PlayGroup",
-  },
-  {
-    sn: 6,
-    gender: "Male",
-    name: "nell",
-    birth: "20.12.24",
-    id: "a0005",
-    grade: "PlayGroup",
-  },
-  {
-    sn: 7,
-    gender: "Female",
-    name: "Ferrara",
-    birth: "19.07.05",
-    id: "b0006",
-    grade: "UnderKG",
-  },
-  {
-    sn: 8,
-    gender: "Female",
-    name: "Rossini",
-    birth: "19.07.25",
-    id: "b0007",
-    grade: "UnderKG",
-  },
-  {
-    sn: 9,
-    gender: "Female",
-    name: "Harvey",
-    birth: "19.07.04",
-    id: "b0008",
-    grade: "UnderKG",
-  },
-];
 //id: courseId임
-function createCourseData(year, grade, section, subject, id) {
-  return { year, grade, section, subject, id };
+function createCourseData(year, grade, section, subject, teacher, id) {
+  return { year, grade, section, subject, teacher, id };
 }
 function ClassInfo() {
   // const [selectedRows, setSelectedRows] = useState([]);
@@ -151,10 +58,10 @@ function ClassInfo() {
         {
           field: "serialNumber",
           headerName: "SN",
-          flex: 0.05,
+          flex: 0.1,
           cellClassName: styles.centerAlign,
         },
-        { field: "name", headerName: "Name", flex: 0.2 },
+        { field: "name", headerName: "Name", flex: 0.15 },
         { field: "gender", headerName: "Gender", flex: 0.1 },
         { field: "birth", headerName: "Birth", flex: 0.1 },
         { field: "id", headerName: "ID", flex: 0.2 },
@@ -169,16 +76,16 @@ function ClassInfo() {
       cellClassName: styles.centerAlign,
     },
     { field: "name", headerName: "Name", flex: 0.2 },
-    { field: "gender", headerName: "Gender", flex: 0.1 },
+    { field: "sex", headerName: "Gender", flex: 0.1 },
     { field: "birth", headerName: "Birth", flex: 0.1 },
     { field: "id", headerName: "ID", flex: 0.2 },
     { field: "grade", headerName: "Grade", flex: 0.3 },
 
-    { field: "phone_num", headerName: "Phone" },
+    { field: "phoneNum", headerName: "Phone" },
   ];
 
   const courseColumns = [
-    !isSmallScreen && { field: "batch", headerName: "Batch", flex: 0.1 },
+    !isSmallScreen && { field: "year", headerName: "Batch", flex: 0.1 },
     !isSmallScreen && { field: "grade", headerName: "Grade", flex: 0.2 },
     !isSmallScreen && { field: "section", headerName: "Section", flex: 0.1 },
     {
@@ -233,6 +140,8 @@ function ClassInfo() {
       if (result && result.totalElements) {
         console.log(result.totalElements, "전체 클래스 학생?");
         setTotalRowCount(result.totalElements);
+      } else {
+        setTotalRowCount(0);
       }
 
       if (result && result.content) {
@@ -246,19 +155,59 @@ function ClassInfo() {
       }
     });
   };
+  const fetchCourseTeachers = (courseId) => {
+    return getCourseTeachers(courseId).then((result) => {
+      console.log("item", result);
+      if (result && result.data.userResponse) {
+        console.log("item", result.data.userResponse);
+        const userResponses = Array.isArray(result.data.userResponse)
+          ? result.data.userResponse
+          : [result.data.userResponse];
+
+        const teachers = userResponses
+          .filter((item) => item.role === "ROLE_TEACHER")
+          .map((item) => ({
+            username: item.username,
+            name: item.name,
+          }));
+
+        return teachers; // 여기서 teachers 배열을 반환
+      } else {
+        return []; // 교사가 없을 경우 빈 배열 반환
+      }
+    });
+  };
   const fetchCourse = () => {
-    getCourses(page, pageSize).then((result) => {
+    getClassCourse(classData.classId, page, pageSize).then(async (result) => {
       if (result && result.content) {
-        const NewCourses = result.content.map((courseItem) =>
-          createCourseData(
-            courseItem.classResponse.year,
-            courseItem.classResponse.grade,
-            courseItem.classResponse.section,
-            courseItem.subjectResponseDTO.name,
-            courseItem.courseId
-          )
-        );
-        //Todo선생님 연결필요
+        const coursePromises = result.content.map(async (courseItem) => {
+          const teachers = await fetchCourseTeachers(courseItem.courseId);
+          console.log("tea", teachers);
+          if (teachers) {
+            const teacherName = teachers[0].name;
+
+            return createCourseData(
+              courseItem.classResponse.year,
+              courseItem.classResponse.grade,
+              courseItem.classResponse.section,
+              courseItem.subjectResponseDTO.name,
+              teacherName,
+              courseItem.courseId
+            );
+          } else {
+            return createCourseData(
+              courseItem.classResponse.year,
+              courseItem.classResponse.grade,
+              courseItem.classResponse.section,
+              courseItem.subjectResponseDTO.name,
+              "",
+              courseItem.courseId
+            );
+          }
+        });
+        // 모든 courseItem의 정보를 Promise.all로 처리
+        const NewCourses = await Promise.all(coursePromises);
+
         setCourseRows(NewCourses);
       } else {
         console.log("course fetch failed");
@@ -273,7 +222,8 @@ function ClassInfo() {
       setClassTeachers(resultTeachers);
     });
     fetchStudents(page, pageSize);
-  }, []);
+    fetchCourse();
+  }, [classData]);
   return (
     <div id="page_content">
       <AppBar />
@@ -300,7 +250,7 @@ function ClassInfo() {
           grade={classData.grade}
           section={classData.section}
           teacher={classTeacher.length != 0 ? classTeacher : "Not assigned yet"}
-          studentCount={totalRowCount ? totalRowCount : "Not assigned yet"}
+          studentCount={totalRowCount}
         />
         <Box
           sx={{
@@ -362,7 +312,7 @@ function ClassInfo() {
       <Modal
         open={modalOpen}
         handleClose={handleModalClose}
-        title={"Detail Information"}
+        title={"Student Detail Info"}
         rowData={modalRowData}
         rowsHeader={detail_columns}
       />

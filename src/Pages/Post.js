@@ -13,16 +13,31 @@ import { useMediaQueryContext } from "../store/MediaQueryContext";
 //api
 import { deleteNoticePost, getNoticePost } from "../Apis/Api/Notice";
 
+
+import { postTranslationData } from "../Apis/Api/Translate";
+
+import i18n from "../i18n/i18n";
+
+import { useAuth } from "../store/AuthContext";
+
 function Post() {
   const navigate = useNavigate();
   const [tempImageList, setTempImageList] = useState([]);
   const [postedData, setPostedData] = useState([]); //서버에서 받아온 포스팅 데이터
+
+  const [translatedContent, setTranslatedContent] = useState(""); //번역
+  const [translatedTitle, setTranslatedTitle] = useState("");
+
   const { isSmallScreen } = useMediaQueryContext();
   // const [postData, setPostData] = useState(null);
   const location = useLocation();
   const postData = location.state;
+  const className = postData.className;
+
   // 현재 URL에서 경로(path)를 가져옴
   const path = window.location.pathname;
+
+  const { userRole, roleArray, userData } = useAuth();
 
   // 경로를 슬래시(/)로 분리하여 배열로 변환
   const pathSegments = path.split("/");
@@ -50,27 +65,85 @@ function Post() {
       });
     }
   };
+
   useEffect(() => {
-    console.log("postdagtaaaaa", postData);
-    getNoticePost(postData.noticeId).then((result) => {
-      console.log("get notice post", result);
-      if (result && result.imageList != null) {
-        postData.imageList = result.imageList;
-        setTempImageList(result.imageList);
-      } else {
-        setTempImageList([]);
-        postData.imageList = null;
+    const fetchData = async () => {
+      try {
+        // 1. 먼저 공지사항 데이터를 가져옴
+        const result = await getNoticePost(postData.noticeId);
+        console.log("get notice post", result);
+
+        // 2. 공지사항 데이터를 상태로 먼저 업데이트
+        if (result) {
+          setPostedData({
+            title: result.title,
+            content: result.content, // 초기에는 원본 content로 설정
+            updatedAt: result.updatedAt,
+            views: result.views,
+          });
+        }
+
+        // 3. 번역 요청
+        if (result && result.content) {
+          try {
+            //content 번역
+
+            const translationContentResult = await postTranslationData(
+              result.content,
+              i18n.language
+            );
+            console.log(
+              "Translation content result:",
+              translationContentResult
+            );
+
+            // 번역 결과가 있으면 상태를 업데이트
+            setTranslatedContent(translationContentResult.translatedText);
+
+            //title 번역
+            const translationTitleResult = await postTranslationData(
+              result.title,
+              i18n.language
+            );
+            console.log("Translation Title result:", translationTitleResult);
+
+            // 번역 결과가 있으면 상태를 업데이트
+            setTranslatedTitle(translationTitleResult.translatedText);
+          } catch (error) {
+            console.error("Failed to translate:", error);
+          }
+        }
+
+        // 4. 이미지 리스트가 있으면 상태 업데이트
+        if (result && result.imageList != null) {
+          postData.imageList = result.imageList;
+          setTempImageList(result.imageList);
+        } else {
+          setTempImageList([]);
+          postData.imageList = null;
+        }
+      } catch (error) {
+        console.error("Error fetching notice post:", error);
       }
-      if (result) {
-        setPostedData({
-          title: result.title,
-          content: result.content,
-          updatedAt: result.updatedAt,
-          views: result.views,
-        });
-      }
-    });
-  }, []);
+
+    };
+
+    fetchData(); // 데이터 불러오기 함수 호출
+  }, [postData.noticeId]);
+
+  // 번역된 텍스트가 설정되면 content 업데이트
+  useEffect(() => {
+    if (translatedTitle || translatedContent) {
+      setPostedData((prevData) => ({
+        ...prevData,
+        title: translatedTitle || prevData.title,
+        content: translatedContent || prevData.content, // 번역된 텍스트로 content를 업데이트
+      }));
+    }
+  }, [translatedContent, translatedTitle]);
+
+
+
   const handleBack = () => {
     navigate(-1); // Go back to the previous page
   };
@@ -115,7 +188,7 @@ function Post() {
               marginBottom: 1,
             }}
           >
-            All
+            {className ? className : "All"}
           </Typography>
           <Grid
             container
@@ -145,7 +218,7 @@ function Post() {
                 <Typography
                   sx={{ marginRight: 0.5, color: isSmallScreen ? "grey" : "" }}
                 >
-                  Administrator
+                  {postedData.author}
                 </Typography>
 
                 <PersonIcon
@@ -235,33 +308,37 @@ function Post() {
           ) : (
             <div></div>
           )}
-          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button
-              variant="outlined"
-              color="error"
-              sx={{
-                marginRight: 2,
-                minHeight: isSmallScreen ? "40px" : "50px",
-                minWidth: isSmallScreen ? "80px" : "120px",
-              }}
-              onClick={handleDelete}
-            >
-              Delete
-            </Button>
 
-            <Button
-              variant="contained"
-              sx={{
-                marginRight: isSmallScreen ? 0 : 2,
-                minHeight: isSmallScreen ? "40px" : "50px",
-                minWidth: isSmallScreen ? "80px" : "120px",
-              }}
-              color="primary"
-              onClick={handleEdit}
-            >
-              Edit
-            </Button>
-          </Box>
+          {(userRole === "ROLE_ADMIN" ||
+            (noticeName === "class-notice" && userRole === "ROLE_TEACHER")) && (
+            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+              <Button
+                variant="outlined"
+                color="error"
+                sx={{
+                  marginRight: 2,
+                  minHeight: isSmallScreen ? "40px" : "50px",
+                  minWidth: isSmallScreen ? "80px" : "120px",
+                }}
+                onClick={handleDelete}
+              >
+                Delete
+              </Button>
+
+              <Button
+                variant="contained"
+                sx={{
+                  marginRight: isSmallScreen ? 0 : 2,
+                  minHeight: isSmallScreen ? "40px" : "50px",
+                  minWidth: isSmallScreen ? "80px" : "120px",
+                }}
+                color="primary"
+                onClick={handleEdit}
+              >
+                Edit
+              </Button>
+            </Box>
+          )}
         </Paper>
       </Box>
     </div>

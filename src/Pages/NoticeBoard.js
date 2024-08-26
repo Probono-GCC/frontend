@@ -23,6 +23,7 @@ import { useMediaQueryContext } from "../store/MediaQueryContext";
 import { getNoticePostList } from "../Apis/Api/Notice";
 import { useAuth } from "../store/AuthContext";
 import { convertDateFormat } from "../Util/DateUtils";
+
 function NoticeBoard() {
   const navigate = useNavigate();
   const { page: pageParam } = useParams(); // URL에서 페이지 번호 추출 path="/notice-board/:page?"

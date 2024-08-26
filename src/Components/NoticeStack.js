@@ -13,6 +13,9 @@ import CircularProgress from "@mui/material/CircularProgress";
 //다국어지원
 import { useTranslation } from "react-i18next";
 
+import i18n from "../i18n/i18n";
+import { postTranslationData } from "../Apis/Api/Translate";
+
 export default function NoticeStack() {
   const [rows, setRows] = useState([]); // Initialize rows state
   const [loading, setLoading] = useState(true); // Initialize loading state
@@ -21,22 +24,62 @@ export default function NoticeStack() {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
+      // try {
+      //   const result = await getNoticePostList(0, 5); // 첫 페이지의 5개의 공지를 가져옴
+      //   if (result && Array.isArray(result.content)) {
+      //     setRows(result.content); // 데이터를 상태로 설정
+      //   } else {
+      //     setRows([]); // 만약 데이터가 없으면 빈 배열
+      //   }
+      // } catch (error) {
+      //   console.error("Error fetching notice posts", error);
+      //   setRows([]); // 에러 발생 시 빈 배열로 설정
+      // } finally {
+      //   setLoading(false); // 로딩 완료 후 로딩 상태 false로 설정
+      // }
+
       try {
-        const result = await getNoticePostList(0, 5); // 첫 페이지의 5개의 공지를 가져옴
+        const result = await getNoticePostList(0, 5); // 공지사항 데이터 가져오기
+        console.log("Fetched result:", result); // 가져온 결과 로그
+
         if (result && Array.isArray(result.content)) {
-          setRows(result.content); // 데이터를 상태로 설정
+          // 제목 번역
+          const translatedTitlesPromises = result.content.map(
+            async (notice) => {
+              try {
+                const translationResult = await postTranslationData(
+                  notice.title,
+                  i18n.language
+                );
+                console.log("Translation result for title:", translationResult); // 번역 결과 로그
+                return {
+                  ...notice,
+                  title: translationResult.translatedText,
+                };
+              } catch (error) {
+                console.error("Failed to translate title:", error);
+                return { ...notice, title: notice.title }; // 번역 실패 시 원본 제목 사용
+              }
+            }
+          );
+
+          const translatedNotices = await Promise.all(translatedTitlesPromises);
+          console.log("Translated notices:", translatedNotices); // 번역된 공지사항 로그
+          setRows(translatedNotices); // 번역된 제목을 포함한 공지사항 상태 업데이트
         } else {
-          setRows([]); // 만약 데이터가 없으면 빈 배열
+          console.log("No content found in result.");
+          setRows([]); // 데이터가 없으면 빈 배열 설정
         }
       } catch (error) {
         console.error("Error fetching notice posts", error);
-        setRows([]); // 에러 발생 시 빈 배열로 설정
+        setRows([]); // 오류 발생 시 빈 배열 설정
       } finally {
-        setLoading(false); // 로딩 완료 후 로딩 상태 false로 설정
+        setLoading(false); // 로딩 완료
       }
     };
-    fetchData();
-  }, []); // 컴포넌트가 마운트될 때만 데이터를 가져옴
+
+    fetchData(); // 데이터 가져오기 함수 호출
+  }, [i18n.language]); // 언어 변경 시 데이터 다시 가져오기
 
   const Item = styled(Paper)(({ theme }) => ({
     width: "100%",
