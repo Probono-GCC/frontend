@@ -23,9 +23,23 @@ function createData(
   id,
   grade,
 
-  phone_num
+  phone_num,
+  motherPhoneNum,
+  fatherPhoneNum,
+  guardiansPhoneNum
 ) {
-  return { serialNumber, gender, name, birth, id, grade, phone_num };
+  return {
+    serialNumber,
+    gender,
+    name,
+    birth,
+    id,
+    grade,
+    phone_num,
+    motherPhoneNum,
+    fatherPhoneNum,
+    guardiansPhoneNum,
+  };
 }
 
 function StudentView() {
@@ -94,6 +108,9 @@ function StudentView() {
     { field: "grade", headerName: "Grade", flex: 0.3 },
 
     { field: "phone_num", headerName: "Phone" },
+    { field: "motherPhoneNum", headerName: "mother Ph" },
+    { field: "fatherPhoneNum", headerName: "father Ph" },
+    { field: "guardiansPhoneNum", headerName: "guardian Ph" },
   ];
   // 페이지 변경 시 처리
   const handlePageChange = (newPage, size) => {
@@ -183,7 +200,10 @@ function StudentView() {
             item.username,
             item.grade,
 
-            item.phoneNum
+            item.phoneNum,
+            item.motherPhoneNum,
+            item.fatherPhoneNum,
+            item.guardiansPhoneNum
           )
         );
         setRows(tempRow);
