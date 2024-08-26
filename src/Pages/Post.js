@@ -13,6 +13,8 @@ import { useMediaQueryContext } from "../store/MediaQueryContext";
 //api
 import { deleteNoticePost, getNoticePost } from "../Apis/Api/Notice";
 
+import { useAuth } from "../store/AuthContext";
+
 function Post() {
   const navigate = useNavigate();
   const [tempImageList, setTempImageList] = useState([]);
@@ -23,6 +25,8 @@ function Post() {
   const postData = location.state;
   // 현재 URL에서 경로(path)를 가져옴
   const path = window.location.pathname;
+
+  const { userRole, roleArray, userData } = useAuth();
 
   // 경로를 슬래시(/)로 분리하여 배열로 변환
   const pathSegments = path.split("/");
@@ -62,11 +66,13 @@ function Post() {
         postData.imageList = null;
       }
       if (result) {
+        console.log(result);
         setPostedData({
           title: result.title,
           content: result.content,
           updatedAt: result.updatedAt,
           views: result.views,
+          author: result.createdChargeId,
         });
       }
     });
@@ -145,7 +151,7 @@ function Post() {
                 <Typography
                   sx={{ marginRight: 0.5, color: isSmallScreen ? "grey" : "" }}
                 >
-                  Administrator
+                  {postedData.author}
                 </Typography>
 
                 <PersonIcon
@@ -235,33 +241,37 @@ function Post() {
           ) : (
             <div></div>
           )}
-          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button
-              variant="outlined"
-              color="error"
-              sx={{
-                marginRight: 2,
-                minHeight: isSmallScreen ? "40px" : "50px",
-                minWidth: isSmallScreen ? "80px" : "120px",
-              }}
-              onClick={handleDelete}
-            >
-              Delete
-            </Button>
 
-            <Button
-              variant="contained"
-              sx={{
-                marginRight: isSmallScreen ? 0 : 2,
-                minHeight: isSmallScreen ? "40px" : "50px",
-                minWidth: isSmallScreen ? "80px" : "120px",
-              }}
-              color="primary"
-              onClick={handleEdit}
-            >
-              Edit
-            </Button>
-          </Box>
+          {(userRole === "ROLE_ADMIN" ||
+            (noticeName === "class-notice" && userRole === "ROLE_TEACHER")) && (
+            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+              <Button
+                variant="outlined"
+                color="error"
+                sx={{
+                  marginRight: 2,
+                  minHeight: isSmallScreen ? "40px" : "50px",
+                  minWidth: isSmallScreen ? "80px" : "120px",
+                }}
+                onClick={handleDelete}
+              >
+                Delete
+              </Button>
+
+              <Button
+                variant="contained"
+                sx={{
+                  marginRight: isSmallScreen ? 0 : 2,
+                  minHeight: isSmallScreen ? "40px" : "50px",
+                  minWidth: isSmallScreen ? "80px" : "120px",
+                }}
+                color="primary"
+                onClick={handleEdit}
+              >
+                Edit
+              </Button>
+            </Box>
+          )}
         </Paper>
       </Box>
     </div>
