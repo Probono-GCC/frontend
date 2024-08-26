@@ -251,7 +251,7 @@ function ClassBoard() {
           </TableBody>
         </Table>
       </TableContainer>
-      {userRole === "ROLE_ADMIN" && (
+      {(userRole === "ROLE_ADMIN" || userRole === "ROLE_TEACHER") && (
         <Box
           sx={{
             width: isSmallScreen ? "98%" : "80%",
