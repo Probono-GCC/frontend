@@ -88,8 +88,13 @@ function ClassBoard() {
 
   const handleRowClick = (rowData) => {
     console.log("rowData", rowData);
+    // 현재 경로의 마지막 부분을 추출
+    const lastSegment = location.pathname.split("/").pop();
+
     if (rowData && rowData.noticeId) {
-      navigate(`/class-notice/${rowData.noticeId}`, { state: rowData });
+      navigate(`/class-notice/${rowData.noticeId}`, {
+        state: { ...rowData, className: lastSegment },
+      });
     } else {
       console.error("Row data does not contain an 'noticeId' field:", rowData);
     }
