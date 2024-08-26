@@ -139,9 +139,29 @@ function MyProfile() {
     setAgree(event.target.checked);
   };
 
+  const checkImage = (file) => {
+    let err = "";
+
+    if (!file) return (err = "File does not exist.");
+    if (file.size > 1024 * 1024) {
+      err = "The largest image size is 1mb.";
+    }
+    if (file.type !== "image/jpeg" && file.type !== "image/png") {
+      err = "Image format is incorrect.";
+    }
+
+    return err;
+  };
+
   const handleProfileImageChange = (event) => {
     console.log("imagechanged");
     const file = event.target.files[0];
+
+    const checkMsg = checkImage(file);
+    if (checkMsg) {
+      return alert(checkMsg);
+    }
+
     if (file) {
       setProfileImage(file); // File 객체로 저장
       const reader = new FileReader();
@@ -189,7 +209,7 @@ function MyProfile() {
       changedFields.name = name;
     }
     if (gender !== initialValues.gender) {
-      changedFields.gender = gender;
+      changedFields.sex = gender;
     }
     if (birth !== initialValues.birth) {
       changedFields.birth = birth;
@@ -356,8 +376,12 @@ function MyProfile() {
         console.log("result.imageId.imageId", result, userData);
         setBirth(result.birth);
         setName(result.name);
-        setGrade(result.classResponse.grade);
-        setSection(result.classResponse.section);
+        if (result.classResponse && result.classResponse.grade) {
+          setGrade(result.classResponse.grade);
+        }
+        if (result.classResponse && result.classResponse.section) {
+          setSection(result.classResponse.section);
+        }
         setGender(result.sex);
         setPhoneNum(result.phoneNum);
         setPwAnswer(result.pwAnswer);
@@ -660,7 +684,7 @@ function MyProfile() {
             <Typography sx={{ fontSize: 20, fontWeight: "bold" }}>
               Password Recovery Question
             </Typography>
-            <Typography>What is your favorite color?</Typography>
+            <Typography>What is your favorite food?</Typography>
             <TextField
               fullWidth
               variant="outlined"

@@ -9,6 +9,9 @@ import DetailTable from "./DetailTable";
 import DefaultImg from "../Assets/img/default_profile.png";
 //api
 import { getTeacher, getStudent } from "../Apis/Api/User";
+function createData(gender, name, birth, id, phone_num) {
+  return { gender, name, birth, id, phone_num };
+}
 function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
   const { isSmallScreen } = useMediaQueryContext();
   const [profileImgPath, setProfileImgPath] = useState("");
@@ -17,20 +20,37 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
     if (title === "Teacher Detail Info") {
       if (rowData && rowData.id) {
         getTeacher(rowData.id).then((result) => {
-          console.log("getteacher", result);
+          console.log("getteacher", result, "rowData", rowData);
           if (result && result.imageId && result.imageId.imagePath) {
             console.log("getteacher image pth", result.imageId.imagePath);
             setProfileImgPath(result.imageId.imagePath);
           } else {
             setProfileImgPath("");
           }
-
           if (result && result.classId) {
             const updatedRowData = {
-              ...rowData,
+              ...createData(
+                result.sex,
+                result.name,
+                result.birth,
+                result.username,
+                result.phoneNum
+              ),
               home_room: result.classId.grade + "-" + result.classId.section,
             };
             // 상태를 업데이트하여 UI에서 변경된 데이터를 사용
+            setDetailRowData(updatedRowData);
+          } else if (result) {
+            const updatedRowData = {
+              ...createData(
+                result.sex,
+                result.name,
+                result.birth,
+                result.username,
+                result.phoneNum
+              ),
+              home_room: "",
+            };
             setDetailRowData(updatedRowData);
           }
         });

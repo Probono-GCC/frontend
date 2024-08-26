@@ -112,7 +112,7 @@ function NoticeNewPostForm() {
   };
 
   const handleCancel = () => {
-    navigate("/notice-board");
+    navigate(-1);
   };
   const imageHandler = async (e) => {
     const input = document.createElement("input");

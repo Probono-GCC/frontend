@@ -57,7 +57,7 @@ function ClassNewPostForm() {
 
     // 필수 필드 추가 PUT용
     formData.append("title", title);
-    formData.append("content", content.replace(/<\/?[^>]+(>|$)/g, ""));
+    formData.append("content", content);
     formData.append("type", "CLASS");
     formData.append("classId", currentClassId);
 
@@ -78,10 +78,7 @@ function ClassNewPostForm() {
 
       // FormData 객체에 콤마로 구분된 imageId 문자열을 추가
       formData.append("maintainImageList", imageIdString);
-      // console.log("initialImageList", initialImageList);
-      // for (const [key, value] of formData.entries()) {
-      //   console.log(`${key}: ${value}`);
-      // }
+
       putNoticePost(currentClassId, formData).then((result) => {
         // console.log("formData", formData);
         if (result) {
