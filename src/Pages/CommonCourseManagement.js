@@ -45,6 +45,9 @@ import {
   getSubjects,
   deleteSubject,
 } from "../Apis/Api/Subject";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { IconButton } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const modalStyle = {
   position: "absolute",
@@ -131,6 +134,7 @@ function CommonCourseManagement() {
   const todayNepaliDate = new NepaliDate();
   const currentYear = todayNepaliDate.getYear();
 
+  const navigate = useNavigate();
   const handleTeacherClick = (teacher) => {
     console.log(teacher, "click한 티펴?");
     setSelectedTeachers(teacher);
@@ -451,7 +455,9 @@ function CommonCourseManagement() {
     fetchSubject();
     fetchCourse();
   }, []);
-
+  const handleBack = () => {
+    navigate(-1); // Go back to the previous page
+  };
   return (
     <div id="page_content">
       <AppBar />
@@ -478,6 +484,7 @@ function CommonCourseManagement() {
         >
           Common Course Management
         </Typography>
+
         {!addMode && (
           <>
             <Box
@@ -524,17 +531,24 @@ function CommonCourseManagement() {
               />
               <CustomButton
                 title={"Delete"}
-                variant="contained"
                 onClick={handleDeleteCourse}
+                disabled={selectedCourseRowId === null}
               />
             </Box>
           </>
         )}
         {addMode && (
           <>
+            <IconButton
+              onClick={handleBack}
+              color="primary"
+              aria-label="go back"
+            >
+              <ArrowBackIcon />
+            </IconButton>
             <Typography
               variant="h4"
-              sx={{ fontFamily: "Copperplate", marginTop: 3, marginBottom: 3 }}
+              sx={{ fontFamily: "Copperplate", marginTop: 2, marginBottom: 3 }}
             >
               Select Class
             </Typography>
@@ -547,7 +561,6 @@ function CommonCourseManagement() {
               isRadioButton={true}
               id={"table_body"}
             />
-
             <Typography
               variant="h4"
               sx={{ fontFamily: "Copperplate", marginTop: 3, marginBottom: 3 }}
@@ -566,7 +579,6 @@ function CommonCourseManagement() {
                 </Grid>
               ))}
             </SelectButtonContainer>
-
             <Typography
               variant="h4"
               sx={{ fontFamily: "Copperplate", marginTop: 10, marginBottom: 3 }}
@@ -590,6 +602,8 @@ function CommonCourseManagement() {
             >
               <CustomButton
                 title={"Save"}
+                size={"bg"}
+                id={"view_btn"}
                 variant="contained"
                 color="primary"
                 onClick={() => {
@@ -598,9 +612,10 @@ function CommonCourseManagement() {
                 }}
               />
             </Box>
+            <div>&nbsp;</div>
           </>
         )}
-
+        <div>&nbsp;</div>
         <Modal
           open={modalOpen}
           onClose={handleCloseModal}
