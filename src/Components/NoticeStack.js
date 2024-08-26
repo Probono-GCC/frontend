@@ -175,7 +175,7 @@ export default function NoticeStack() {
             <Item key={index} onClick={() => handleRowClick(row)}>
               <NoticeTitle>{row.title}</NoticeTitle>
               <NoticeDate>
-                {new Date(row.createdAt).toLocaleDateString()}
+                {new Date(row.updatedAt).toLocaleDateString()}
               </NoticeDate>
             </Item>
           ))}

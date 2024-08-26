@@ -139,7 +139,7 @@ function NoticeBoard() {
                 sx={{
                   textAlign: "left",
                   fontWeight: "bold",
-                  width: isSmallScreen ? "14%" : "6%",
+                  width: isSmallScreen ? "19%" : "6%",
                   padding: isSmallScreen ? "16px" : "16px 16px 16px 30px",
                 }}
               >
@@ -149,7 +149,7 @@ function NoticeBoard() {
                 sx={{
                   textAlign: "left",
                   fontWeight: "bold",
-                  width: isSmallScreen ? "63%" : "40%",
+                  width: isSmallScreen ? "53%" : "40%",
                 }}
               >
                 Title
@@ -158,7 +158,7 @@ function NoticeBoard() {
                 sx={{
                   textAlign: "right",
                   fontWeight: "bold",
-                  width: isSmallScreen ? "14%" : "12%",
+                  width: isSmallScreen ? "19%" : "12%",
                   padding: "16px",
                 }}
               >

@@ -15,8 +15,10 @@ function CustomButton({ title, disabled, onClick, id, size }) {
         disabled={disabled}
         onClick={onClick}
         sx={{
-          backgroundColor: "#889fc8",
+          backgroundColor: "#405c8b",
           color: "#F2F2F2",
+          padding: "10px 20px",
+          marginBottom: "30px",
         }}
       >
         {title}
