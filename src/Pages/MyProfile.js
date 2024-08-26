@@ -189,7 +189,7 @@ function MyProfile() {
       changedFields.name = name;
     }
     if (gender !== initialValues.gender) {
-      changedFields.gender = gender;
+      changedFields.sex = gender;
     }
     if (birth !== initialValues.birth) {
       changedFields.birth = birth;
@@ -356,8 +356,12 @@ function MyProfile() {
         console.log("result.imageId.imageId", result, userData);
         setBirth(result.birth);
         setName(result.name);
-        setGrade(result.classResponse.grade);
-        setSection(result.classResponse.section);
+        if (result.classResponse && result.classResponse.grade) {
+          setGrade(result.classResponse.grade);
+        }
+        if (result.classResponse && result.classResponse.section) {
+          setSection(result.classResponse.section);
+        }
         setGender(result.sex);
         setPhoneNum(result.phoneNum);
         setPwAnswer(result.pwAnswer);
@@ -660,7 +664,7 @@ function MyProfile() {
             <Typography sx={{ fontSize: 20, fontWeight: "bold" }}>
               Password Recovery Question
             </Typography>
-            <Typography>What is your favorite color?</Typography>
+            <Typography>What is your favorite food?</Typography>
             <TextField
               fullWidth
               variant="outlined"
