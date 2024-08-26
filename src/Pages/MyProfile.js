@@ -139,9 +139,29 @@ function MyProfile() {
     setAgree(event.target.checked);
   };
 
+  const checkImage = (file) => {
+    let err = "";
+
+    if (!file) return (err = "File does not exist.");
+    if (file.size > 1024 * 1024) {
+      err = "The largest image size is 1mb.";
+    }
+    if (file.type !== "image/jpeg" && file.type !== "image/png") {
+      err = "Image format is incorrect.";
+    }
+
+    return err;
+  };
+
   const handleProfileImageChange = (event) => {
     console.log("imagechanged");
     const file = event.target.files[0];
+
+    const checkMsg = checkImage(file);
+    if (checkMsg) {
+      return alert(checkMsg);
+    }
+
     if (file) {
       setProfileImage(file); // File 객체로 저장
       const reader = new FileReader();
