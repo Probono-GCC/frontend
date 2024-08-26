@@ -3,16 +3,10 @@ import React, { useState, useEffect } from "react";
 import AppBar from "../Components/AppBar";
 import Table from "../Components/ViewTable";
 import CourseTable from "../Components/Table";
-import Button from "../Components/Button";
 import styles from "../Styles/css/Table.module.css";
-import IconButton from "@mui/material/IconButton";
-import Alert from "@mui/material/Alert";
-import Stack from "@mui/material/Stack";
 
 import InfoIcon from "@mui/icons-material/Info";
 import Modal from "../Components/Modal";
-import Checkbox from "@mui/material/Checkbox";
-import { maxWidth, textAlign } from "@mui/system";
 import { Typography, Box } from "@mui/material";
 import InfoBox from "../Components/InfoBox";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
