@@ -77,7 +77,7 @@ function ClassNewPostForm() {
         // console.log("formData", formData);
         if (result) {
           alert("Edit complete");
-          navigate("/notice-board");
+          navigate(-1);
         } else {
           alert("Edit failed");
         }
