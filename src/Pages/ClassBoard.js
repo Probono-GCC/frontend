@@ -121,12 +121,12 @@ function ClassBoard() {
       <AppBar />
       <Box>
         <Typography
-          variant="h3"
+          variant={isSmallScreen ? "h4" : "h3"}
           sx={{
             textAlign: "center",
             fontFamily: "Copperplate",
-            marginTop: "20px",
-            marginBottom: "30px",
+            marginTop: isSmallScreen ? "10px" : "20px",
+            marginBottom: isSmallScreen ? "15px" : "30px",
           }}
         >
           Class Board
@@ -147,7 +147,7 @@ function ClassBoard() {
                 sx={{
                   textAlign: "left",
                   fontWeight: "bold",
-                  width: isSmallScreen ? "15%" : "6%",
+                  width: isSmallScreen ? "19%" : "6%",
                   padding: isSmallScreen ? "16px" : "16px 16px 16px 30px",
                 }}
               >
@@ -155,7 +155,7 @@ function ClassBoard() {
               </TableCell>
               <TableCell
                 sx={{
-                  width: isSmallScreen ? "75%" : "65%",
+                  width: isSmallScreen ? "53%" : "65%",
                   textAlign: "left",
                   fontWeight: "bold",
                 }}
@@ -171,7 +171,7 @@ function ClassBoard() {
                 sx={{
                   textAlign: "right",
                   fontWeight: "bold",
-                  width: "12%",
+                  width: isSmallScreen ? "19%" : "12%",
                   padding: "16px 30px 16px 16px",
                 }}
               >
@@ -274,6 +274,7 @@ function ClassBoard() {
               "&:hover": { backgroundColor: "#1565c0" },
               minWidth: isSmallScreen ? "80px" : "100px",
               minHeight: isSmallScreen ? "30px" : "50px",
+              marginRight: isSmallScreen ? "5px" : "",
             }}
             onClick={handleNewPost}
           >
