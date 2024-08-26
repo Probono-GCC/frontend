@@ -68,90 +68,56 @@ function AssignHomeroom() {
   const todayNepaliDate = new NepaliDate();
   const currentYear = todayNepaliDate.getYear();
   useEffect(() => {
-    // console.log("selecte left sutdnet 1", selectedLeftStudents);
-    // // Fetch classes and teachers data on component mount
-    // // Fetching class data when the component mounts
-
-    // getClasses(page, pageSize, currentYear).then((result) => {
-    //   if (result && result.content) {
-    //     setTotalRowCount(result.totalElements);
-    //     getClassTeacher(item.classId).then((result)=>{
-
-    //     })
-    //     const tempRow = result.content.map((item, index) => ({
-    //       id: item.classId, // Assuming an index for table rows
-    //       year: item.year,
-    //       grade: item.grade,
-    //       section: item.section,
-    //       classId: item.classId, // classId를 가져와서 삭제에 활용
-    //     }));
-    //     setClasses(tempRow);
-    //   }
-    // });
-
-    // getTeachers().then((result) => {
-    //   if (result && result.content) {
-    //     const tempRow = result.content.map((item, index) => ({
-    //       id: index + 1, // Assuming an index for table rows
-    //       gender: item.sex,
-    //       username: item.username,
-    //       name: item.name,
-    //     }));
-    //     setTeachers(tempRow); // Fetch teachers from API
-    //   }
-    // });
-    const fetchData = async () => {
-      try {
-        // Fetch classes data
-        const classResult = await getClasses(page, pageSize, currentYear);
-        if (classResult && classResult.content) {
-          setTotalRowCount(classResult.totalElements);
-
-          // Process each class to fetch its teachers
-          const classTeacherPromises = classResult.content.map(async (item) => {
-            const teachersResult = await getClassTeacher(item.classId);
-
-            // Create a mapping for teachers information
-            const teacherInfo = teachersResult.reduce((acc, teacher, index) => {
-              acc[`teacher${index + 1}`] = teacher.username;
-              return acc;
-            }, {});
-
-            // Return a formatted class object with teacher information
-            return {
-              id: item.classId,
-              year: item.year,
-              grade: item.grade,
-              section: item.section,
-              classId: item.classId,
-              ...teacherInfo, // Include teacher information
-            };
-          });
-
-          // Wait for all teacher data to be fetched and processed
-          const tempRows = await Promise.all(classTeacherPromises);
-          setClasses(tempRows);
-        }
-
-        // Fetch teachers data
-        const teacherResult = await getTeachers(0, 100);
-        if (teacherResult && teacherResult.content) {
-          const tempTeachers = teacherResult.content.map((item, index) => ({
-            id: index + 1, // Assuming an index for table rows
-            gender: item.sex,
-            username: item.username,
-            name: item.name,
-          }));
-          setTeachers(tempTeachers);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
     fetchData();
   }, []);
+  const fetchData = async () => {
+    try {
+      // Fetch classes data
+      const classResult = await getClasses(page, pageSize, currentYear);
+      if (classResult && classResult.content) {
+        setTotalRowCount(classResult.totalElements);
 
+        // Process each class to fetch its teachers
+        const classTeacherPromises = classResult.content.map(async (item) => {
+          const teachersResult = await getClassTeacher(item.classId);
+
+          // Create a mapping for teachers information
+          const teacherInfo = teachersResult.reduce((acc, teacher, index) => {
+            acc[`teacher${index + 1}`] = teacher.username;
+            return acc;
+          }, {});
+
+          // Return a formatted class object with teacher information
+          return {
+            id: item.classId,
+            year: item.year,
+            grade: item.grade,
+            section: item.section,
+            classId: item.classId,
+            ...teacherInfo, // Include teacher information
+          };
+        });
+
+        // Wait for all teacher data to be fetched and processed
+        const tempRows = await Promise.all(classTeacherPromises);
+        setClasses(tempRows);
+      }
+
+      // Fetch teachers data
+      const teacherResult = await getTeachers(0, 100);
+      if (teacherResult && teacherResult.content) {
+        const tempTeachers = teacherResult.content.map((item, index) => ({
+          id: index + 1, // Assuming an index for table rows
+          gender: item.sex,
+          username: item.username,
+          name: item.name,
+        }));
+        setTeachers(tempTeachers);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
   useEffect(() => {
     console.log("selecte left sutdnet 2", selectedLeftStudents);
     getStudents(0, 100).then((result) => {
@@ -407,6 +373,7 @@ function AssignHomeroom() {
               console.log(
                 `Teacher ${initialTeacher.username} removed successfully`
               );
+              fetchData();
             })
             .catch((err) => {
               alert(
@@ -429,6 +396,7 @@ function AssignHomeroom() {
               setShowAlert(true);
               setTimeout(() => setShowAlert(false), 2000); // 2초 후 알림 숨김
               console.log(`Teacher ${selectedTeacher} assigned successfully`);
+              fetchData();
             })
             .catch((err) => {
               alert(`Failed to assign teacher ${selectedTeacher}:`, err);
