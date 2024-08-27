@@ -91,12 +91,14 @@ function AppBar() {
     navigate(`/class-board/${classItem.grade}-${classItem.section}`, {
       state: classItem,
     });
+    handleDrawerClose();
   };
 
   const goClassInfo = (classItem) => {
     navigate(`/private/class-info/${classItem.grade}-${classItem.section}`, {
       state: classItem,
     });
+    handleDrawerClose();
   };
 
   const goAssignHomeroom = () => {
@@ -254,7 +256,7 @@ function AppBar() {
     console.log("newExpanded:", newExpanded, "expanded", expanded);
 
     setExpanded((prevExpanded) => ({
-      ...prevExpanded,
+      // ...prevExpanded,
       ...newExpanded,
       userManagement: userManagementPaths.some((path) =>
         location.pathname.startsWith(path)
@@ -266,7 +268,7 @@ function AppBar() {
         location.pathname.startsWith(classInfoPath) ||
         location.pathname.startsWith(classBoardPath),
     }));
-  }, [location.pathname, myClass]);
+  }, [location.pathname, myClass, open]);
 
   useEffect(() => {
     // Fetch user data based on role

@@ -301,15 +301,6 @@ function CommonCourseManagement() {
           console.log("??", index, "\n", classItem);
           const teachers = await fetchClassTeacher(classItem.classId);
           if (teachers && teachers.length > 0) {
-            // teacher 배열이 비어있지 않을 때만 실행
-            // const teacherName =
-            //   teachers.length > 1
-            //     ? `${teachers[0]?.username || ""} & ${
-            //         teachers[1]?.username || ""
-            //       }`
-            //     : teachers[0]?.username || ""; // 안전하게 접근
-
-            // console.log("teachernmmmm", teacherName);
             return createClassData(
               classItem.year,
               classItem.grade,

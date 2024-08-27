@@ -356,7 +356,12 @@ function NoticeNewPostForm() {
             >
               Cancel
             </Button>
-            <Button variant="contained" color="primary" onClick={handleSave}>
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ backgroundColor: "#405c8b", color: "#F2F2F2" }}
+              onClick={handleSave}
+            >
               Save
             </Button>
           </Grid>

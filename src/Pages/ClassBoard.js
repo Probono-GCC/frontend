@@ -286,8 +286,8 @@ function ClassBoard() {
           <Button
             variant="contained"
             sx={{
-              backgroundColor: "#1b8ef2",
-              color: "white",
+              backgroundColor: "#405c8b",
+              color: "#F2F2F2",
               "&:hover": { backgroundColor: "#1565c0" },
               minWidth: isSmallScreen ? "80px" : "100px",
               minHeight: isSmallScreen ? "30px" : "50px",

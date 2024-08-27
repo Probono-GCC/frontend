@@ -247,8 +247,8 @@ function StudentView() {
         </Box>
         <Box
           sx={{
-            overflowY: "none", // 스크롤 추가
-            padding: "10px", // 패딩 추가 (선택사항)
+            overflowY: "none",
+            padding: "10px",
           }}
         >
           <Table
