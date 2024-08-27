@@ -42,6 +42,8 @@ import { useMediaQueryContext } from "../store/MediaQueryContext";
 import { getStudent, getTeacher, getProfileImage } from "../Apis/Api/User";
 import { useAuth } from "../store/AuthContext";
 import { getClassList } from "../Apis/Api/Class";
+import LanguageSwitcher from "./LanguageSwitcher"; // 만든 LanguageSwitcher 컴포넌트를 가져옵니다
+
 function AppBar() {
   const { isSmallScreen } = useMediaQueryContext();
 
@@ -339,6 +341,7 @@ function AppBar() {
             <Typography variant="h6" noWrap component="div"></Typography>
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: "flex" }}>
+              <LanguageSwitcher />
               <IconButton
                 size="medium"
                 edge="end"
