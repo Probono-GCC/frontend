@@ -393,10 +393,16 @@ function AssignHomeroom() {
         ) {
           assignClassMember(selectedClassRowData, selectedTeacher)
             .then((result) => {
-              setShowAlert(true);
-              setTimeout(() => setShowAlert(false), 2000); // 2초 후 알림 숨김
-              console.log(`Teacher ${selectedTeacher} assigned successfully`);
-              fetchData();
+              if (result && result.response && result.response.status === 400) {
+                alert(
+                  `Teacher(ID:${selectedTeacher}) is already assined another class.`
+                );
+              } else {
+                setShowAlert(true);
+                setTimeout(() => setShowAlert(false), 2000); // 2초 후 알림 숨김
+                console.log(`Teacher ${selectedTeacher} assigned successfully`);
+                fetchData();
+              }
             })
             .catch((err) => {
               alert(`Failed to assign teacher ${selectedTeacher}:`, err);
