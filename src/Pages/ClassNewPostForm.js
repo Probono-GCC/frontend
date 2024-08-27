@@ -177,21 +177,33 @@ function ClassNewPostForm() {
 
     return err;
   };
-  const modules = useMemo(() => {
-    return {
+  const modules = useMemo(
+    () => ({
       toolbar: {
         container: [
           ["image"],
           [{ header: [1, 2, 3, false] }, { font: [] }],
+          [{ list: "ordered" }, { list: "bullet" }],
+          ["link"],
           ["bold", "italic", "underline", "strike", "blockquote"],
         ],
         handlers: {
-          // 이미지 처리는 imageHandler라는 함수로 처리할 것이다.
           image: imageHandler,
+          link: () => {
+            const url = prompt("Enter the URL");
+            if (url) {
+              const editor = quillRef.current.getEditor();
+              const range = editor.getSelection();
+
+              // 링크를 삽입하고 바로 텍스트로 보이도록 설정
+              editor.insertText(range.index, url, "link", url);
+            }
+          },
         },
       },
-    };
-  }, []);
+    }),
+    []
+  );
 
   const formats = [
     "header",
@@ -201,6 +213,7 @@ function ClassNewPostForm() {
     "strike",
     "blockquote",
     "image",
+    "link",
   ];
   const handleBack = () => {
     navigate(-1); // Go back to the previous page
