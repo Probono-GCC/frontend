@@ -24,19 +24,6 @@ export default function NoticeStack() {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      // try {
-      //   const result = await getNoticePostList(0, 5); // 첫 페이지의 5개의 공지를 가져옴
-      //   if (result && Array.isArray(result.content)) {
-      //     setRows(result.content); // 데이터를 상태로 설정
-      //   } else {
-      //     setRows([]); // 만약 데이터가 없으면 빈 배열
-      //   }
-      // } catch (error) {
-      //   console.error("Error fetching notice posts", error);
-      //   setRows([]); // 에러 발생 시 빈 배열로 설정
-      // } finally {
-      //   setLoading(false); // 로딩 완료 후 로딩 상태 false로 설정
-      // }
 
       try {
         const result = await getNoticePostList(0, 5); // 공지사항 데이터 가져오기
@@ -105,6 +92,9 @@ export default function NoticeStack() {
     fontSize: "24px",
     fontWeight: "500",
     fontFamily: "Copperplate",
+    overflow: "hidden", // 내용이 박스를 넘지 않도록 설정
+    textOverflow: "ellipsis", // 넘치는 텍스트를 생략 부호(...)로 대체
+    whiteSpace: "nowrap", // 텍스트가 한 줄로 유지되도록 설정
   }));
 
   const NoticeDate = styled(Box)(({ theme }) => ({
@@ -151,20 +141,7 @@ export default function NoticeStack() {
           <AddIcon sx={{ color: "#1B8EF2" }} />
         </IconButton>
       </Box>
-      {/* <Stack spacing={2}>
-        <Item>
-          <NoticeTitle>Midterm Notice</NoticeTitle>
-          <NoticeDate>2024. 04. 24.</NoticeDate>
-        </Item>
-        <Item>
-          <NoticeTitle>School Anniversary</NoticeTitle>
-          <NoticeDate>2024. 04. 21.</NoticeDate>
-        </Item>
-        <Item>
-          <NoticeTitle>2024 Session Start</NoticeTitle>
-          <NoticeDate>2024. 04. 19.</NoticeDate>
-        </Item>
-      </Stack> */}
+
       {loading ? ( // 로딩 중일 때 로딩 스피너 표시
         <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
           <CircularProgress />

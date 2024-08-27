@@ -233,7 +233,7 @@ function StudentView() {
       <div id={styles.table_container}>
         <Box>
           <Typography
-            variant={isSmallScreen ? "h5" : "h3"}
+            variant={isSmallScreen ? "h6" : "h3"}
             sx={{
               textAlign: isSmallScreen ? "left" : "center",
               fontFamily: "Copperplate",
@@ -245,18 +245,25 @@ function StudentView() {
             Student Board
           </Typography>
         </Box>
-        <Table
-          columns={isSmallScreen ? basic_columns : updatedColumns}
-          rows={rows}
-          totalRowCount={totalRowCount}
-          onSelectedAllRow={handleRowSelection}
-          onRowDoubleClick={handleRowDoubleClick}
-          getRowId={(row) => row.id}
-          id={isSmallScreen ? "" : "table_body"}
-          isStudentTable={true} //row클릭시 체크박스 활성화 안되게 하기위해 커스텀
-          onPageChange={handlePageChange} // 페이지 변경 핸들러 추가
-          onPageSizeChange={handlePageSizeChange} // 페이지 크기 변경 핸들러 추가
-        />
+        <Box
+          sx={{
+            overflowY: "none", // 스크롤 추가
+            padding: "10px", // 패딩 추가 (선택사항)
+          }}
+        >
+          <Table
+            columns={isSmallScreen ? basic_columns : updatedColumns}
+            rows={rows}
+            totalRowCount={totalRowCount}
+            onSelectedAllRow={handleRowSelection}
+            onRowDoubleClick={handleRowDoubleClick}
+            getRowId={(row) => row.id}
+            id={isSmallScreen ? "" : "table_body"}
+            isStudentTable={true} //row클릭시 체크박스 활성화 안되게 하기위해 커스텀
+            onPageChange={handlePageChange} // 페이지 변경 핸들러 추가
+            onPageSizeChange={handlePageSizeChange} // 페이지 크기 변경 핸들러 추가
+          />
+        </Box>
         {isSmallScreen ? (
           <div>&nbsp;</div>
         ) : (

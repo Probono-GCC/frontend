@@ -112,7 +112,7 @@ function NoticeBoard() {
       <AppBar />
       <Box>
         <Typography
-          variant={isSmallScreen ? "h6" : "h3"}
+          variant={isSmallScreen ? "h5" : "h3"}
           sx={{
             textAlign: isSmallScreen ? "left" : "center",
             fontFamily: "Copperplate",
@@ -207,7 +207,15 @@ function NoticeBoard() {
                         whiteSpace: "nowrap",
                       }}
                     >
-                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          fontWeight: "bold",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
                         {row.title}
                       </Typography>
                       <Typography

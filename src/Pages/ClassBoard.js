@@ -21,6 +21,7 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import { useMediaQueryContext } from "../store/MediaQueryContext";
 import { getNoticePostList } from "../Apis/Api/ClassNotice";
 import { useAuth } from "../store/AuthContext";
+import { convertDateFormat } from "../Util/DateUtils";
 
 function createData(title, date, author, viewCount) {
   return { title, date, author, viewCount };
@@ -121,7 +122,7 @@ function ClassBoard() {
       <AppBar />
       <Box>
         <Typography
-          variant={isSmallScreen ? "h4" : "h3"}
+          variant={isSmallScreen ? "h5" : "h3"}
           sx={{
             textAlign: "center",
             fontFamily: "Copperplate",
@@ -140,7 +141,7 @@ function ClassBoard() {
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <Table sx={{ tableLayout: "auto", width: "100%" }}>
+        <Table sx={{ tableLayout: "fixed", width: "100%" }}>
           <TableHead sx={{ backgroundColor: "#d8edff" }}>
             <TableRow>
               <TableCell
@@ -155,9 +156,9 @@ function ClassBoard() {
               </TableCell>
               <TableCell
                 sx={{
-                  width: isSmallScreen ? "53%" : "65%",
                   textAlign: "left",
                   fontWeight: "bold",
+                  width: isSmallScreen ? "53%" : "40%",
                 }}
               >
                 Title
@@ -172,7 +173,7 @@ function ClassBoard() {
                   textAlign: "right",
                   fontWeight: "bold",
                   width: isSmallScreen ? "19%" : "12%",
-                  padding: "16px 30px 16px 16px",
+                  padding: "16px",
                 }}
               >
                 View
@@ -212,7 +213,23 @@ function ClassBoard() {
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {row.title}
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      fontWeight: "bold",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {row.title}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{ color: "gray", marginTop: "4px" }}
+                  >
+                    {convertDateFormat(row.updatedAt)}
+                  </Typography>
                 </TableCell>
                 {!isSmallScreen && (
                   <TableCell

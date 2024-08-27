@@ -228,13 +228,14 @@ function ClassInfo() {
             display: "flex",
             justifyContent: "center",
             marginTop: 0,
-            marginBottom: 3,
+            // marginBottom: 3,
           }}
         >
           <Typography
-            variant="h3"
-            component="div"
-            sx={{ fontFamily: "Copperplate" }}
+            variant={isSmallScreen ? "h5" : "h3"}
+            sx={{
+              fontFamily: "Copperplate",
+            }}
           >
             Class Info
           </Typography>
@@ -249,57 +250,72 @@ function ClassInfo() {
         <Box
           sx={{
             display: "flex",
-            justifyContent: "left",
-            marginTop: 10,
-            marginBottom: 3,
-            paddingLeft: "5%",
+            justifyContent: "center",
+            marginTop: 5,
+            marginBottom: 2,
           }}
         >
           <Typography
-            variant="h4"
             component="div"
-            sx={{ fontFamily: "Copperplate" }}
+            variant={isSmallScreen ? "h5" : "h3"}
+            sx={{
+              fontFamily: "Copperplate",
+            }}
           >
             Course Info
           </Typography>
         </Box>
-        <CourseTable
-          columns={courseColumns}
-          rows={courseRows}
-          onRowSelection={handleRowSelection}
-          isReadOnly={true}
-          getRowId={(row) => row.id}
-          id={isSmallScreen ? "" : "table_body"}
-        />
+        <Box
+          sx={{
+            overflowY: "none", // 스크롤 추가
+            padding: "10px", // 패딩 추가 (선택사항)
+          }}
+        >
+          <CourseTable
+            columns={courseColumns}
+            rows={courseRows}
+            onRowSelection={handleRowSelection}
+            isReadOnly={true}
+            getRowId={(row) => row.id}
+            id={isSmallScreen ? "" : "table_body"}
+          />
+        </Box>
         <Box
           sx={{
             display: "flex",
-            justifyContent: "left",
-            marginTop: 10,
-            marginBottom: 3,
-            paddingLeft: "5%",
+            justifyContent: "center",
+            marginTop: 5,
+            marginBottom: 2,
           }}
         >
           <Typography
-            variant="h4"
-            component="div"
-            sx={{ fontFamily: "Copperplate" }}
+            variant={isSmallScreen ? "h5" : "h3"}
+            sx={{
+              fontFamily: "Copperplate",
+            }}
           >
             Student Info
           </Typography>
         </Box>
-        <Table
-          columns={basic_columns}
-          rows={classStudents}
-          onSelectedAllRow={handleRowSelection}
-          onRowDoubleClick={handleRowDoubleClick}
-          getRowId={(row) => row.id}
-          totalRowCount={totalRowCount}
-          id={isSmallScreen ? "" : "table_body"}
-          isStudentTable={true} //row클릭시 체크박스 활성화 안되게 하기위해 커스텀
-          onPageChange={handlePageChange} // 페이지 변경 핸들러 추가
-          onPageSizeChange={handlePageSizeChange} // 페이지 크기 변경 핸들러 추가
-        />
+        <Box
+          sx={{
+            overflowY: "none", // 스크롤 추가
+            padding: "10px", // 패딩 추가 (선택사항)
+          }}
+        >
+          <Table
+            columns={basic_columns}
+            rows={classStudents}
+            onSelectedAllRow={handleRowSelection}
+            onRowDoubleClick={handleRowDoubleClick}
+            getRowId={(row) => row.id}
+            totalRowCount={totalRowCount}
+            id={isSmallScreen ? "" : "table_body"}
+            isStudentTable={true} //row클릭시 체크박스 활성화 안되게 하기위해 커스텀
+            onPageChange={handlePageChange} // 페이지 변경 핸들러 추가
+            onPageSizeChange={handlePageSizeChange} // 페이지 크기 변경 핸들러 추가
+          />
+        </Box>
         &nbsp;
       </div>
 

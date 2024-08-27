@@ -102,7 +102,6 @@ function ChangePassword() {
   }, [userType]);
 
   useEffect(() => {
-    console.log("checkedRowId", checkedRowId);
     if (checkedRowId) {
       //학생에서 찾기
       const selectedData = allStudentData.find(
@@ -218,7 +217,6 @@ function ChangePassword() {
         <Box
           sx={{
             width: "90vw",
-
             margin: "10px auto",
           }}
         >
@@ -242,8 +240,7 @@ function ChangePassword() {
         </Box>
         <Box
           sx={{
-            height: "60vh",
-            overflowY: "auto", // 스크롤 추가
+            overflowY: "none", // 스크롤 추가
             padding: "10px", // 패딩 추가 (선택사항)
           }}
         >

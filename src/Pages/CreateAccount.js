@@ -13,6 +13,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useMediaQueryContext } from "../store/MediaQueryContext";
 import {
   postStudent,
   postTeacher,
@@ -21,6 +22,7 @@ import {
 } from "../Apis/Api/User";
 
 function CreateAccount() {
+  const { isSmallScreen } = useMediaQueryContext();
   const [tabValue, setTabValue] = useState(0); // 0: Student, 1: Teacher
   const [showPassword, setShowPassword] = useState(false);
   const [showRePassword, setShowRePassword] = useState(false);
@@ -208,9 +210,14 @@ function CreateAccount() {
       <AppBar />
       <Box sx={{ display: "flex", justifyContent: "center", marginTop: 0 }}>
         <Typography
-          variant="h3"
           component="div"
-          sx={{ fontFamily: "Copperplate" }}
+          variant={isSmallScreen ? "h5" : "h3"}
+          sx={{
+            fontFamily: "Copperplate",
+            // marginTop: isSmallScreen ? "5px" : "",
+            // marginBottom: isSmallScreen ? "10px" : "",
+            // marginLeft: isSmallScreen ? "10px" : "",
+          }}
         >
           Create Account
         </Typography>
@@ -226,15 +233,13 @@ function CreateAccount() {
           <Tab label="Teacher" />
         </Tabs>
       </Box>
-      <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
+      <Box sx={{ display: "flex", justifyContent: "center", margin: 2 }}>
         <Grid container spacing={2} sx={{ maxWidth: 600 }}>
           {/* ID Field */}
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label={
-                isFocused || id.length > 0 ? "ID" : "ID(4-20 characters long)"
-              }
+              label={"ID"}
               variant="outlined"
               value={id}
               onFocus={() => setIsFocused(true)} // 포커스가 있을 때 isFocused를 true로 설정
@@ -259,6 +264,9 @@ function CreateAccount() {
                 ),
               }}
             />
+            <div style={{ fontSize: "14px", color: "#B3B3B3" }}>
+              ID (4-20 characters)
+            </div>
           </Grid>
 
           {/* Serial Number for Student Only */}
@@ -266,7 +274,7 @@ function CreateAccount() {
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Serial Number"
+                label="SN"
                 variant="outlined"
                 value={sn}
                 onChange={(e) => {
