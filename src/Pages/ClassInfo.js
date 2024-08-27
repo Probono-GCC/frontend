@@ -267,7 +267,6 @@ function ClassInfo() {
         </Box>
         <Box
           sx={{
-            overflowY: "none", // 스크롤 추가
             padding: "10px", // 패딩 추가 (선택사항)
           }}
         >
@@ -299,7 +298,6 @@ function ClassInfo() {
         </Box>
         <Box
           sx={{
-            overflowY: "none", // 스크롤 추가
             padding: "10px", // 패딩 추가 (선택사항)
           }}
         >
