@@ -8,11 +8,10 @@ import Select from "@mui/material/Select";
 
 import LoginContainer from "../Components/LoginContainer";
 import ForgotPassword from "../Components/ForgotPassword";
-import BackImage1 from "../Assets/img/BackgroundSample/CLA_back1.png";
-import BackImage2 from "../Assets/img/BackgroundSample/CLA_back2.png";
-import BackImage3 from "../Assets/img/BackgroundSample/sample_images_02.png";
-import BackImage4 from "../Assets/img/BackgroundSample/sample_images_03.png";
-import BackImage5 from "../Assets/img/BackgroundSample/sample_images_04.png";
+import BackImage1 from "../Assets/img/BackgroundSample/background1.jpeg";
+import BackImage2 from "../Assets/img/BackgroundSample/background2.jpeg";
+import BackImage3 from "../Assets/img/BackgroundSample/background3.jpeg";
+import BackImage4 from "../Assets/img/BackgroundSample/background4.jpeg";
 import { Password } from "@mui/icons-material";
 
 //다국어지원
@@ -66,15 +65,15 @@ function Login({ type }) {
   const BackgroundSample = [
     { img: BackImage1, key: 1 },
     { img: BackImage2, key: 2 },
-    // { img: BackImage3, key: 3 },
-    // { img: BackImage4, key: 4 },
+    { img: BackImage3, key: 3 },
+    { img: BackImage4, key: 4 },
     // { img: BackImage5, key: 5 },
   ];
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % BackgroundSample.length);
-    }, 3000); // 3초마다 슬라이드 전환
+    }, 3500); // 3.5초마다 슬라이드 전환
 
     return () => clearInterval(interval);
   }, [BackgroundSample.length]);
@@ -122,7 +121,7 @@ function Login({ type }) {
       <div id={styles.image_container}>
         <div
           id={styles.slider}
-          style={{ position: "relative", height: "100vh", width: "60vw" }}
+          style={{ position: "relative", height: "100vh", width: "55vw" }}
         >
           {BackgroundSample.map((item, index) => (
             <img

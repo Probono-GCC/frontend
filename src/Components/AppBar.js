@@ -6,9 +6,6 @@ import {
   Toolbar,
   IconButton,
   Typography,
-  Badge,
-  MenuItem,
-  Menu,
   Drawer,
   CssBaseline,
   AppBar as MuiAppBar,
@@ -26,7 +23,6 @@ import {
 
 import {
   Menu as MenuIcon,
-  AccountCircle,
   Notifications as NotificationsIcon,
   MoreVert as MoreIcon,
   ChevronLeft as ChevronLeftIcon,
@@ -52,6 +48,7 @@ function AppBar() {
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [thumbnailImage, setThumnailImage] = useState("");
   const [myClass, setMyClass] = useState([]); //[{grade:"Class1",section:"A"},{grade:"Class3",section:"B"}]
+  const [error, setError] = useState(null);
 
   const navigate = useNavigate();
   const NepaliDate = require("nepali-date");
@@ -88,7 +85,6 @@ function AppBar() {
   };
 
   const goClassBoard = (classItem) => {
-    console.log("app bar class", classItem);
     navigate(`/class-board/${classItem.grade}-${classItem.section}`, {
       state: classItem,
     });
@@ -98,14 +94,6 @@ function AppBar() {
     navigate(`/private/class-info/${classItem.grade}-${classItem.section}`, {
       state: classItem,
     });
-  };
-
-  const goSubjectBoard = () => {
-    navigate("/subject-board");
-  };
-
-  const goSubjectInfo = () => {
-    navigate("/private/subject-info");
   };
 
   const goAssignHomeroom = () => {
@@ -130,13 +118,6 @@ function AppBar() {
   const handleLogout = () => {
     navigate("/");
   };
-  const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
   };
@@ -206,22 +187,15 @@ function AppBar() {
     display: "flex",
     alignItems: "center",
     padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
     ...theme.mixins.toolbar,
     justifyContent: "flex-end",
   }));
 
-  const [expanded, setExpanded] = useState({});
-  // myClass가 업데이트될 때 expanded 상태 동적으로 설정
-  useEffect(() => {
-    const newExpanded = {};
-    if (Array.isArray(myClass)) {
-      myClass.forEach((_, index) => {
-        newExpanded[`class${index}`] = false;
-      });
-      setExpanded(newExpanded);
-    }
-  }, [myClass]);
+  const [expanded, setExpanded] = useState({
+    userManagement: false,
+    classCourseManagement: false,
+    classes: false,
+  });
 
   const handleAccordionChange = (panel) => (event, isExpanded) => {
     setExpanded((prevExpanded) => ({
@@ -245,7 +219,7 @@ function AppBar() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [open]);
-  // 하위 경로 확인 및 Accordion 상태 설정 (classes 추후 수정 필요)
+
   useEffect(() => {
     const userManagementPaths = [
       "/private/create-account",
@@ -259,98 +233,97 @@ function AppBar() {
       "/private/assign-homeroom",
       "/private/common-course-management",
     ];
-    if (
-      userManagementPaths.some((path) => location.pathname.startsWith(path))
-    ) {
-      setExpanded("userManagement");
-    }
-    if (
-      classCourseManagementPaths.some((path) =>
-        location.pathname.startsWith(path)
-      )
-    ) {
-      setExpanded("classCourseManagement");
-    }
-    if (userRole == roleArray[0]) {
-      setUserName("Administor");
-      getClassList(0, 100, currentYear).then((result) => {
-        if (result && result.content) {
-          const myClassList = result.content.map((item) => ({
-            grade: item.grade,
-            section: item.section ? item.section : "",
-            classId: item.classId,
-            year: item.year,
-          }));
-          console.log("admin classlist", myClassList);
-          setMyClass(myClassList);
-        } else {
-          setMyClass([{ grade: "", section: "", classId: "", year: "" }]);
-        }
-      });
-    } else if (userRole == roleArray[1]) {
-      console.log("getTeacher");
-      getTeacher(userData.username).then((result) => {
-        setUserName(result.name); //이름 설정
-        if (result.imageId) {
-          //이미지 설정
-          getProfileImage(result.imageId.imageId).then((res) => {
-            setThumnailImage(res.imagePath);
-            console.log(res, "result");
-          });
-        }
+    const classInfoPath = "/private/class-info";
+    const classBoardPath = "/class-board";
 
+    // 초기 expanded 상태 설정
+    const newExpanded = {};
+    if (Array.isArray(myClass)) {
+      myClass.forEach((classItem, index) => {
+        const classInfoFullPath = `${classInfoPath}/${classItem.grade}-${classItem.section}`;
+        const classBoardFullPath = `${classBoardPath}/${classItem.grade}-${classItem.section}`;
+
+        // 현재 pathname이 classInfoPath 또는 classBoardPath와 일치하는 경우 expanded 설정
         if (
-          result.classId &&
-          result.classId.grade &&
-          result.classId.section &&
-          result.classId.classId &&
-          result.classId.year
+          location.pathname.startsWith(classInfoFullPath) ||
+          location.pathname.startsWith(classBoardFullPath)
         ) {
-          setMyClass([
-            {
-              grade: result.classId.grade,
-              section: result.classId.section,
-              classId: result.classId.classId,
-              year: result.classId.year,
-            },
-          ]);
+          newExpanded[`class${index}`] = true;
         } else {
-          setMyClass([{ grade: "", section: "", calssId: "", year: "" }]);
-        }
-      });
-    } else if (userRole == roleArray[2]) {
-      getStudent(userData.username).then((result) => {
-        console.log("getstudent?", result);
-        if (result) {
-          setUserName(result.name);
-          if (result.imageResponseDTO) {
-            getProfileImage(result.imageResponseDTO.imageId).then((res) => {
-              setThumnailImage(res.imagePath);
-              console.log(res, "resujlt");
-            });
-          }
-          if (
-            result.classResponse &&
-            result.classResponse.grade &&
-            result.classResponse.section &&
-            result.classResponse.classId &&
-            result.classResponse.year
-          ) {
-            setMyClass([
-              {
-                grade: result.classResponse.grade,
-                section: result.classResponse.section,
-                classId: result.classResponse.classId,
-                year: result.classResponse.year,
-              },
-            ]);
-          } else {
-            setMyClass({ grade: "", section: "", classId: "", year: "" });
-          }
+          newExpanded[`class${index}`] = false;
         }
       });
     }
-  }, [location.pathname]);
+
+    // 디버깅을 위한 로그 추가
+    console.log("location.pathname:", location.pathname);
+    console.log("newExpanded:", newExpanded, "expanded", expanded);
+
+    setExpanded((prevExpanded) => ({
+      ...prevExpanded,
+      ...newExpanded,
+      userManagement: userManagementPaths.some((path) =>
+        location.pathname.startsWith(path)
+      ),
+      classCourseManagement: classCourseManagementPaths.some((path) =>
+        location.pathname.startsWith(path)
+      ),
+      classes:
+        location.pathname.startsWith(classInfoPath) ||
+        location.pathname.startsWith(classBoardPath),
+    }));
+  }, [location.pathname, myClass]);
+
+  useEffect(() => {
+    // Fetch user data based on role
+    const fetchUserData = async () => {
+      if (userRole === roleArray[0]) {
+        setUserName("Administor");
+        const result = await getClassList(0, 100, currentYear);
+        setMyClass(result?.content || []);
+      } else if (userRole === roleArray[1]) {
+        const result = await getTeacher(userData.username);
+        setUserName(result.name);
+        if (result.imageId) {
+          const res = await getProfileImage(result.imageId.imageId);
+          setThumnailImage(res.imagePath);
+        }
+        setMyClass(
+          result.classId
+            ? [
+                {
+                  grade: result.classId.grade,
+                  section: result.classId.section || "",
+                  classId: result.classId.classId,
+                  year: result.classId.year,
+                },
+              ]
+            : []
+        );
+      } else if (userRole === roleArray[2]) {
+        const result = await getStudent(userData.username);
+        setUserName(result.name);
+        if (result.imageResponseDTO) {
+          const res = await getProfileImage(result.imageResponseDTO.imageId);
+          setThumnailImage(res.imagePath);
+        }
+        setMyClass(
+          result.classResponse
+            ? [
+                {
+                  grade: result.classResponse.grade,
+                  section: result.classResponse.section,
+                  classId: result.classResponse.classId,
+                  year: result.classResponse.year,
+                },
+              ]
+            : []
+        );
+      }
+    };
+
+    fetchUserData();
+  }, [open]);
 
   return (
     <div>
@@ -454,7 +427,7 @@ function AppBar() {
                   sx={{
                     minWidth: "40px",
                     color:
-                      location.pathname === "/private/"
+                      location.pathname === "/private/home"
                         ? "primary.main"
                         : "none",
                   }}
@@ -466,7 +439,7 @@ function AppBar() {
                   sx={{
                     "& .MuiTypography-root": {
                       fontWeight:
-                        location.pathname === "/private/"
+                        location.pathname === "/private/home"
                           ? theme.typography.fontWeightBold
                           : theme.typography.fontWeightRegular,
                     },
@@ -477,13 +450,15 @@ function AppBar() {
             <ListItem key={"Notice board"} disablePadding>
               <ListItemButton
                 onClick={goNoticeBoard}
-                sx={{ paddingLeft: "16px" }}
+                sx={{
+                  paddingLeft: "16px",
+                }}
               >
                 <ListItemIcon
                   sx={{
                     minWidth: "40px",
                     color:
-                      location.pathname === "/private/notice-board"
+                      location.pathname === "/notice-board"
                         ? theme.palette.primary.main
                         : "none",
                   }}
@@ -495,7 +470,7 @@ function AppBar() {
                   sx={{
                     "& .MuiTypography-root": {
                       fontWeight:
-                        location.pathname === "/private/notice-board"
+                        location.pathname === "/notice-board"
                           ? theme.typography.fontWeightBold
                           : theme.typography.fontWeightRegular,
                     },
