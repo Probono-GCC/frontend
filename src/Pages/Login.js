@@ -14,20 +14,21 @@ import BackImage3 from "../Assets/img/BackgroundSample/background3.jpeg";
 import BackImage4 from "../Assets/img/BackgroundSample/background4.jpeg";
 import { Password } from "@mui/icons-material";
 
-//다국어지원
+// 다국어 지원
 import i18n from "../i18n/i18n"; // 경로는 파일의 위치에 따라 조정해야 합니다.
 import { useTranslation } from "react-i18next";
 import "../i18n/i18n.js"; // src/Pages에서 src/i18n으로 접근; // i18next 초기화 파일
+
 function Login({ type }) {
   const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(1);
 
-  /**언어 선택 임시 선택상자 */
+  /** 언어 선택 임시 선택상자 */
   const [lang, setLang] = useState(10);
 
   const handleChange = (event) => {
     const selectedLanguage = event.target.value;
-    setLang(event.target.value);
+    setLang(selectedLanguage);
 
     console.log("event.target.value", event.target.value);
 
@@ -61,7 +62,8 @@ function Login({ type }) {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
-  /**언어 선택 임시 선택상자 */
+
+  /** 언어 선택 임시 선택상자 */
   const BackgroundSample = [
     { img: BackImage1, key: 1 },
     { img: BackImage2, key: 2 },
@@ -78,9 +80,16 @@ function Login({ type }) {
     return () => clearInterval(interval);
   }, [BackgroundSample.length]);
 
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      // Enter 키가 눌렸을 때
+      document.getElementById("login-button").click(); // 로그인 버튼을 클릭
+    }
+  };
+
   return (
     <div id={styles.page_container}>
-      {type == "default" ? (
+      {type === "default" ? (
         <div>
           <div id={styles.right_align}>
             <FormControl sx={{ m: 1, minWidth: 120 }}>
@@ -96,7 +105,7 @@ function Login({ type }) {
               </Select>
             </FormControl>
           </div>
-          <LoginContainer />
+          <LoginContainer onKeyDown={handleKeyDown} />
         </div>
       ) : (
         <div>
@@ -114,7 +123,7 @@ function Login({ type }) {
               </Select>
             </FormControl>
           </div>
-          <ForgotPassword />
+          <ForgotPassword onKeyDown={handleKeyDown} />
         </div>
       )}
 
@@ -144,4 +153,5 @@ function Login({ type }) {
     </div>
   );
 }
+
 export default Login;
