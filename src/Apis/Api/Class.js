@@ -72,6 +72,7 @@ export async function assignClassMember(classData, username) {
     return response.data;
   } catch (err) {
     console.log(err);
+    return err;
   }
 }
 
