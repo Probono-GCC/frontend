@@ -16,7 +16,7 @@ const ClassInfoBox = ({ batch, grade, section, teacher, studentCount }) => {
   return (
     <Box
       sx={{
-        width: "100%",
+        width: isSmallScreen ? "100%" : "90%",
         margin: "0 auto",
         padding: "10px",
       }}
