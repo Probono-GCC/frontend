@@ -49,7 +49,7 @@ for (let year = currentYear; year <= currentYear + 4; year++) {
 }
 
 function CreateClass() {
-  const [batch, setBatch] = useState("");
+  const [batch, setBatch] = useState(currentYear);
   const [grade, setGrade] = useState("");
   const [section, setSection] = useState("");
   const [showAlert, setShowAlert] = useState(false);
@@ -192,6 +192,7 @@ function CreateClass() {
               value={batch}
               onChange={(e) => setBatch(e.target.value)}
               displayEmpty
+              disabled
               sx={{ marginRight: 2, minWidth: 120, flex: 1 }}
             >
               <MenuItem value="" disabled>
