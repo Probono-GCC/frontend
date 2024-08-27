@@ -23,17 +23,13 @@ function LoginContainer() {
   const [userPW, setUserPW] = useState("");
   const { isSmallScreen, isSmallWidth } = useMediaQueryContext();
   const { saveToken, clearToken } = useAuth(); //토큰 전역 저장
+
   const moveForgotPassword = () => {
     navigate("/forgot-password");
   };
 
   const login = async () => {
-    //다국어지원
-
-    // FormData 객체 생성
     const formData = new FormData();
-
-    // formData에 username과 password 추가
     formData.append("username", userID);
     formData.append("password", userPW);
 
@@ -49,15 +45,12 @@ function LoginContainer() {
         const token = authorizationHeader && authorizationHeader.split(" ")[1]; // Bearer 이후의 토큰만 추출
         localStorage.setItem("jwt", token);
 
-        console.log("Token:", token);
         if (token) {
           const userData = saveToken(token);
-          console.log("유저 정보", userData);
 
-          //첫 접속인지 아닌지 판단
+          // 첫 접속인지 아닌지 판단
           if (userData.role == "ROLE_STUDENT") {
             return isFirstAccessStudent(userData.username).then((access) => {
-              console.log("?", access);
               if (access && userData.role !== "ROLE_ADMIN") {
                 alert("Fill in the essential information on your profile");
                 navigate("/my-profile");
@@ -67,7 +60,6 @@ function LoginContainer() {
             });
           } else if (userData.role == "ROLE_TEACHER") {
             return isFirstAccessTeacher(userData.username).then((access) => {
-              console.log("?", access);
               if (access && userData.role !== "ROLE_ADMIN") {
                 alert("Fill in the essential information on your profile");
                 navigate("/my-profile");
@@ -87,9 +79,17 @@ function LoginContainer() {
         console.log(error);
       });
   };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      login();
+    }
+  };
+
   useEffect(() => {
     clearToken();
   }, []);
+
   return (
     <div id={styles.login_container}>
       <Typography
@@ -97,7 +97,6 @@ function LoginContainer() {
         sx={{
           fontFamily: "Copperplate",
           textAlign: "center",
-
           fontWeight: "bold",
         }}
       >
@@ -132,6 +131,7 @@ function LoginContainer() {
               setUserID(event.target.value);
             }}
             value={userID}
+            onKeyDown={handleKeyDown}
             sx={{
               marginBottom: "16px",
               width: isSmallScreen ? "80vw" : "30vw",
@@ -148,6 +148,7 @@ function LoginContainer() {
               setUserPW(event.target.value);
             }}
             value={userPW}
+            onKeyDown={handleKeyDown}
             sx={{
               marginBottom: "16px",
               width: isSmallScreen ? "80vw" : "30vw",

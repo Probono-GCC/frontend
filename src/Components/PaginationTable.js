@@ -74,6 +74,8 @@ const Table = memo(
             "& .MuiDataGrid-menuIcon": {
               display: isSmallScreen ? "none" : "block", // 화면 크기에 따라 아이콘 숨기기
             },
+            overflowY: "auto", // 스크롤 추가
+            height: "60vh",
           }}
           rows={rows}
           columns={columns}

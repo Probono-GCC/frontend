@@ -21,6 +21,11 @@ code {
   color: red;
 }
 
+@media (max-width: 880px) {
+  .fc-toolbar-title {
+    font-size: 1.35rem !important;
+  }
+}
 .header_title {
   width: 100%;
   text-align: center;

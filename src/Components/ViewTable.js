@@ -54,6 +54,8 @@ const Table = memo(
             "& .MuiDataGrid-menuIcon": {
               display: isSmallScreen ? "none" : "block", //모바일 뷰 table column option 숨기기
             },
+            overflowY: "auto", // 스크롤 추가
+            height: isSmallScreen ? "70vh" : "60vh",
           }}
           rows={rows}
           columns={columns}

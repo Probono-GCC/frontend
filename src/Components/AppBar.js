@@ -6,9 +6,6 @@ import {
   Toolbar,
   IconButton,
   Typography,
-  Badge,
-  MenuItem,
-  Menu,
   Drawer,
   CssBaseline,
   AppBar as MuiAppBar,
@@ -26,7 +23,6 @@ import {
 
 import {
   Menu as MenuIcon,
-  AccountCircle,
   Notifications as NotificationsIcon,
   MoreVert as MoreIcon,
   ChevronLeft as ChevronLeftIcon,
@@ -42,16 +38,20 @@ import {
 } from "@mui/icons-material";
 
 import { useEffect, useState } from "react";
+import { useMediaQueryContext } from "../store/MediaQueryContext";
 import { getStudent, getTeacher, getProfileImage } from "../Apis/Api/User";
 import { useAuth } from "../store/AuthContext";
 import { getClassList } from "../Apis/Api/Class";
 function AppBar() {
+  const { isSmallScreen } = useMediaQueryContext();
+
   const { userRole, roleArray, userData } = useAuth();
   const [userName, setUserName] = React.useState("");
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [thumbnailImage, setThumnailImage] = useState("");
   const [myClass, setMyClass] = useState([]); //[{grade:"Class1",section:"A"},{grade:"Class3",section:"B"}]
+  const [error, setError] = useState(null);
 
   const navigate = useNavigate();
   const NepaliDate = require("nepali-date");
@@ -88,24 +88,17 @@ function AppBar() {
   };
 
   const goClassBoard = (classItem) => {
-    console.log("app bar class", classItem);
     navigate(`/class-board/${classItem.grade}-${classItem.section}`, {
       state: classItem,
     });
+    handleDrawerClose();
   };
 
   const goClassInfo = (classItem) => {
     navigate(`/private/class-info/${classItem.grade}-${classItem.section}`, {
       state: classItem,
     });
-  };
-
-  const goSubjectBoard = () => {
-    navigate("/subject-board");
-  };
-
-  const goSubjectInfo = () => {
-    navigate("/private/subject-info");
+    handleDrawerClose();
   };
 
   const goAssignHomeroom = () => {
@@ -130,24 +123,8 @@ function AppBar() {
   const handleLogout = () => {
     navigate("/");
   };
-  const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    handleMobileMenuClose();
-  };
-
-  const handleMobileMenuOpen = (event) => {
-    setMobileMoreAnchorEl(event.currentTarget);
   };
 
   const theme = useTheme();
@@ -206,22 +183,15 @@ function AppBar() {
     display: "flex",
     alignItems: "center",
     padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
     ...theme.mixins.toolbar,
     justifyContent: "flex-end",
   }));
 
-  const [expanded, setExpanded] = useState({});
-  // myClass가 업데이트될 때 expanded 상태 동적으로 설정
-  useEffect(() => {
-    const newExpanded = {};
-    if (Array.isArray(myClass)) {
-      myClass.forEach((_, index) => {
-        newExpanded[`class${index}`] = false;
-      });
-      setExpanded(newExpanded);
-    }
-  }, [myClass]);
+  const [expanded, setExpanded] = useState({
+    userManagement: false,
+    classCourseManagement: false,
+    classes: false,
+  });
 
   const handleAccordionChange = (panel) => (event, isExpanded) => {
     setExpanded((prevExpanded) => ({
@@ -245,7 +215,7 @@ function AppBar() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [open]);
-  // 하위 경로 확인 및 Accordion 상태 설정 (classes 추후 수정 필요)
+
   useEffect(() => {
     const userManagementPaths = [
       "/private/create-account",
@@ -259,98 +229,97 @@ function AppBar() {
       "/private/assign-homeroom",
       "/private/common-course-management",
     ];
-    if (
-      userManagementPaths.some((path) => location.pathname.startsWith(path))
-    ) {
-      setExpanded("userManagement");
-    }
-    if (
-      classCourseManagementPaths.some((path) =>
-        location.pathname.startsWith(path)
-      )
-    ) {
-      setExpanded("classCourseManagement");
-    }
-    if (userRole == roleArray[0]) {
-      setUserName("Administor");
-      getClassList(0, 100, currentYear).then((result) => {
-        if (result && result.content) {
-          const myClassList = result.content.map((item) => ({
-            grade: item.grade,
-            section: item.section ? item.section : "",
-            classId: item.classId,
-            year: item.year,
-          }));
-          console.log("admin classlist", myClassList);
-          setMyClass(myClassList);
-        } else {
-          setMyClass([{ grade: "", section: "", classId: "", year: "" }]);
-        }
-      });
-    } else if (userRole == roleArray[1]) {
-      console.log("getTeacher");
-      getTeacher(userData.username).then((result) => {
-        setUserName(result.name); //이름 설정
-        if (result.imageId) {
-          //이미지 설정
-          getProfileImage(result.imageId.imageId).then((res) => {
-            setThumnailImage(res.imagePath);
-            console.log(res, "result");
-          });
-        }
+    const classInfoPath = "/private/class-info";
+    const classBoardPath = "/class-board";
 
+    // 초기 expanded 상태 설정
+    const newExpanded = {};
+    if (Array.isArray(myClass)) {
+      myClass.forEach((classItem, index) => {
+        const classInfoFullPath = `${classInfoPath}/${classItem.grade}-${classItem.section}`;
+        const classBoardFullPath = `${classBoardPath}/${classItem.grade}-${classItem.section}`;
+
+        // 현재 pathname이 classInfoPath 또는 classBoardPath와 일치하는 경우 expanded 설정
         if (
-          result.classId &&
-          result.classId.grade &&
-          result.classId.section &&
-          result.classId.classId &&
-          result.classId.year
+          location.pathname.startsWith(classInfoFullPath) ||
+          location.pathname.startsWith(classBoardFullPath)
         ) {
-          setMyClass([
-            {
-              grade: result.classId.grade,
-              section: result.classId.section,
-              classId: result.classId.classId,
-              year: result.classId.year,
-            },
-          ]);
+          newExpanded[`class${index}`] = true;
         } else {
-          setMyClass([{ grade: "", section: "", calssId: "", year: "" }]);
-        }
-      });
-    } else if (userRole == roleArray[2]) {
-      getStudent(userData.username).then((result) => {
-        console.log("getstudent?", result);
-        if (result) {
-          setUserName(result.name);
-          if (result.imageResponseDTO) {
-            getProfileImage(result.imageResponseDTO.imageId).then((res) => {
-              setThumnailImage(res.imagePath);
-              console.log(res, "resujlt");
-            });
-          }
-          if (
-            result.classResponse &&
-            result.classResponse.grade &&
-            result.classResponse.section &&
-            result.classResponse.classId &&
-            result.classResponse.year
-          ) {
-            setMyClass([
-              {
-                grade: result.classResponse.grade,
-                section: result.classResponse.section,
-                classId: result.classResponse.classId,
-                year: result.classResponse.year,
-              },
-            ]);
-          } else {
-            setMyClass({ grade: "", section: "", classId: "", year: "" });
-          }
+          newExpanded[`class${index}`] = false;
         }
       });
     }
-  }, [location.pathname]);
+
+    // 디버깅을 위한 로그 추가
+    console.log("location.pathname:", location.pathname);
+    console.log("newExpanded:", newExpanded, "expanded", expanded);
+
+    setExpanded((prevExpanded) => ({
+      // ...prevExpanded,
+      ...newExpanded,
+      userManagement: userManagementPaths.some((path) =>
+        location.pathname.startsWith(path)
+      ),
+      classCourseManagement: classCourseManagementPaths.some((path) =>
+        location.pathname.startsWith(path)
+      ),
+      classes:
+        location.pathname.startsWith(classInfoPath) ||
+        location.pathname.startsWith(classBoardPath),
+    }));
+  }, [location.pathname, myClass, open]);
+
+  useEffect(() => {
+    // Fetch user data based on role
+    const fetchUserData = async () => {
+      if (userRole === roleArray[0]) {
+        setUserName("Administor");
+        const result = await getClassList(0, 100, currentYear);
+        setMyClass(result?.content || []);
+      } else if (userRole === roleArray[1]) {
+        const result = await getTeacher(userData.username);
+        setUserName(result.name);
+        if (result.imageId) {
+          const res = await getProfileImage(result.imageId.imageId);
+          setThumnailImage(res.imagePath);
+        }
+        setMyClass(
+          result.classId
+            ? [
+                {
+                  grade: result.classId.grade,
+                  section: result.classId.section || "",
+                  classId: result.classId.classId,
+                  year: result.classId.year,
+                },
+              ]
+            : []
+        );
+      } else if (userRole === roleArray[2]) {
+        const result = await getStudent(userData.username);
+        setUserName(result.name);
+        if (result.imageResponseDTO) {
+          const res = await getProfileImage(result.imageResponseDTO.imageId);
+          setThumnailImage(res.imagePath);
+        }
+        setMyClass(
+          result.classResponse
+            ? [
+                {
+                  grade: result.classResponse.grade,
+                  section: result.classResponse.section,
+                  classId: result.classResponse.classId,
+                  year: result.classResponse.year,
+                },
+              ]
+            : []
+        );
+      }
+    };
+
+    fetchUserData();
+  }, [open]);
 
   return (
     <div>
@@ -382,18 +351,6 @@ function AppBar() {
                 <Avatar alt="User Image" src={thumbnailImage} />
               </IconButton>
             </Box>
-            {/* <Box sx={{ display: { xs: "flex", md: "none" } }}>
-              <IconButton
-                size="large"
-                aria-label="show more"
-                aria-controls={mobileMenuId}
-                aria-haspopup="true"
-                onClick={handleMobileMenuOpen}
-                color="inherit"
-              >
-                <MoreIcon />
-              </IconButton>
-            </Box> */}
           </Toolbar>
         </AppBar>
         <Drawer
@@ -454,7 +411,7 @@ function AppBar() {
                   sx={{
                     minWidth: "40px",
                     color:
-                      location.pathname === "/private/"
+                      location.pathname === "/private/home"
                         ? "primary.main"
                         : "none",
                   }}
@@ -466,7 +423,7 @@ function AppBar() {
                   sx={{
                     "& .MuiTypography-root": {
                       fontWeight:
-                        location.pathname === "/private/"
+                        location.pathname === "/private/home"
                           ? theme.typography.fontWeightBold
                           : theme.typography.fontWeightRegular,
                     },
@@ -477,13 +434,15 @@ function AppBar() {
             <ListItem key={"Notice board"} disablePadding>
               <ListItemButton
                 onClick={goNoticeBoard}
-                sx={{ paddingLeft: "16px" }}
+                sx={{
+                  paddingLeft: "16px",
+                }}
               >
                 <ListItemIcon
                   sx={{
                     minWidth: "40px",
                     color:
-                      location.pathname === "/private/notice-board"
+                      location.pathname === "/notice-board"
                         ? theme.palette.primary.main
                         : "none",
                   }}
@@ -495,7 +454,7 @@ function AppBar() {
                   sx={{
                     "& .MuiTypography-root": {
                       fontWeight:
-                        location.pathname === "/private/notice-board"
+                        location.pathname === "/notice-board"
                           ? theme.typography.fontWeightBold
                           : theme.typography.fontWeightRegular,
                     },
@@ -634,103 +593,98 @@ function AppBar() {
                   </ListItem>
                 </AccordionDetails>
               </Accordion>
-
-              <Accordion
-                sx={{
-                  boxShadow: "none",
-                  "&::before": { display: "none" },
-                  marginBottom: "0px",
-                }}
-                expanded={expanded.classCourseManagement}
-                onChange={handleAccordionChange("classCourseManagement")}
-              >
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
+              {!isSmallScreen ? (
+                <Accordion
                   sx={{
-                    padding: "0 16px",
-                    height: "72px",
-                    "&:hover": {
-                      backgroundColor: theme.palette.action.hover,
-                    },
-                    ...(expanded.classCourseManagement && {
-                      backgroundColor: theme.palette.action.selected,
-                    }),
+                    boxShadow: "none",
+                    "&::before": { display: "none" },
+                    marginBottom: "0px",
                   }}
+                  expanded={expanded.classCourseManagement}
+                  onChange={handleAccordionChange("classCourseManagement")}
                 >
-                  <ListItemIcon
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
                     sx={{
-                      minWidth: "40px",
-                      display: "flex",
-                      alignItems: "center",
+                      padding: "0 16px",
+                      height: "72px",
+                      "&:hover": {
+                        backgroundColor: theme.palette.action.hover,
+                      },
+                      ...(expanded.classCourseManagement && {
+                        backgroundColor: theme.palette.action.selected,
+                      }),
                     }}
                   >
-                    <BookIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={"Class/Course Management"} />
-                </AccordionSummary>
-                <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
-                  <ListItem key={"Create Class"} disablePadding>
-                    <ListItemButton onClick={goCreateClass} sx={{ pl: 10 }}>
-                      <ListItemText
-                        primary={"Create Class"}
-                        sx={{
-                          "& .MuiTypography-root": {
-                            fontWeight:
-                              location.pathname === "/private/create-class"
-                                ? theme.typography.fontWeightBold
-                                : theme.typography.fontWeightRegular,
-                          },
-                        }}
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                  <ListItem key={"Assign Homeroom"} disablePadding>
-                    <ListItemButton onClick={goAssignHomeroom} sx={{ pl: 10 }}>
-                      <ListItemText
-                        primary={"Assign Homeroom"}
-                        sx={{
-                          "& .MuiTypography-root": {
-                            fontWeight:
-                              location.pathname === "/private/assign-homeroom"
-                                ? theme.typography.fontWeightBold
-                                : theme.typography.fontWeightRegular,
-                          },
-                        }}
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                  <ListItem key={"Common Course Management"} disablePadding>
-                    <ListItemButton
-                      onClick={goCommonCourseManagement}
-                      sx={{ pl: 10 }}
+                    <ListItemIcon
+                      sx={{
+                        minWidth: "40px",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
                     >
-                      <ListItemText
-                        primary={"Common Course Management"}
-                        sx={{
-                          "& .MuiTypography-root": {
-                            fontWeight:
-                              location.pathname ===
-                              "/private/common-course-management"
-                                ? theme.typography.fontWeightBold
-                                : theme.typography.fontWeightRegular,
-                          },
-                        }}
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                </AccordionDetails>
-              </Accordion>
-              {/* <ListItem key={"Elective Course Management"} disablePadding>
-                <ListItemButton
-                  onClick={goElectiveCourseManagement}
-                  sx={{ paddingLeft: "16px" }}
-                >
-                  <ListItemIcon sx={{ minWidth: "40px" }}>
-                    <BookIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={"Elective Course Management"} />
-                </ListItemButton>
-              </ListItem> */}
+                      <BookIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Class/Course Management"} />
+                  </AccordionSummary>
+                  <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
+                    <ListItem key={"Create Class"} disablePadding>
+                      <ListItemButton onClick={goCreateClass} sx={{ pl: 10 }}>
+                        <ListItemText
+                          primary={"Create Class"}
+                          sx={{
+                            "& .MuiTypography-root": {
+                              fontWeight:
+                                location.pathname === "/private/create-class"
+                                  ? theme.typography.fontWeightBold
+                                  : theme.typography.fontWeightRegular,
+                            },
+                          }}
+                        />
+                      </ListItemButton>
+                    </ListItem>
+                    <ListItem key={"Assign Homeroom"} disablePadding>
+                      <ListItemButton
+                        onClick={goAssignHomeroom}
+                        sx={{ pl: 10 }}
+                      >
+                        <ListItemText
+                          primary={"Assign Homeroom"}
+                          sx={{
+                            "& .MuiTypography-root": {
+                              fontWeight:
+                                location.pathname === "/private/assign-homeroom"
+                                  ? theme.typography.fontWeightBold
+                                  : theme.typography.fontWeightRegular,
+                            },
+                          }}
+                        />
+                      </ListItemButton>
+                    </ListItem>
+                    <ListItem key={"Common Course Management"} disablePadding>
+                      <ListItemButton
+                        onClick={goCommonCourseManagement}
+                        sx={{ pl: 10 }}
+                      >
+                        <ListItemText
+                          primary={"Common Course Management"}
+                          sx={{
+                            "& .MuiTypography-root": {
+                              fontWeight:
+                                location.pathname ===
+                                "/private/common-course-management"
+                                  ? theme.typography.fontWeightBold
+                                  : theme.typography.fontWeightRegular,
+                            },
+                          }}
+                        />
+                      </ListItemButton>
+                    </ListItem>
+                  </AccordionDetails>
+                </Accordion>
+              ) : (
+                <div></div>
+              )}
             </List>
           ) : (
             <div></div>

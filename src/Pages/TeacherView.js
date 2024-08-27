@@ -194,7 +194,7 @@ function TeacherView() {
       <div id={styles.table_container}>
         <Box>
           <Typography
-            variant={isSmallScreen ? "h5" : "h3"}
+            variant={isSmallScreen ? "h6" : "h3"}
             sx={{
               textAlign: isSmallScreen ? "left" : "center",
               fontFamily: "Copperplate",
@@ -206,25 +206,19 @@ function TeacherView() {
             Teacher Board
           </Typography>
         </Box>
-        <Table
-          totalRowCount={totalRowCount}
-          columns={isSmallScreen ? basic_columns : updatedColumns}
-          rows={rows}
-          onSelectedAllRow={handleRowSelection}
-          onRowDoubleClick={handleRowDoubleClick}
-          getRowId={(row) => row.id}
-          id={isSmallScreen ? "" : "table_body"}
-          isStudentTable={true} //row클릭시 체크박스 활성화 안되게 하기위해 커스텀
-          // columns={isSmallScreen ? basic_columns : updatedColumns}
-          // rows={rows}
-          // onRowSelection={handleRowSelection}
-          // onRowDoubleClick={handleRowDoubleClick}
-          // getRowId={(row) => row.id}
-          // id={isSmallScreen ? "" : "table_body"}
-          // isRadioButton={false}
-          // isStudentTable={true} // 필요에 따라 다른 커스텀 플래그를 사용할 수 있습니다.
-          // checkedRows={checkedRows} // 체크된 행 상태 전달
-        />
+        <Box sx={{ overflowY: "none", padding: "10px" }}>
+          <Table
+            totalRowCount={totalRowCount}
+            columns={isSmallScreen ? basic_columns : updatedColumns}
+            rows={rows}
+            onSelectedAllRow={handleRowSelection}
+            onRowDoubleClick={handleRowDoubleClick}
+            getRowId={(row) => row.id}
+            id={isSmallScreen ? "" : "table_body"}
+            isStudentTable={true} //row클릭시 체크박스 활성화 안되게 하기위해 커스텀
+          />
+        </Box>
+
         {isSmallScreen ? (
           <div>&nbsp;</div>
         ) : (

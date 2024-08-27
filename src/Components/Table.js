@@ -47,6 +47,8 @@ const Table = memo(
               justifyContent: isStudentTable ? "flex-start" : "",
               flexDirection: isStudentTable ? "row-reverse" : "",
             },
+            overflowY: "auto", // 스크롤 추가
+            height: "40vh",
           }}
           rows={rows}
           columns={columns}
