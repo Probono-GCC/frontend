@@ -5,5 +5,11 @@
   "login": "लगइन",
   "ID": "आईडी",
   "password": "पासवर्ड",
-  "noticeBoard": "सूचना पाटी"
+  "noticeBoard": "सूचना पाटी",
+  "Forgot your password?": "तपाईंको पासवर्ड बिर्सनुभयो?",
+  "1. Enter your ID": "1. आफ्नो ID प्रविष्ट गर्नुहोस्",
+  "2. What is your most favorite food?": "2. तपाईंको सबैभन्दा मनपर्ने खाना के हो?",
+  "3. Reset Password": "3. पासवर्ड रिसेट गर्नुहोस्",
+  "check": "जाँच गर्नुहोस्",
+  "change": "परिवर्तन"
 }

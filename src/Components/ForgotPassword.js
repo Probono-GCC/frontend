@@ -11,15 +11,22 @@ import { IconButton } from "@mui/material";
 import { IsUserExistsApi } from "../Apis/Api/User";
 import { IsPwAnswerRightApi } from "../Apis/Api/User";
 import { ResetPwApi } from "../Apis/Api/User";
+//다국어지원
+// 다국어 지원
+import i18n from "../i18n/i18n"; // 경로는 파일의 위치에 따라 조정해야 합니다.
+import { useTranslation } from "react-i18next";
+import "../i18n/i18n.js"; // src/Pages에서 src/i18n으로 접근; // i18next 초기화 파일
+
 export default ForgotPassword;
 
 function ForgotPassword() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
   const [userID, setUserID] = useState("");
   const [answer, setAnswer] = useState("");
   const [userPW, setUserPW] = useState("");
   const [rePassword, setRePassword] = useState("");
-  const [currentIndex, setCurrentIndex] = useState(1);
   const [rePasswordError, setRePasswordError] = useState(false);
   /**언어 선택 임시 선택상자 */
   const [isIdChecked, setIsIdChecked] = useState(false);
@@ -122,10 +129,10 @@ function ForgotPassword() {
         <ArrowBackIcon />
       </IconButton>
       <div className={styles.titleText} style={{ fontWeight: "bold" }}>
-        Forgot your password?
+        {t("Forgot your password?")}
       </div>
       <Box className={styles.input_container}>
-        <p className={styles.questionText}>1.Enter your ID</p>
+        <p className={styles.questionText}>{t("1. Enter your ID")}</p>
         <TextField
           sx={{ margin: "1vh 2vw", width: isSmallScreen ? "80vw" : "33vw" }}
           label="ID"
@@ -137,13 +144,13 @@ function ForgotPassword() {
         <div id={styles.right_align}>
           <Button
             size={"md"}
-            title={"check"}
+            title={t("check")}
             onClick={() => handleIsIdExists(userID)}
             disabled={userID.length === 0}
           />
         </div>
         <p className={styles.questionText}>
-          2. What is your most favorite food?
+          {t("2. What is your most favorite food?")}
         </p>
         <TextField
           sx={{ margin: "1vh 2vw", width: isSmallScreen ? "80vw" : "33vw" }}
@@ -157,12 +164,12 @@ function ForgotPassword() {
         <div id={styles.right_align}>
           <Button
             size={"md"}
-            title={"check"}
+            title={t("check")}
             onClick={() => handleIsPwAnswerRight(userID, answer)}
             disabled={answer.length === 0}
           />
         </div>
-        <p className={styles.questionText}>3. Reset Password</p>
+        <p className={styles.questionText}>{t("3. Reset Password")}</p>
         <TextField
           sx={{ margin: "1vh 2vw", width: isSmallScreen ? "80vw" : "33vw" }}
           label="Password"
@@ -187,7 +194,7 @@ function ForgotPassword() {
         <div id={styles.right_align}>
           <Button
             size={"md"}
-            title={"change"}
+            title={t("change")}
             onClick={() => handleSetNewPw(userID, userPW)}
             disabled={userPW.length === 0 || rePassword.length === 0}
           />
