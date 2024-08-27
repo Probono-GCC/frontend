@@ -102,9 +102,9 @@ function NoticeBoard() {
   ) {
     displayedPages.push(i);
   }
-
   const getItemNumber = (index) => {
-    return totalPosting - index - (page - 1) * 10;
+    if (loading) return null; // loading이 true일 때는 null 반환
+    return totalPosting - index - (page - 1) * itemsPerPage;
   };
 
   return (
@@ -112,7 +112,7 @@ function NoticeBoard() {
       <AppBar />
       <Box>
         <Typography
-          variant={isSmallScreen ? "h6" : "h3"}
+          variant={isSmallScreen ? "h5" : "h3"}
           sx={{
             textAlign: isSmallScreen ? "left" : "center",
             fontFamily: "Copperplate",
@@ -195,7 +195,7 @@ function NoticeBoard() {
                         whiteSpace: "nowrap",
                       }}
                     >
-                      {getItemNumber(index)}
+                      {getItemNumber(index) || ""}
                     </TableCell>
                     <TableCell
                       sx={{
@@ -207,7 +207,15 @@ function NoticeBoard() {
                         whiteSpace: "nowrap",
                       }}
                     >
-                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          fontWeight: "bold",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
                         {row.title}
                       </Typography>
                       <Typography
@@ -254,9 +262,12 @@ function NoticeBoard() {
           <Button
             variant="contained"
             sx={{
-              backgroundColor: "#1b8ef2",
-              color: "white",
+              backgroundColor: "#405c8b",
+              color: "#F2F2F2",
               "&:hover": { backgroundColor: "#1565c0" },
+              minWidth: isSmallScreen ? "80px" : "100px",
+              minHeight: isSmallScreen ? "30px" : "50px",
+              marginRight: isSmallScreen ? "5px" : "",
             }}
             onClick={handleNewPost}
           >

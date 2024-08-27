@@ -38,7 +38,7 @@ export default function DetailTable({ data, rowsHeader }) {
               </TableCell>
 
               <TableCell align="left">
-                {data && data[rowHeader.field] ? data[rowHeader.field] : "null"}
+                {data && data[rowHeader.field] ? data[rowHeader.field] : "-"}
               </TableCell>
             </TableRow>
           ))}
