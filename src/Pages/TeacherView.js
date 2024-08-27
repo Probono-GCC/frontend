@@ -194,7 +194,7 @@ function TeacherView() {
       <div id={styles.table_container}>
         <Box>
           <Typography
-            variant={isSmallScreen ? "h5" : "h3"}
+            variant={isSmallScreen ? "h6" : "h3"}
             sx={{
               textAlign: isSmallScreen ? "left" : "center",
               fontFamily: "Copperplate",
