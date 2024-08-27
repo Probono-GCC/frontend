@@ -456,7 +456,7 @@ function CommonCourseManagement() {
     fetchCourse();
   }, []);
   const handleBack = () => {
-    navigate(-1); // Go back to the previous page
+    setAddMode(false);
   };
   return (
     <div id="page_content">
