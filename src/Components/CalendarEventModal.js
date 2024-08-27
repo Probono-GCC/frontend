@@ -162,7 +162,6 @@ function CalendarEventModal({ onClose }) {
           <button
             className={`${styles.modal_btn} ${styles.register_btn}`}
             size="sm"
-            color="info"
             onClick={registerEvent}
           >
             Register
@@ -170,7 +169,6 @@ function CalendarEventModal({ onClose }) {
           <button
             className={`${styles.modal_btn} ${styles.close_btn}`}
             size="sm"
-            color="alert"
             onClick={() => onClose(false)}
           >
             Close

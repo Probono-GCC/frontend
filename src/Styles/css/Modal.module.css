@@ -15,8 +15,10 @@
   background: #ffffff;
   padding: 30px;
   border-radius: 10px;
-  width: 90%;
+  width: 80%;
+  height: 80%;
   max-width: 500px;
+  overflow-y: scroll;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   text-align: center;
   margin-top: 45px;
@@ -24,7 +26,7 @@
 
 .modal_btn {
   margin-top: 20px;
-  padding: 10px 20px;
+  padding: 20px 30px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -68,4 +70,9 @@
 
 #table_cont {
   height: auto;
+}
+@media (max-width: 880px) {
+  .modal_btn {
+    padding: 10px 20px;
+  }
 }
