@@ -1,8 +1,9 @@
 import axios from "axios";
 
+const TRANSLATE_URL = process.env.REACT_APP_TRANSLATE_URL;
 // Axios 인스턴스를 생성합니다 (기본 URL을 설정할 수 있습니다)
 const translateAxiosInstance = axios.create({
-  baseURL: "http://localhost:8000", // 기본 URL 설정
+  baseURL: TRANSLATE_URL, // 기본 URL 설정
   headers: {
     "Content-Type": "application/json",
   },
