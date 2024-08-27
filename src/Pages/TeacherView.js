@@ -206,7 +206,7 @@ function TeacherView() {
             Teacher Board
           </Typography>
         </Box>
-        <Box sx={{ overflowY: "none", padding: "10px" }}>
+        <Box sx={{ padding: "10px" }}>
           <Table
             totalRowCount={totalRowCount}
             columns={isSmallScreen ? basic_columns : updatedColumns}

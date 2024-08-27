@@ -247,7 +247,6 @@ function StudentView() {
         </Box>
         <Box
           sx={{
-            overflowY: "none",
             padding: "10px",
           }}
         >

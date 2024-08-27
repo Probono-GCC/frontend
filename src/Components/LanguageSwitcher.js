@@ -36,8 +36,10 @@ const LanguageSwitcher = () => {
         open={Boolean(anchorEl)}
         onClose={() => handleMenuClose(null)}
       >
-        <MenuItem onClick={() => handleMenuClose("en")}>English</MenuItem>
-        <MenuItem onClick={() => handleMenuClose("ne")}>
+        <MenuItem disabled onClick={() => handleMenuClose("en")}>
+          English
+        </MenuItem>
+        <MenuItem disabled onClick={() => handleMenuClose("ne")}>
           नेपाली (Nepali)
         </MenuItem>
       </Menu>
