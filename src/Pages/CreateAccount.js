@@ -113,24 +113,26 @@ function CreateAccount() {
         alert("Please Check your S/N");
         return;
       }
+    }
 
-      if (!nameRegex.test(name)) {
-        alert("Name must contain only letters");
-        return;
-      }
+    if (!nameRegex.test(name)) {
+      alert("Name must contain only letters");
+      return;
+    }
 
-      if (!pwRegex.test(password)) {
-        alert(
-          "Password must be 4-20 characters long and contain letters, numbers, and special characters, with at least one letter and one number."
-        );
-        return;
-      }
+    if (!pwRegex.test(password)) {
+      alert(
+        "Password must be 4-20 characters long and contain letters, numbers, and special characters, with at least one letter and one number."
+      );
+      return;
+    }
 
-      if (password !== rePassword) {
-        alert("Re-type Password is different from original password!");
-        return;
-      }
+    if (password !== rePassword) {
+      alert("Re-type Password is different from original password!");
+      return;
+    }
 
+    if (tabValue === 0) {
       const studentBody = {
         username: id,
         password: password,
