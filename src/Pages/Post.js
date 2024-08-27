@@ -13,7 +13,6 @@ import { useMediaQueryContext } from "../store/MediaQueryContext";
 //api
 import { deleteNoticePost, getNoticePost } from "../Apis/Api/Notice";
 
-
 import { postTranslationData } from "../Apis/Api/Translate";
 
 import i18n from "../i18n/i18n";
@@ -80,6 +79,7 @@ function Post() {
             content: result.content, // 초기에는 원본 content로 설정
             updatedAt: result.updatedAt,
             views: result.views,
+            createdChargeId: result.createdChargeId,
           });
         }
 
@@ -125,7 +125,6 @@ function Post() {
       } catch (error) {
         console.error("Error fetching notice post:", error);
       }
-
     };
 
     fetchData(); // 데이터 불러오기 함수 호출
@@ -141,8 +140,6 @@ function Post() {
       }));
     }
   }, [translatedContent, translatedTitle]);
-
-
 
   const handleBack = () => {
     navigate(-1); // Go back to the previous page
@@ -221,7 +218,7 @@ function Post() {
                 <Typography
                   sx={{ marginRight: 0.5, color: isSmallScreen ? "grey" : "" }}
                 >
-                  {postedData.author}
+                  {postedData.createdChargeId}
                 </Typography>
 
                 <PersonIcon
