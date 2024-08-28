@@ -42,7 +42,7 @@ import { useMediaQueryContext } from "../store/MediaQueryContext";
 import { getStudent, getTeacher, getProfileImage } from "../Apis/Api/User";
 import { useAuth } from "../store/AuthContext";
 import { getClassList } from "../Apis/Api/Class";
-import LanguageSwitcher from "./LanguageSwitcher"; // 만든 LanguageSwitcher 컴포넌트를 가져옵니다
+import LanguageSwitcher from "./LanguageSwitcher"; // 언어변경 상자
 
 import i18n from "../i18n/i18n";
 import { useTranslation } from "react-i18next";
@@ -108,6 +108,24 @@ function AppBar() {
     handleDrawerClose();
   };
 
+  // const goTodayAttendance = (classItem) => {
+  //   navigate(
+  //     `/private/class-attendance/today/${classItem.grade}-${classItem.section}`,
+  //     {
+  //       state: classItem,
+  //     }
+  //   );
+  //   handleDrawerClose();
+  // };
+  const goAttendance = (classItem) => {
+    navigate(
+      `/private/class-attendance/report/${classItem.grade}-${classItem.section}`,
+      {
+        state: classItem,
+      }
+    );
+    handleDrawerClose();
+  };
   const goAssignHomeroom = () => {
     navigate("/private/assign-homeroom");
   };
@@ -781,6 +799,17 @@ function AppBar() {
                             onClick={() => goClassBoard(classItem)}
                           >
                             <ListItemText primary={t("Class Board")} />
+                          </ListItemButton>
+                        </ListItem>
+                        <ListItem
+                          key={`class-${index}-attendance`}
+                          disablePadding
+                        >
+                          <ListItemButton
+                            sx={{ pl: 10 }}
+                            onClick={() => goAttendance(classItem)}
+                          >
+                            <ListItemText primary={"Attendance"} />
                           </ListItemButton>
                         </ListItem>
                       </AccordionDetails>
