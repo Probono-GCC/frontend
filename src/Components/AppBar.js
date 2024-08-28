@@ -276,10 +276,6 @@ function AppBar() {
       });
     }
 
-    // 디버깅을 위한 로그 추가
-    console.log("location.pathname:", location.pathname);
-    console.log("newExpanded:", newExpanded, "expanded", expanded);
-
     setExpanded((prevExpanded) => ({
       // ...prevExpanded,
       ...newExpanded,
