@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useTransition } from "react";
 
 import AppBar from "../Components/AppBar";
 import Table from "../Components/ViewTable";
@@ -13,6 +13,7 @@ import { Typography, Box } from "@mui/material";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
 import { getTeachers, deleteTeacher } from "../Apis/Api/User"; // deleteTeacher 함수를 가져옵니다.
 import { getClassTeacher } from "../Apis/Api/Class";
+import { useTranslation } from "react-i18next";
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 function createData(gender, name, birth, id, phone_num) {
@@ -20,6 +21,7 @@ function createData(gender, name, birth, id, phone_num) {
 }
 
 function TeacherView() {
+  const { t } = useTranslation();
   const [modalOpen, setModalOpen] = useState(false);
   const [modalRowData, setModalRowData] = useState("default row data");
   const [alert, setAlert] = useState(false);
@@ -203,7 +205,7 @@ function TeacherView() {
               marginLeft: isSmallScreen ? "10px" : "",
             }}
           >
-            Teacher Board
+            {t("Teacher Board")}
           </Typography>
         </Box>
         <Box sx={{ padding: "10px" }}>

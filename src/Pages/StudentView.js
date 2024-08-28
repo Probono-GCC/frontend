@@ -12,6 +12,7 @@ import Modal from "../Components/Modal";
 import { Typography, Box } from "@mui/material";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
 import { getStudents, deleteStudent, getStudent } from "../Apis/Api/User";
+import { useTranslation } from "react-i18next";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
@@ -43,6 +44,7 @@ function createData(
 }
 
 function StudentView() {
+  const { t } = useTranslation();
   const [modalOpen, setModalOpen] = useState(false);
   const [modalRowData, setModalRowData] = useState("default row data");
   const [alert, setAlert] = useState(false);
@@ -242,7 +244,7 @@ function StudentView() {
               marginLeft: isSmallScreen ? "10px" : "",
             }}
           >
-            Student Board
+            {t("Student Board")}
           </Typography>
         </Box>
         <Box
