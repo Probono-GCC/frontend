@@ -18,7 +18,7 @@ function CustomButton({ title, disabled, onClick, id, size }) {
           width: size === "md" ? "100px" : "200px",
           backgroundColor: id === "cancel" ? "white" : "#405c8b", // title이 "cancel"일 때 배경색 빨간색, 그렇지 않으면 파란색
           color: id === "cancel" ? "#405c8b" : "#F2F2F2",
-          border: "#405c8b 1px solid",
+          // border: "#405c8b 1px solid",
           padding: "10px 20px",
           marginBottom: "30px",
           "&:hover": {
