@@ -226,7 +226,7 @@ function StudentView() {
           sx={{ width: "100%", position: "fixed", top: "65px" }}
           spacing={2}
         >
-          <Alert severity="success">This is a success Alert.</Alert>
+          <Alert severity="success">Success.</Alert>
         </Stack>
       ) : (
         <div></div>

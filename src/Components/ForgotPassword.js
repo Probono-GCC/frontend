@@ -118,23 +118,26 @@ function ForgotPassword() {
   const isSmallScreen = useMediaQuery("(max-width:768px)");
   return (
     <div id={styles.forgot_pw_container}>
-      <IconButton
-        sx={{
-          marginLeft: 2,
-        }}
-        onClick={handleBack}
-        color="primary"
-        aria-label="go back"
-      >
-        <ArrowBackIcon />
-      </IconButton>
-      <div className={styles.titleText} style={{ fontWeight: "bold" }}>
-        {t("Forgot your password?")}
+      <div>
+        <IconButton onClick={handleBack} color="primary" aria-label="go back">
+          <ArrowBackIcon />
+        </IconButton>
+        <div
+          className={styles.titleText}
+          style={{ fontWeight: "bold", display: "inline" }}
+        >
+          {t("Forgot your password?")}
+        </div>
       </div>
+
       <Box className={styles.input_container}>
         <p className={styles.questionText}>{t("1. Enter your ID")}</p>
         <TextField
-          sx={{ margin: "1vh 2vw", width: isSmallScreen ? "80vw" : "33vw" }}
+          sx={{
+            margin: "15px 20px",
+            width: isSmallScreen ? "243px" : "33vw",
+            height: isSmallScreen ? "45px" : "53px",
+          }}
           label="ID"
           variant="outlined"
           onChange={(event) => {
@@ -153,7 +156,11 @@ function ForgotPassword() {
           {t("2. What is your most favorite food?")}
         </p>
         <TextField
-          sx={{ margin: "1vh 2vw", width: isSmallScreen ? "80vw" : "33vw" }}
+          sx={{
+            margin: "15px 20px",
+            width: isSmallScreen ? "243px" : "33vw",
+            height: isSmallScreen ? "45px" : "53px",
+          }}
           label="Answer"
           variant="outlined"
           value={answer}
@@ -171,7 +178,11 @@ function ForgotPassword() {
         </div>
         <p className={styles.questionText}>{t("3. Reset Password")}</p>
         <TextField
-          sx={{ margin: "1vh 2vw", width: isSmallScreen ? "80vw" : "33vw" }}
+          sx={{
+            margin: "15px 20px",
+            width: isSmallScreen ? "243px" : "33vw",
+            height: isSmallScreen ? "45px" : "53px",
+          }}
           label="Password"
           variant="outlined"
           type="password"
@@ -182,7 +193,11 @@ function ForgotPassword() {
           value={userPW} //상태 변수를 value로 수정
         />
         <TextField
-          sx={{ margin: "1vh 2vw", width: isSmallScreen ? "80vw" : "33vw" }}
+          sx={{
+            margin: "15px 20px",
+            width: isSmallScreen ? "243px" : "33vw",
+            height: isSmallScreen ? "45px" : "53px",
+          }}
           label="Re-type PW"
           variant="outlined"
           type="password"
@@ -199,6 +214,7 @@ function ForgotPassword() {
             disabled={userPW.length === 0 || rePassword.length === 0}
           />
         </div>
+        &nbsp;
       </Box>
     </div>
   );
