@@ -47,7 +47,7 @@ export async function getStudents(page, size) {
 export async function getGradeStudents(grade, page, size) {
   try {
     const response = await axiosInstance.get(
-      `/students?grade=${grade}&page=${page}&size=${size}`
+      `/students/grade?grade=${grade}&page=${page}&size=${size}`
     );
 
     return response.data;

@@ -187,11 +187,12 @@ function StudentView() {
 
   const handleGradeChange = (event) => {
     setGrade(event.target.value);
-    if (event.target.value != "ALL") {
-      fetchGradeStudents(event.target.value, page, pageSize);
-    } else {
-      fetchStudents(page, pageSize);
-    }
+    console.log("다시받아오기");
+    // if (event.target.value != "ALL") {
+    //   fetchGradeStudents(event.target.value, page, pageSize);
+    // } else {
+    //   fetchStudents(page, pageSize);
+    // }
   };
   const deleteRow = async () => {
     try {
@@ -274,8 +275,12 @@ function StudentView() {
     });
   };
   useEffect(() => {
-    fetchStudents(page, pageSize);
-  }, []);
+    if (grade === "ALL") {
+      fetchStudents(page, pageSize);
+    } else {
+      fetchGradeStudents(grade, page, pageSize);
+    }
+  }, [grade]);
 
   return (
     <div id="page_content">
