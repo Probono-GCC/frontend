@@ -24,7 +24,13 @@ import { getNoticePostList } from "../Apis/Api/Notice";
 import { useAuth } from "../store/AuthContext";
 import { convertDateFormat } from "../Util/DateUtils";
 
+import i18n from "../i18n/i18n";
+import { useTranslation } from "react-i18next";
+import { postTranslationData } from "../Apis/Api/Translate";
+
 function NoticeBoard() {
+  const { t } = useTranslation();
+
   const navigate = useNavigate();
   const { page: pageParam } = useParams(); // URL에서 페이지 번호 추출 path="/notice-board/:page?"
   const [page, setPage] = useState(parseInt(pageParam) || 1);
@@ -43,11 +49,34 @@ function NoticeBoard() {
       try {
         const result = await getNoticePostList(page - 1, itemsPerPage);
         if (result && Array.isArray(result.content)) {
+          // 제목 번역
+          const translatedTitlesPromises = result.content.map(
+            async (notice) => {
+              try {
+                const translationResult = await postTranslationData(
+                  notice.title,
+                  i18n.language
+                );
+                console.log("Translation result for title:", translationResult); // 번역 결과 로그
+                return {
+                  ...notice,
+                  title: translationResult.translatedText,
+                };
+              } catch (error) {
+                console.error("Failed to translate title:", error);
+                return { ...notice, title: notice.title }; // 번역 실패 시 원본 제목 사용
+              }
+            }
+          );
+
+          const translatedNotices = await Promise.all(translatedTitlesPromises);
+          console.log("Translated notices:", translatedNotices); // 번역된 공지사항 로그
           console.log("새로운 페이지 컨텐츠 받아왔나?", result.content);
-          setRows(result.content);
+          setRows(translatedNotices);
           setTotalPages(result.totalPages);
           setTotalPosting(result.totalElements);
         } else {
+          console.log("No content found in result.");
           setRows([]);
           setTotalPages(1);
         }
@@ -60,7 +89,7 @@ function NoticeBoard() {
       }
     };
     fetchData();
-  }, [page]);
+  }, [page, i18n.language]);
 
   const handleChangePage = (event, newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -121,7 +150,7 @@ function NoticeBoard() {
             marginLeft: isSmallScreen ? "10px" : "",
           }}
         >
-          Notice Board
+          {t("Notice Board")}
         </Typography>
       </Box>
       <TableContainer
