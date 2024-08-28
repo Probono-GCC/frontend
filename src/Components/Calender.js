@@ -8,11 +8,12 @@ import googleCalendarPlugin from "@fullcalendar/google-calendar";
 import ModalComponent from "./CalendarEventModal.js";
 //css
 import styles from "../Styles/css/Calendar.module.css";
-import { useAuth } from "../store/AuthContext";
+//i18n
+import { useTranslation } from "react-i18next";
 
 function Calender() {
+  const { t } = useTranslation();
   const API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
-  const { userRole } = useAuth();
 
   // const user = useSelector((state) => state.user);
   const [modalOpen, setModalOpen] = useState(false);
@@ -48,13 +49,13 @@ function Calender() {
           headerToolbar={{
             left: "prev,next", // Display today, prev, and next buttons
             center: "title", // Display the title in the center of the header
-            right: userRole === "ROLE_ADMIN" ? "addButton" : "",
+            right: "addButton",
             // right: user.account === 0 ? "addButton" : "", // Display the custom "Add" button on the right side for account === 1
           }}
           customButtons={{
             // Define the custom "Add" button
             addButton: {
-              text: "Add", // Button text
+              text: t("Add"), // Button text
               click: () => {
                 setModalOpen(true);
               },

@@ -25,6 +25,7 @@ import {
   getClassTeacher,
   getNotAssignedStudent,
 } from "../Apis/Api/Class";
+import { useTranslation } from "react-i18next";
 
 const label = { inputProps: { "aria-label": "Radio button demo" } };
 const checkLabel = { inputProps: { "aria-label": "Checkbox demo" } };
@@ -43,6 +44,7 @@ const studentColumns = [
 ];
 
 function AssignHomeroom() {
+  const { t } = useTranslation();
   const [classes, setClasses] = useState([]);
   const [teachers, setTeachers] = useState([]);
   const [selectedClassRowId, setSelectedClassRowId] = useState(null); //class table에서 선택된 row id
@@ -439,7 +441,7 @@ function AssignHomeroom() {
             marginBottom: 3,
           }}
         >
-          Assign Homeroom
+          {t("Assign Homeroom")}
         </Typography>
         <Table
           columns={updatedClassColumns}

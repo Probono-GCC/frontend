@@ -17,6 +17,7 @@ import Button from "@mui/material/Button";
 import { Typography, Box, Grid } from "@mui/material";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
 import { getStudents, changeAllGradeApi } from "../Apis/Api/User";
+import { useTranslation } from "react-i18next";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
@@ -25,6 +26,7 @@ function createData(sn, name, gender, birth, id, grade) {
 }
 
 function ChangeGrade() {
+  const { t } = useTranslation();
   const [modalOpen, setModalOpen] = useState(false);
   const [warningModalOpen, setWarningModalOpen] = useState(false);
   const [modalRowData, setModalRowData] = useState("default row data");
@@ -253,7 +255,7 @@ function ChangeGrade() {
               marginLeft: isSmallScreen ? "10px" : "",
             }}
           >
-            Change Grade
+            {t("Change Grade")}
           </Typography>
         </Box>
         <Box

@@ -18,6 +18,7 @@ import {
   ListItemText,
   ListItemButton,
 } from "@mui/material";
+
 import AppBar from "../Components/AppBar";
 import Table from "../Components/Table";
 import CustomButton from "../Components/Button";
@@ -48,6 +49,7 @@ import {
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { IconButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const modalStyle = {
   position: "absolute",
@@ -101,6 +103,7 @@ const classColumns = [
 ];
 
 function CommonCourseManagement() {
+  const { t } = useTranslation();
   const [selectedClass, setselectedClass] = useState(null);
   const [selectedCourse, setselectedCourse] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
@@ -473,7 +476,7 @@ function CommonCourseManagement() {
           variant="h3"
           sx={{ textAlign: "center", fontFamily: "Copperplate", marginTop: 2 }}
         >
-          Common Course Management
+          {t("Common Course Management")}
         </Typography>
 
         {!addMode && (

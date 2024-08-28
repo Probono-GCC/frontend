@@ -17,6 +17,7 @@ import CustomButton from "../Components/Button";
 import Table from "../Components/Table";
 import { postClass, getClasses, deleteClass } from "../Apis/Api/Class";
 import { useAuth } from "../store/AuthContext";
+import { useTranslation } from "react-i18next";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
@@ -49,6 +50,8 @@ for (let year = currentYear; year <= currentYear + 4; year++) {
 }
 
 function CreateClass() {
+  const { t } = useTranslation();
+
   const [batch, setBatch] = useState(currentYear);
   const [grade, setGrade] = useState("");
   const [section, setSection] = useState("");
@@ -176,7 +179,7 @@ function CreateClass() {
           variant="h3"
           sx={{ textAlign: "center", fontFamily: "Copperplate", marginTop: 2 }}
         >
-          Create Class
+          {t("Create Class")}
         </Typography>
         <Paper sx={{ padding: 3, marginTop: 3, boxShadow: 0 }}>
           <Box

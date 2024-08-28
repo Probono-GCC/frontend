@@ -19,6 +19,7 @@ import {
 
 import { useMediaQueryContext } from "../store/MediaQueryContext";
 import { getTeachers, getStudents } from "../Apis/Api/User";
+import { useTranslation } from "react-i18next";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
@@ -29,6 +30,7 @@ function createTeacherData(name, gender, birth, id) {
   return { name, gender, birth, id };
 }
 function ChangePassword() {
+  const { t } = useTranslation();
   const [modalOpen, setModalOpen] = useState(false);
   const [userType, setUserType] = useState("student");
   const [modalRowData, setModalRowData] = useState("default row data");
@@ -211,7 +213,7 @@ function ChangePassword() {
               marginLeft: isSmallScreen ? "10px" : "",
             }}
           >
-            Change Password
+            {t("Change Password")}
           </Typography>
         </Box>
         <Box

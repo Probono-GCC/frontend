@@ -44,7 +44,12 @@ import { useAuth } from "../store/AuthContext";
 import { getClassList } from "../Apis/Api/Class";
 import LanguageSwitcher from "./LanguageSwitcher"; // 만든 LanguageSwitcher 컴포넌트를 가져옵니다
 
+import i18n from "../i18n/i18n";
+import { useTranslation } from "react-i18next";
+
 function AppBar() {
+  const { t } = useTranslation();
+
   const { isSmallScreen } = useMediaQueryContext();
 
   const { userRole, roleArray, userData } = useAuth();
@@ -422,7 +427,7 @@ function AppBar() {
                   <HomeIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary={"Home"}
+                  primary={t("Home")}
                   sx={{
                     "& .MuiTypography-root": {
                       fontWeight:
@@ -434,7 +439,7 @@ function AppBar() {
                 />
               </ListItemButton>
             </ListItem>
-            <ListItem key={"Notice board"} disablePadding>
+            <ListItem key={t("Notice board")} disablePadding>
               <ListItemButton
                 onClick={goNoticeBoard}
                 sx={{
@@ -453,7 +458,7 @@ function AppBar() {
                   <FormatListBulletedIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary={"Notice board"}
+                  primary={t("Notice board")}
                   sx={{
                     "& .MuiTypography-root": {
                       fontWeight:
@@ -500,13 +505,13 @@ function AppBar() {
                   >
                     <AdminPanelSettingsIcon />
                   </ListItemIcon>
-                  <ListItemText primary={"User Management"} />
+                  <ListItemText primary={t("User Management")} />
                 </AccordionSummary>
                 <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
                   <ListItem key={"Create Account"} disablePadding>
                     <ListItemButton onClick={goCreateAccount} sx={{ pl: 10 }}>
                       <ListItemText
-                        primary={"Create Account"}
+                        primary={t("Create Account")}
                         sx={{
                           "& .MuiTypography-root": {
                             fontWeight:
@@ -525,7 +530,7 @@ function AppBar() {
                   >
                     <ListItemButton sx={{ pl: 10 }}>
                       <ListItemText
-                        primary={"View Student"}
+                        primary={t("View Student")}
                         sx={{
                           "& .MuiTypography-root": {
                             fontWeight:
@@ -544,7 +549,7 @@ function AppBar() {
                   >
                     <ListItemButton sx={{ pl: 10 }}>
                       <ListItemText
-                        primary={"View Teacher"}
+                        primary={t("View Teacher")}
                         sx={{
                           "& .MuiTypography-root": {
                             fontWeight:
@@ -563,7 +568,7 @@ function AppBar() {
                   >
                     <ListItemButton sx={{ pl: 10 }}>
                       <ListItemText
-                        primary={"Change Password"}
+                        primary={t("Change Password")}
                         sx={{
                           "& .MuiTypography-root": {
                             fontWeight:
@@ -582,7 +587,7 @@ function AppBar() {
                   >
                     <ListItemButton sx={{ pl: 10 }}>
                       <ListItemText
-                        primary={"Change Grade"}
+                        primary={t("Change Grade")}
                         sx={{
                           "& .MuiTypography-root": {
                             fontWeight:
@@ -628,13 +633,13 @@ function AppBar() {
                     >
                       <BookIcon />
                     </ListItemIcon>
-                    <ListItemText primary={"Class/Course Management"} />
+                    <ListItemText primary={t("Class/Course Management")} />
                   </AccordionSummary>
                   <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
                     <ListItem key={"Create Class"} disablePadding>
                       <ListItemButton onClick={goCreateClass} sx={{ pl: 10 }}>
                         <ListItemText
-                          primary={"Create Class"}
+                          primary={t("Create Class")}
                           sx={{
                             "& .MuiTypography-root": {
                               fontWeight:
@@ -652,7 +657,7 @@ function AppBar() {
                         sx={{ pl: 10 }}
                       >
                         <ListItemText
-                          primary={"Assign Homeroom"}
+                          primary={t("Assign Homeroom")}
                           sx={{
                             "& .MuiTypography-root": {
                               fontWeight:
@@ -670,7 +675,7 @@ function AppBar() {
                         sx={{ pl: 10 }}
                       >
                         <ListItemText
-                          primary={"Common Course Management"}
+                          primary={t("Common Course Management")}
                           sx={{
                             "& .MuiTypography-root": {
                               fontWeight:
@@ -726,7 +731,7 @@ function AppBar() {
                 >
                   <SchoolIcon />
                 </ListItemIcon>
-                <ListItemText primary={"Class"} />
+                <ListItemText primary={t("Class")} />
               </AccordionSummary>
               <AccordionDetails sx={{ padding: 0, marginTop: 0 }}>
                 {Array.isArray(myClass) &&
@@ -764,15 +769,18 @@ function AppBar() {
                             sx={{ pl: 10 }}
                             onClick={() => goClassInfo(classItem)}
                           >
-                            <ListItemText primary={"Class Info"} />
+                            <ListItemText primary={t("Class Info")} />
                           </ListItemButton>
                         </ListItem>
-                        <ListItem key={`class-${index}-board`} disablePadding>
+                        <ListItem
+                          key={`${t("class")}-${index}-${t("board")}`}
+                          disablePadding
+                        >
                           <ListItemButton
                             sx={{ pl: 10 }}
                             onClick={() => goClassBoard(classItem)}
                           >
-                            <ListItemText primary={"Class Board"} />
+                            <ListItemText primary={t("Class Board")} />
                           </ListItemButton>
                         </ListItem>
                       </AccordionDetails>
@@ -800,7 +808,7 @@ function AppBar() {
                   <AccountCircleRoundedIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary={"My Profile"}
+                  primary={t("My Profile")}
                   sx={{
                     "& .MuiTypography-root": {
                       fontWeight:
@@ -825,7 +833,7 @@ function AppBar() {
                   <ListItemIcon sx={{ minWidth: "40px" }}>
                     <LogoutIcon />
                   </ListItemIcon>
-                  <ListItemText primary={"Logout"} />
+                  <ListItemText primary={t("Logout")} />
                 </ListItemButton>
               </ListItem>
             </List>
