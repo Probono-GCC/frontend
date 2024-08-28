@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
 import AppBar from "../Components/AppBar";
 import {
   Typography,
@@ -21,6 +21,9 @@ import {
   checkDuplicatedStudentSerialNumberApi,
 } from "../Apis/Api/User";
 
+import i18n from "../i18n/i18n";
+import { useTranslation } from "react-i18next";
+
 function CreateAccount() {
   const { isSmallScreen } = useMediaQueryContext();
   const [tabValue, setTabValue] = useState(0); // 0: Student, 1: Teacher
@@ -37,6 +40,8 @@ function CreateAccount() {
 
   const [sn, setSn] = useState("");
   const [name, setName] = useState("");
+
+  const { t } = useTranslation();
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -221,7 +226,7 @@ function CreateAccount() {
             // marginLeft: isSmallScreen ? "10px" : "",
           }}
         >
-          Create Account
+          {t("Create Account")}
         </Typography>
       </Box>
       <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>

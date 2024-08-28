@@ -38,8 +38,11 @@ import {
   getTeacher,
   getProfileImage,
 } from "../Apis/Api/User";
+import { useTranslation } from "react-i18next";
 
 function MyProfile() {
+  const { t } = useTranslation();
+
   const { userRole, userData } = useAuth();
   const role = ["ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"];
   const [name, setName] = useState("");
@@ -439,7 +442,7 @@ function MyProfile() {
           component="div"
           sx={{ fontFamily: "Copperplate" }}
         >
-          My Profile
+          {t("My Profile")}
         </Typography>
       </Box>
       <Box
@@ -469,7 +472,7 @@ function MyProfile() {
               component="label"
               sx={{ marginRight: 2, marginTop: 3 }}
             >
-              Change
+              {t("Change")}
               <input
                 type="file"
                 accept="image/*"
@@ -483,13 +486,13 @@ function MyProfile() {
               onClick={handleProfileImageDelete}
               sx={{ marginTop: 3 }}
             >
-              Delete
+              {t("Delete")}
             </Button>
           </Grid>
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label="ID"
+              label={t("ID")}
               defaultValue={decodedToken.username}
               variant="outlined"
               InputProps={{
@@ -503,7 +506,7 @@ function MyProfile() {
               fullWidth
               disabled={decodedToken.role === role[0]}
               id="outlined-disabled"
-              label="Name"
+              label={t("Name")}
               onChange={handleNameChange}
               value={name ? name : ""}
               variant="outlined"
@@ -514,8 +517,8 @@ function MyProfile() {
               fullWidth
               label={
                 decodedToken.role === role[0] || decodedToken.role === role[1]
-                  ? "Grade field for student"
-                  : "Grade"
+                  ? t("Grade field for student")
+                  : t("Grade")
               }
               variant="outlined"
               InputProps={{
@@ -529,8 +532,8 @@ function MyProfile() {
               fullWidth
               label={
                 decodedToken.role === role[0] || decodedToken.role === role[1]
-                  ? "Section field for student"
-                  : "Section"
+                  ? t("Section field for student")
+                  : t("Section")
               }
               variant="outlined"
               InputProps={{
@@ -549,7 +552,7 @@ function MyProfile() {
             <FormControl fullWidth>
               {decodedToken.role == role[0] ? (
                 <InputLabel id="demo-simple-select-label">
-                  Gender field for student/teacher
+                  {t("Gender field for student/teacher")}
                 </InputLabel>
               ) : (
                 <InputLabel id="demo-simple-select-label">Gender*</InputLabel>
@@ -560,8 +563,8 @@ function MyProfile() {
                 id="demo-simple-select"
                 label={
                   decodedToken.role == role[0]
-                    ? " Gender field for student/teacher"
-                    : "Gender"
+                    ? t("Gender field for student/teacher")
+                    : t("Gender")
                 }
                 value={gender}
                 onChange={handleGenderChange}
@@ -583,8 +586,8 @@ function MyProfile() {
                   sx={{ width: "100%" }}
                   label={
                     decodedToken.role === role[0]
-                      ? "Birth field for student/teacher"
-                      : "Birth*"
+                      ? t("Birth field for student/teacher")
+                      : t("Birth*")
                   }
                   disabled={decodedToken.role === role[0]}
                   onChange={handleBirthChange}
@@ -601,8 +604,8 @@ function MyProfile() {
               onChange={handlePhoneNumChange}
               label={
                 decodedToken.role === role[0]
-                  ? "Phone field for student"
-                  : "Phone Number*"
+                  ? t("Phone field for student")
+                  : t("Phone Number*")
               }
               disabled={decodedToken.role === role[0]}
             />
@@ -622,8 +625,8 @@ function MyProfile() {
               onChange={handleMotherPhoneNumChange}
               label={
                 decodedToken.role === role[0] || decodedToken.role === role[1]
-                  ? "Mother Phone field for student"
-                  : "Mother Phone Number"
+                  ? t("Mother Phone field for student")
+                  : t("Mother Phone Number")
               }
               disabled={
                 decodedToken.role === role[0] || decodedToken.role === role[1]
@@ -641,8 +644,8 @@ function MyProfile() {
               fullWidth
               label={
                 decodedToken.role === role[0] || decodedToken.role === role[1]
-                  ? "Father Phone field for student"
-                  : "Father Phone Number"
+                  ? t("Father Phone field for student")
+                  : t("Father Phone Number")
               }
               disabled={
                 decodedToken.role === role[0] || decodedToken.role === role[1]
@@ -663,8 +666,8 @@ function MyProfile() {
               fullWidth
               label={
                 decodedToken.role === role[0] || decodedToken.role === role[1]
-                  ? "Guardians Phone field for student"
-                  : "Guardians Phone Number"
+                  ? t("Guardians Phone field for student")
+                  : t("Guardians Phone Number")
               }
               disabled={
                 decodedToken.role === role[0] || decodedToken.role === role[1]
@@ -682,9 +685,9 @@ function MyProfile() {
           </Grid>
           <Grid item xs={12}>
             <Typography sx={{ fontSize: 20, fontWeight: "bold" }}>
-              Password Recovery Question
+              {t("Password Recovery Question")}
             </Typography>
-            <Typography>What is your most favorite food?</Typography>
+            <Typography>{t("What is your most favorite food?")}</Typography>
             <TextField
               fullWidth
               variant="outlined"
@@ -694,8 +697,8 @@ function MyProfile() {
               onChange={handlePwAnswerChange}
               label={
                 decodedToken.role === role[0]
-                  ? "PW Answer field for student/teacher"
-                  : "PW Answer*"
+                  ? t("PW Answer field for student/teacher")
+                  : t("PW Answer*")
               }
             />
           </Grid>
@@ -706,13 +709,13 @@ function MyProfile() {
             <Typography
               sx={{ fontSize: 20, fontWeight: "bold", marginBottom: "8px" }}
             >
-              Change Password
+              {t("Change Password")}
             </Typography>
           </Grid>
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label="New PW"
+              label={t("New PW")}
               variant="outlined"
               type={showNewPassword ? "text" : "password"}
               value={newPassword}
@@ -735,7 +738,7 @@ function MyProfile() {
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label="Re-type PW"
+              label={t("Re-type PW")}
               variant="outlined"
               type={showConfirmPassword ? "text" : "password"}
               value={confirmPassword}
@@ -762,11 +765,13 @@ function MyProfile() {
               control={
                 <Checkbox checked={agree} onChange={handleAgreeChange} />
               }
-              label="Agree with"
+              label={t("Agree with")}
             />
             <FormHelperText>
-              [Consent for Collection and Use of Personal Information] Retention
-              and usage period: Until the member withdraws their membership.
+              [{t("Consent for Collection and Use of Personal Information")}]{" "}
+              {t(
+                "Retention and usage period: Until the member withdraws their membership."
+              )}
             </FormHelperText>
           </Grid>
           <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
@@ -779,7 +784,7 @@ function MyProfile() {
               }
               onClick={firstAccess != null ? handleEdit : handleSave}
             >
-              Save
+              {t("Save")}
             </Button>
           </Grid>
         </Grid>
