@@ -793,7 +793,7 @@ function AppBar() {
                             <ListItemText primary={"Class Board"} />
                           </ListItemButton>
                         </ListItem>
-                        <ListItem
+                        {/* <ListItem
                           key={`class-${index}-attendance`}
                           disablePadding
                         >
@@ -803,7 +803,7 @@ function AppBar() {
                           >
                             <ListItemText primary={"Attendance"} />
                           </ListItemButton>
-                        </ListItem>
+                        </ListItem> */}
                       </AccordionDetails>
                     </Accordion>
                   ))}
