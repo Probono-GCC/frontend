@@ -10,8 +10,13 @@ import Checkbox from "@mui/material/Checkbox";
 
 import Modal from "../Components/Modal";
 import { Typography, Box } from "@mui/material";
+
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+
 import { useMediaQueryContext } from "../store/MediaQueryContext";
-import { getStudents, deleteStudent, getStudent } from "../Apis/Api/User";
+import { getStudents, deleteStudent, getGradeStudents } from "../Apis/Api/User";
 import { useTranslation } from "react-i18next";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
@@ -45,6 +50,25 @@ function createData(
 
 function StudentView() {
   const { t } = useTranslation();
+  const [grade, setGrade] = useState("ALL");
+  const grades = [
+    { value: "ALL", label: "ALL" },
+    { value: "PLAYGROUP", label: "PlayGroup" },
+    { value: "NURSERY", label: "Nursery" },
+    { value: "LOWER_KG", label: "LowerKG" },
+    { value: "UPPER_KG", label: "UpperKG" },
+    { value: "CLASS1", label: "Class 1" },
+    { value: "CLASS2", label: "Class 2" },
+    { value: "CLASS3", label: "Class 3" },
+    { value: "CLASS4", label: "Class 4" },
+    { value: "CLASS5", label: "Class 5" },
+    { value: "CLASS6", label: "Class 6" },
+    { value: "CLASS7", label: "Class 7" },
+    { value: "CLASS8", label: "Class 8" },
+    { value: "CLASS9", label: "Class 9" },
+    { value: "CLASS10", label: "Class 10" },
+    { value: "GRADUATED", label: "Graduated" },
+  ];
   const [modalOpen, setModalOpen] = useState(false);
   const [modalRowData, setModalRowData] = useState("default row data");
   const [alert, setAlert] = useState(false);
@@ -161,6 +185,15 @@ function StudentView() {
     handleModalOpen(params.row);
   };
 
+  const handleGradeChange = (event) => {
+    setGrade(event.target.value);
+    console.log("다시받아오기");
+    // if (event.target.value != "ALL") {
+    //   fetchGradeStudents(event.target.value, page, pageSize);
+    // } else {
+    //   fetchStudents(page, pageSize);
+    // }
+  };
   const deleteRow = async () => {
     try {
       // 선택된 각 행에 대해 삭제 로직을 수행
@@ -214,9 +247,40 @@ function StudentView() {
       }
     });
   };
+  const fetchGradeStudents = (grade, page, pageSize) => {
+    getGradeStudents(grade, page, pageSize).then((result) => {
+      const students = result.content || []; // content 배열 가져오기
+      console.log(students);
+      setTotalRowCount(result.totalElements);
+      if (students.length > 0) {
+        const tempRow = students.map((item) =>
+          createData(
+            item.serialNumber,
+            item.sex,
+            item.name,
+            item.birth,
+            item.username,
+            item.grade,
+
+            item.phoneNum,
+            item.motherPhoneNum,
+            item.fatherPhoneNum,
+            item.guardiansPhoneNum
+          )
+        );
+        setRows(tempRow);
+      } else {
+        setRows([]);
+      }
+    });
+  };
   useEffect(() => {
-    fetchStudents(page, pageSize);
-  }, []);
+    if (grade === "ALL") {
+      fetchStudents(page, pageSize);
+    } else {
+      fetchGradeStudents(grade, page, pageSize);
+    }
+  }, [grade]);
 
   return (
     <div id="page_content">
@@ -233,20 +297,49 @@ function StudentView() {
       )}
 
       <div id={styles.table_container}>
-        <Box>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between", // 전체 영역에서 Select와 가운데 Typography 간의 여유 공간을 확보
+            position: "relative",
+            width: "90vw",
+            margin: "0 auto",
+          }}
+        >
+          <div>
+            <FormControl sx={{ m: 1, minWidth: 120 }}>
+              <Select
+                value={grade}
+                onChange={handleGradeChange}
+                displayEmpty
+                inputProps={{ "aria-label": "Without label" }}
+                sx={{ height: "5vh" }}
+              >
+                {grades.map((item) => (
+                  <MenuItem key={item.value} value={item.value}>
+                    {item.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
           <Typography
             variant={isSmallScreen ? "h6" : "h3"}
             sx={{
-              textAlign: isSmallScreen ? "left" : "center",
+              textAlign: "center",
               fontFamily: "Copperplate",
               marginTop: isSmallScreen ? "5px" : "10px",
               marginBottom: isSmallScreen ? "10px" : "30px",
-              marginLeft: isSmallScreen ? "10px" : "",
+              position: "absolute", // 절대 위치로 설정하여 중앙에 고정
+              left: "50%", // 왼쪽으로부터 50% 이동
+              transform: "translateX(-50%)", // 가운데 정렬을 위해 자신의 폭의 절반만큼 왼쪽으로 이동
             }}
           >
             {t("Student Board")}
           </Typography>
         </Box>
+
         <Box
           sx={{
             padding: "10px",

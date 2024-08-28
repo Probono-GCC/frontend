@@ -44,6 +44,18 @@ export async function getStudents(page, size) {
     return err;
   }
 }
+export async function getGradeStudents(grade, page, size) {
+  try {
+    const response = await axiosInstance.get(
+      `/students/grade?grade=${grade}&page=${page}&size=${size}`
+    );
+
+    return response.data;
+  } catch (err) {
+    console.error("요청 중 오류 발생:", err); // 오류 메시지 로깅
+    return err;
+  }
+}
 
 export async function loginApi(userData) {
   try {
