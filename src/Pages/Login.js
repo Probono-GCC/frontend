@@ -23,8 +23,10 @@ function Login({ type }) {
   const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(1);
 
-  /** 언어 선택 임시 선택상자 */
-  const [lang, setLang] = useState(10);
+  const initialLang = i18n.language || "en";
+
+  // 초기값으로 언어 상태 설정
+  const [lang, setLang] = useState(initialLang);
 
   const handleChange = (event) => {
     const selectedLanguage = event.target.value;
@@ -33,9 +35,9 @@ function Login({ type }) {
     console.log("event.target.value", event.target.value);
 
     let languageCode;
-    if (selectedLanguage === 20) {
+    if (selectedLanguage === "ne") {
       languageCode = "ne";
-    } else if (selectedLanguage === 10) {
+    } else if (selectedLanguage === "en") {
       languageCode = "en";
     } else {
       // 지원하지 않는 언어가 선택된 경우 기본값을 설정합니다.
@@ -100,8 +102,8 @@ function Login({ type }) {
                 inputProps={{ "aria-label": "Without label" }}
                 sx={{ height: "5vh" }}
               >
-                <MenuItem value={10}>Eng</MenuItem>
-                <MenuItem value={20}>Nepali</MenuItem>
+                <MenuItem value={"en"}>Eng</MenuItem>
+                <MenuItem value={"ne"}>Nepali</MenuItem>
               </Select>
             </FormControl>
           </div>
