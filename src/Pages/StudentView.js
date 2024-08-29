@@ -76,7 +76,7 @@ function StudentView() {
   const [rows, setRows] = useState([]);
   const { isSmallScreen } = useMediaQueryContext();
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(100);
+  const [pageSize, setPageSize] = useState(400);
   const [totalRowCount, setTotalRowCount] = useState(0); //서버에서 총 학생수 받아와서 설정
   //student view default table column
   const basic_columns = isSmallScreen
@@ -221,7 +221,7 @@ function StudentView() {
 
   const fetchStudents = (page, pageSize) => {
     getStudents(page, pageSize).then((result) => {
-      console.log("????", result);
+      // console.log("????", result);
       const students = result.content || []; // content 배열 가져오기
       // console.log(students);
       setTotalRowCount(result.totalElements);
