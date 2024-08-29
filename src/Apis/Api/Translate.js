@@ -18,7 +18,10 @@ export async function postTranslationData(text, toLanguage) {
     });
     return response.data; // 응답 데이터 반환
   } catch (err) {
-    console.error("Error posting translation data:", err);
+    console.error(
+      `Error posting translation data. Text: "${text}", To Language: "${toLanguage}".`,
+      err
+    );
     throw err; // 에러를 다시 던져서 호출한 쪽에서 처리할 수 있도록 함
   }
 }
