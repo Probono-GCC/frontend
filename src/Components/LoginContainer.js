@@ -167,7 +167,7 @@ function LoginContainer() {
           <p
             id={styles.forgotPw_btn}
             onClick={moveForgotPassword}
-            style={{ color: "#1B3DA6", fontSize: "17px" }}
+            style={{ color: "#1B3DA6", fontSize: "20px" }}
           >
             {t("forgotPw")}
           </p>
