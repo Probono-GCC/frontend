@@ -19,6 +19,8 @@ import i18n from "../i18n/i18n";
 
 import { useAuth } from "../store/AuthContext";
 
+import { PostTranslation } from "../Apis/Api/Translate";
+
 function Post() {
   const navigate = useNavigate();
   const [tempImageList, setTempImageList] = useState([]);
@@ -98,9 +100,9 @@ function Post() {
   };
 
   useEffect(() => {
-    // 호출하여 지원 여부를 확인
-    checkNepaliVoiceSupport();
+    console.log("i18n.language", i18n.language);
     const fetchData = async () => {
+      console.log("enter into fetchData");
       try {
         // 1. 먼저 공지사항 데이터를 가져옴
         const result = await getNoticePost(postData.noticeId);
@@ -120,11 +122,13 @@ function Post() {
         // 3. 번역 요청
         if (result && result.content) {
           try {
-            //content 번역
-
-            const translationContentResult = await postTranslationData(
-              result.content,
-              i18n.language
+            // 내용 번역
+            const contentTranslationData = {
+              text: result.content,
+              to: i18n.language,
+            };
+            const translationContentResult = await PostTranslation(
+              contentTranslationData
             );
             console.log(
               "Translation content result:",
@@ -134,12 +138,15 @@ function Post() {
             // 번역 결과가 있으면 상태를 업데이트
             setTranslatedContent(translationContentResult.translatedText);
 
-            //title 번역
-            const translationTitleResult = await postTranslationData(
-              result.title,
-              i18n.language
+            // 제목 번역
+            const titleTranslationData = {
+              text: result.title,
+              to: i18n.language,
+            };
+            const translationTitleResult = await PostTranslation(
+              titleTranslationData
             );
-            console.log("Translation Title result:", translationTitleResult);
+            console.log("Translation title result:", translationTitleResult);
 
             // 번역 결과가 있으면 상태를 업데이트
             setTranslatedTitle(translationTitleResult.translatedText);
@@ -162,18 +169,18 @@ function Post() {
     };
 
     fetchData(); // 데이터 불러오기 함수 호출
-  }, [postData.noticeId]);
+  }, [i18n.language, postData.noticeId]);
 
   // 번역된 텍스트가 설정되면 content 업데이트
-  useEffect(() => {
-    if (translatedTitle || translatedContent) {
-      setPostedData((prevData) => ({
-        ...prevData,
-        title: translatedTitle || prevData.title,
-        content: translatedContent || prevData.content, // 번역된 텍스트로 content를 업데이트
-      }));
-    }
-  }, [translatedContent, translatedTitle]);
+  // useEffect(() => {
+  //   if (translatedTitle || translatedContent) {
+  //     setPostedData((prevData) => ({
+  //       ...prevData,
+  //       title: translatedTitle || prevData.title,
+  //       content: translatedContent || prevData.content, // 번역된 텍스트로 content를 업데이트
+  //     }));
+  //   }
+  // }, [translatedContent, translatedTitle]);
 
   const handleBack = () => {
     navigate(-1); // Go back to the previous page
