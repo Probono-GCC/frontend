@@ -14,7 +14,7 @@ i18n
     },
     lng: "en", // 기본 언어를 영어로 설정
     fallbackLng: "en", // 지원하지 않는 언어가 있을 경우 기본 언어 설정
-    debug: true, // 디버깅 활성화
+    debug: false, // 디버깅 활성화
     interpolation: {
       escapeValue: false, // React는 XSS 방지가 기본
     },
