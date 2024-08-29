@@ -64,8 +64,42 @@ function Post() {
       });
     }
   };
+  const checkNepaliVoiceSupport = () => {
+    // 음성 목록을 가져오는 함수
+    const getVoices = () => {
+      return new Promise((resolve) => {
+        const voices = window.speechSynthesis.getVoices();
+        console.log("voice list?", voices);
+        if (voices.length) {
+          resolve(voices);
+        } else {
+          // 브라우저에서 음성 목록이 비어 있을 때, 음성 목록이 로드될 때까지 대기
+          window.speechSynthesis.onvoiceschanged = () => {
+            resolve(window.speechSynthesis.getVoices());
+          };
+        }
+      });
+    };
+
+    getVoices()
+      .then((voices) => {
+        // 네팔어 음성 찾기
+        const nepaliVoice = voices.find((voice) => voice.lang.startsWith("ne"));
+
+        if (nepaliVoice) {
+          console.log("Nepali voice is available.");
+        } else {
+          console.log("Nepali voice is not available.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error checking Nepali voice support:", error);
+      });
+  };
 
   useEffect(() => {
+    // 호출하여 지원 여부를 확인
+    checkNepaliVoiceSupport();
     const fetchData = async () => {
       try {
         // 1. 먼저 공지사항 데이터를 가져옴
