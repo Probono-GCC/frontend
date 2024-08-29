@@ -27,7 +27,7 @@ export async function postTranslationData(text, toLanguage) {
 (async () => {
   try {
     const result = await postTranslationData("Hello", "ne");
-    console.log("Translation result:", result);
+    // console.log("Translation result:", result);
   } catch (error) {
     console.error("Failed to translate:", error);
   }

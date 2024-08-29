@@ -35,9 +35,7 @@ function CustomModal({ open, handleClose, title, rowData, onSave }) {
   ];
 
   useEffect(() => {
-    console.log("ewrewrwe", rowData);
     if (open && rowData) {
-      console.log("ewrewrwe", rowData);
       setNewGrade(rowData.grade);
     }
   }, [open, rowData]);
@@ -48,7 +46,6 @@ function CustomModal({ open, handleClose, title, rowData, onSave }) {
       changeGradeApi(updatedGradeData, rowData.username).then((result) => {
         alert("change complete");
         if (typeof onSave === "function") {
-          console.log("onsave호출?");
           onSave();
         }
       });
