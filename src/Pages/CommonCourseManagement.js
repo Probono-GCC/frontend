@@ -339,11 +339,11 @@ function CommonCourseManagement() {
         const coursePromises = result.content.map(async (courseItem) => {
           const teachers = await fetchCourseTeachers(courseItem.courseId);
           console.log("tea", teachers);
-          if (teachers) {
+          if (teachers.length > 0) {
             const teacherNames =
               teachers && teachers.length > 1
-                ? `${teachers[0].username} & ${teachers[1].username}`
-                : teachers[0].username;
+                ? `${teachers[0].name} & ${teachers[1].name}`
+                : teachers[0].name;
 
             return createCourseData(
               courseItem.classResponse.year,
@@ -359,7 +359,7 @@ function CommonCourseManagement() {
               courseItem.classResponse.grade,
               courseItem.classResponse.section,
               courseItem.subjectResponseDTO.name,
-              "",
+              "-",
               courseItem.courseId
             );
           }
@@ -405,7 +405,7 @@ function CommonCourseManagement() {
   const fetchCourseTeachers = (courseId) => {
     return getCourseTeachers(courseId).then((result) => {
       console.log("item", result);
-      if (result && result.data.userResponse) {
+      if (result && result.data && result.data.userResponse) {
         console.log("item", result.data.userResponse);
         const userResponses = Array.isArray(result.data.userResponse)
           ? result.data.userResponse
