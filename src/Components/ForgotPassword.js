@@ -35,7 +35,6 @@ function ForgotPassword() {
   // handleIsIdExists 함수
   const handleIsIdExists = async (id) => {
     try {
-      console.log("????", id);
       // ID 존재 여부 확인 API 호출
       const result = await IsUserExistsApi(id);
 

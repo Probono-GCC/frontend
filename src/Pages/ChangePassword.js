@@ -42,7 +42,7 @@ function ChangePassword() {
   const [rows, setRows] = useState([]);
   //pagination for table
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(100);
+  const [pageSize, setPageSize] = useState(400);
   const [totalRowCount, setTotalRowCount] = useState(0); //서버에서 총 학생수 받아와서 설정
 
   const { isSmallScreen } = useMediaQueryContext();
@@ -274,7 +274,7 @@ function ChangePassword() {
           onClick={handleModalOpen}
           disabled={checkedRowId == null}
           id={"view_btn"}
-          size={"bg"}
+          size={"md"}
         />
       </div>
 

@@ -122,7 +122,7 @@ function AssignHomeroom() {
   };
   useEffect(() => {
     console.log("selecte left sutdnet 2", selectedLeftStudents);
-    getStudents(0, 100).then((result) => {
+    getStudents(0, 400).then((result) => {
       console.log(result);
       if (result && result.content) {
         const students = result.content || []; // content 배열 가져오기
