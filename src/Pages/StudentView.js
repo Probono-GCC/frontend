@@ -307,37 +307,46 @@ function StudentView() {
             margin: "0 auto",
           }}
         >
-          <div>
-            <FormControl sx={{ m: 1, minWidth: 120 }}>
-              <Select
-                value={grade}
-                onChange={handleGradeChange}
-                displayEmpty
-                inputProps={{ "aria-label": "Without label" }}
-                sx={{ height: "5vh" }}
-              >
-                {grades.map((item) => (
-                  <MenuItem key={item.value} value={item.value}>
-                    {item.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </div>
-          <Typography
-            variant={isSmallScreen ? "h6" : "h3"}
-            sx={{
-              textAlign: "center",
-              fontFamily: "Copperplate",
-              marginTop: isSmallScreen ? "5px" : "10px",
-              marginBottom: isSmallScreen ? "10px" : "30px",
-              position: "absolute", // 절대 위치로 설정하여 중앙에 고정
-              left: "50%", // 왼쪽으로부터 50% 이동
-              transform: "translateX(-50%)", // 가운데 정렬을 위해 자신의 폭의 절반만큼 왼쪽으로 이동
+          <div
+            style={{
+              display: isSmallScreen ? "block" : "flex", // 작은 화면에서는 세로 배치, 큰 화면에서는 가로 배치
+              alignItems: isSmallScreen ? "start" : "center", // 작은 화면에서 각 요소를 시작 부분에 맞추기
+              textAlign: isSmallScreen ? "center" : "left", // 작은 화면에서 텍스트 중앙 정렬
             }}
           >
-            {t("Student Board")}
-          </Typography>
+            <Typography
+              variant={isSmallScreen ? "h6" : "h3"}
+              sx={{
+                fontFamily: "Copperplate",
+                marginTop: isSmallScreen ? "5px" : "10px",
+                marginBottom: isSmallScreen ? "10px" : "30px",
+                textAlign: "center", // 작은 화면에서 중앙 정렬
+              }}
+            >
+              {t("Student Board")}
+            </Typography>
+          </div>
+          <FormControl
+            sx={{
+              m: isSmallScreen ? 0 : 1,
+              width: isSmallScreen ? "120px" : "150px",
+              marginBottom: isSmallScreen ? "10px" : "0", // 작은 화면에서 아래 여백 추가
+            }}
+          >
+            <Select
+              value={grade}
+              onChange={handleGradeChange}
+              displayEmpty
+              inputProps={{ "aria-label": "Without label" }}
+              sx={{ height: "5vh" }}
+            >
+              {grades.map((item) => (
+                <MenuItem key={item.value} value={item.value}>
+                  {item.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Box>
 
         <Box
