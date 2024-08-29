@@ -1,0 +1,8 @@
+.day_cell {
+  padding: 0px !important;
+  text-align: center !important;
+}
+.checkbox {
+  width: 16px; /* Adjust size as needed */
+  height: 16px; /* Adjust size as needed */
+}

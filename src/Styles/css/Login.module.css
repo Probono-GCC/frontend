@@ -1,6 +1,6 @@
 #page_container {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   /* display: inline; */
   width: 100vw;
   height: 100vh;
@@ -19,22 +19,31 @@
 #right_align {
   display: flex;
   flex-direction: row-reverse;
-  margin: 10px 1rem;
+  margin: 10px 10px 10px 0;
 }
 .input_container {
-  margin: 1rem;
+  margin: 10px auto;
   /* width: 30vw; */
 }
+/* Login.module.css */
 #login_footer {
   display: flex;
-  width: 30vw;
+  width: 540px;
   justify-content: space-between;
   align-items: center;
-}
-#logoImg {
-  height: 30vh;
-  width: 30vw;
 
+  /* Small Screen용 스타일 */
+  @media (max-width: 600px) {
+    flex-direction: column;
+    width: 100%; /* 작은 화면에서는 전체 너비 사용 */
+  }
+}
+
+#logoImg {
+  /* height: 30vh;
+  width: 30vw; */
+  width: 253px;
+  height: 282px;
   background-image: url("../../Assets/img/CLALogo.png"); /* 이미지 경로 */
   background-size: contain;
   background-position: center;
@@ -61,15 +70,19 @@
 
 .questionText {
   margin: 1vh 1vw;
+  font-size: 15px;
 }
 .titleText {
-  margin: 1vw 2vh;
+  /* margin: 1vw 2vh; */
   font-weight: bold;
-  font-size: larger;
+  font-size: 20px;
   color: #1b3da6;
 }
 .title {
   font-size: 35px;
+}
+#forgotPW_btn {
+  font-size: 24px;
 }
 #forgotPw_btn:hover {
   cursor: pointer;
@@ -77,14 +90,14 @@
 /* 모바일 뷰 */
 @media (max-width: 768px) {
   .title {
-    font-size: xx-large;
+    font-size: x-large;
   }
   #image_container {
     display: none;
     width: 0;
   }
   #login_container {
-    width: 100vw;
+    width: 100%;
     align-items: center;
     height: 85vh;
     justify-content: space-between;
@@ -97,8 +110,8 @@
   }
 
   #logoImg {
-    height: 30vh;
-    width: 50vw;
+    width: 253px;
+    height: 282px;
   }
 
   #login_footer {
