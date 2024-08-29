@@ -517,6 +517,13 @@ function MyProfile() {
               {t("Delete")}
             </Button>
           </Grid>
+          {decodedToken.role === role[0] ? (
+            <Grid item xs={12} sx={{ textAlign: "center", fontSize: "larger" }}>
+              Administor can't edit profile
+            </Grid>
+          ) : (
+            <div></div>
+          )}
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -789,6 +796,7 @@ function MyProfile() {
           <Grid item xs={12}>
             <TextField
               fullWidth
+              disabled={decodedToken.role === role[0]}
               label={t("New PW")}
               variant="outlined"
               type={showNewPassword ? "text" : "password"}
@@ -812,6 +820,7 @@ function MyProfile() {
           <Grid item xs={12}>
             <TextField
               fullWidth
+              disabled={decodedToken.role === role[0]}
               label={t("Re-type PW")}
               variant="outlined"
               type={showConfirmPassword ? "text" : "password"}
