@@ -67,11 +67,11 @@ const ViewTable = memo(
           onRowDoubleClick={onRowDoubleClick}
           getRowId={getRowId}
           rowCount={totalRowCount} // 총 데이터 수
-          // pageSize={pageSize}
+          pageSize={pageSize}
           // pagination={false} // Disable pagination
-          // paginationMode="server" // Server-side pagination
-          // pageSizeOptions={[]} // No page size options displayed
-          hideFooter
+          paginationMode="server" // Server-side pagination
+          pageSizeOptions={[]} // No page size options displayed
+          // hideFooter
         />
       </div>
     );
