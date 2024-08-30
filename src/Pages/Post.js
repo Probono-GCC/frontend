@@ -7,6 +7,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import { IconButton } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import TextToSpeech from "../Util/TextToSpeech";
+
 import { convertDateFormat } from "../Util/DateUtils";
 
 import { useMediaQueryContext } from "../store/MediaQueryContext";
@@ -17,9 +18,7 @@ import { postTranslationData } from "../Apis/Api/Translate";
 
 import i18n from "../i18n/i18n";
 import { useTranslation } from "react-i18next";
-
 import { useAuth } from "../store/AuthContext";
-
 import { PostTranslation } from "../Apis/Api/Translate";
 
 function Post() {
@@ -70,25 +69,26 @@ function Post() {
   };
 
   const fetchData = async () => {
-    // //console.log("enter into fetchData");
-    try {
-      // 1. 먼저 공지사항 데이터를 가져옴
-      const result = await getNoticePost(postData.noticeId);
-      // //console.log("get notice post", result);
+    // console.log("enter into fetchData");
+    // 1. 먼저 공지사항 데이터를 가져옴
+    const result = await getNoticePost(postData.noticeId);
+    // console.log("get notice post", result);
 
-      // 2. 공지사항 데이터를 상태로 먼저 업데이트
-      if (result) {
-        setPostedData({
-          title: result.title,
-          content: result.content, // 초기에는 원본 content로 설정
-          updatedAt: result.updatedAt,
-          views: result.views,
-          createdChargeId: result.createdChargeId,
-        });
-      }
+    // 2. 공지사항 데이터를 상태로 먼저 업데이트
 
-      // 3. 번역 요청
-      if (result && result.content) {
+    if (result) {
+      setPostedData({
+        title: result.title,
+        content: result.content, // 초기에는 원본 content로 설정
+        updatedAt: result.updatedAt,
+        views: result.views,
+        createdChargeId: result.createdChargeId,
+      });
+    }
+
+    // 3. 번역 요청
+    if (result && result.content) {
+      const translatedResult = await (async () => {
         try {
           // 내용 번역
           const contentTranslationData = {
@@ -113,25 +113,46 @@ function Post() {
           );
           //console.log("Translation title result:", translationTitleResult);
 
-          // 번역 결과가 있으면 상태를 업데이트
-          setTranslatedTitle(translationTitleResult.translatedText);
+          // 번역된 결과를 반환
+          return {
+            title: translationTitleResult.translatedText,
+            content: translationContentResult.translatedText,
+            updatedAt: result.updatedAt,
+            views: result.views,
+            createdChargeId: result.createdChargeId,
+          };
         } catch (error) {
           console.error("Failed to translate:", error);
+          // 번역 실패 시 원본 데이터 반환
+          return {
+            title: result.title,
+            content: result.content,
+            updatedAt: result.updatedAt,
+            views: result.views,
+            createdChargeId: result.createdChargeId,
+          };
         }
+      })();
+
+      try {
+        // 4. 이미지 리스트가 있으면 상태 업데이트
+        if (result && result.imageList != null) {
+          postData.imageList = result.imageList;
+          setTempImageList(result.imageList);
+        } else {
+          setTempImageList([]);
+          postData.imageList = null;
+        }
+      } catch (error) {
+        console.error("Error fetching notice post:", error);
       }
 
-      // 4. 이미지 리스트가 있으면 상태 업데이트
-      if (result && result.imageList != null) {
-        postData.imageList = result.imageList;
-        setTempImageList(result.imageList);
-      } else {
-        setTempImageList([]);
-        postData.imageList = null;
-      }
-    } catch (error) {
-      console.error("Error fetching notice post:", error);
+      // const translatedResults = await Promise.all(translatedResultPromises);
+      console.log("Translated Results : ", translatedResult);
+      setPostedData(translatedResult);
     }
   };
+
   useEffect(() => {
     //console.log("i18n.language", i18n.language);
 
@@ -143,8 +164,8 @@ function Post() {
   //   if (translatedTitle || translatedContent) {
   //     setPostedData((prevData) => ({
   //       ...prevData,
-  //       title: translatedTitle || prevData.title,
-  //       content: translatedContent || prevData.content, // 번역된 텍스트로 content를 업데이트
+  //       title: translatedTitle,
+  //       content: translatedContent, // 번역된 텍스트로 content를 업데이트
   //     }));
   //   }
   // }, [translatedContent, translatedTitle]);
@@ -159,6 +180,10 @@ function Post() {
   if (!tempImageList) {
     return <div>Loading...</div>;
   }
+
+  // if (!postedData.title && !postedData.content) {
+  //   return <div>Loading...</div>;
+  // }
   return (
     <div>
       <AppBar />
