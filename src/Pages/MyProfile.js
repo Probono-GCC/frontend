@@ -39,7 +39,23 @@ import {
   getProfileImage,
 } from "../Apis/Api/User";
 import { useTranslation } from "react-i18next";
-
+import { fontStyle } from "@mui/system";
+const grades = [
+  { value: "PLAYGROUP", label: "PlayGroup" },
+  { value: "NURSERY", label: "Nursery" },
+  { value: "LOWER_KG", label: "LowerKG" },
+  { value: "UPPER_KG", label: "UpperKG" },
+  { value: "CLASS1", label: "Class 1" },
+  { value: "CLASS2", label: "Class 2" },
+  { value: "CLASS3", label: "Class 3" },
+  { value: "CLASS4", label: "Class 4" },
+  { value: "CLASS5", label: "Class 5" },
+  { value: "CLASS6", label: "Class 6" },
+  { value: "CLASS7", label: "Class 7" },
+  { value: "CLASS8", label: "Class 8" },
+  { value: "CLASS9", label: "Class 9" },
+  { value: "CLASS10", label: "Class 10" },
+];
 function MyProfile() {
   const { t } = useTranslation();
 
@@ -74,6 +90,7 @@ function MyProfile() {
   const [initialValues, setInitialValues] = useState({
     imageId: 0,
     gender: "",
+    grade: "",
     birth: null,
     phoneNum: "",
     fatherPhoneNum: "",
@@ -85,6 +102,9 @@ function MyProfile() {
   const navigate = useNavigate();
   const handleGenderChange = (event) => {
     setGender(event.target.value);
+  };
+  const handleGradeChange = (event) => {
+    setGrade(event.target.value);
   };
   const handleNameChange = (event) => {
     setName(event.target.value);
@@ -189,7 +209,11 @@ function MyProfile() {
       isProfileImageValid
     );
     const isPersonalInfoValid =
-      gender !== "" && birth !== "" && phoneNum !== "" && pwAnswer !== "";
+      gender !== "" &&
+      birth !== "" &&
+      phoneNum !== "" &&
+      pwAnswer !== "" &&
+      grade !== "GRADUATED";
 
     if (decodedToken.role == role[2]) {
       const isContactInfoValid =
@@ -231,7 +255,7 @@ function MyProfile() {
       imageData.append("image", profileImage); // File 객체를 FormData에 추가
       postProfileImage(imageData, userID)
         .then((result) => {
-          console.log("image new post", result.imageId);
+          // console.log("image new post", result.imageId);
           changedFields.imageId = result.imageId;
           updateProfile(); // 이미지 업로드가 완료된 후 updateProfile 함수 호출
         })
@@ -242,7 +266,7 @@ function MyProfile() {
       changedFields.imageId = initialImageId;
       updateProfile();
     } else {
-      console.log(initialImageId, "ini");
+      // console.log(initialImageId, "ini");
       alert("Profile image registration is required");
       // updateProfile();
     }
@@ -260,6 +284,9 @@ function MyProfile() {
         }
       );
     } else if (decodedToken.role == role[2]) {
+      if (grade !== initialValues.grade) {
+        changedFields.grade = grade;
+      }
       if (fatherPhoneNum !== initialValues.fatherPhoneNum) {
         changedFields.fatherPhoneNum = fatherPhoneNum;
       }
@@ -297,6 +324,7 @@ function MyProfile() {
     };
 
     if (decodedToken.role == role[2]) {
+      changedUserData.grade = grade;
       changedUserData.fatherPhoneNum = fatherPhoneNum;
       changedUserData.motherPhoneNum = motherPhoneNum;
       changedUserData.guardiansPhoneNum = guardiansPhoneNum;
@@ -379,12 +407,11 @@ function MyProfile() {
         console.log("result.imageId.imageId", result, userData);
         setBirth(result.birth);
         setName(result.name);
-        if (result.classResponse && result.classResponse.grade) {
-          setGrade(result.classResponse.grade);
-        }
+        setGrade(result.grade);
         if (result.classResponse && result.classResponse.section) {
           setSection(result.classResponse.section);
         }
+
         setGender(result.sex);
         setPhoneNum(result.phoneNum);
         setPwAnswer(result.pwAnswer);
@@ -401,6 +428,7 @@ function MyProfile() {
         // 초기 값 설정
         setInitialValues({
           name: result.name,
+          grade: result.grade ? result.grade : "",
           gender: result.sex,
           birth: result.birth,
           phoneNum: result.phoneNum,
@@ -489,6 +517,13 @@ function MyProfile() {
               {t("Delete")}
             </Button>
           </Grid>
+          {decodedToken.role === role[0] ? (
+            <Grid item xs={12} sx={{ textAlign: "center", fontSize: "larger" }}>
+              Administor can't edit profile
+            </Grid>
+          ) : (
+            <div></div>
+          )}
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -513,20 +548,41 @@ function MyProfile() {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label={
-                decodedToken.role === role[0] || decodedToken.role === role[1]
-                  ? t("Grade field for student")
-                  : t("Grade")
-              }
-              variant="outlined"
-              InputProps={{
-                readOnly: true,
-              }}
-              value={grade ? grade : ""}
-            />
+            <FormControl fullWidth>
+              {decodedToken.role == role[0] || decodedToken.role == role[1] ? (
+                <InputLabel id="demo-simple-select-label">
+                  {t("Grade field for student/teacher")}
+                </InputLabel>
+              ) : (
+                <InputLabel sx={{ color: "red" }} id="demo-simple-select-label">
+                  Grade*
+                </InputLabel>
+              )}
+              <Select
+                variant="outlined"
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label={
+                  decodedToken.role == role[0]
+                    ? t("Grade field for student/teacher")
+                    : t("Grade")
+                }
+                value={grade ? grade : ""}
+                onChange={handleGradeChange}
+                disabled={decodedToken.role === role[0]}
+                InputProps={{
+                  style: { borderColor: "red" }, // 빨간 테두리 스타일
+                }}
+              >
+                {grades.map((item) => (
+                  <MenuItem key={item.value} value={item.value}>
+                    {item.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
+
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -555,7 +611,9 @@ function MyProfile() {
                   {t("Gender field for student/teacher")}
                 </InputLabel>
               ) : (
-                <InputLabel id="demo-simple-select-label">Gender*</InputLabel>
+                <InputLabel sx={{ color: "red" }} id="demo-simple-select-label">
+                  Gender*
+                </InputLabel>
               )}
 
               <Select
@@ -583,7 +641,16 @@ function MyProfile() {
             <LocalizationProvider fullWidth dateAdapter={AdapterDayjs}>
               <DemoContainer components={["DatePicker"]}>
                 <DatePicker
-                  sx={{ width: "100%" }}
+                  sx={{
+                    width: "100%",
+                    // DatePicker의 텍스트 필드 색상
+                    "& .MuiFormLabel-colorPrimary ": {
+                      color: decodedToken.role[2] ? "red" : "",
+                    },
+                    "& .MuiInputBase-input": {
+                      color: decodedToken.role[2] ? "black" : "",
+                    },
+                  }}
                   label={
                     decodedToken.role === role[0]
                       ? t("Birth field for student/teacher")
@@ -600,6 +667,11 @@ function MyProfile() {
             <TextField
               fullWidth
               variant="outlined"
+              sx={{
+                "& .MuiFormLabel-root": {
+                  color: decodedToken.role[2] ? "red" : "",
+                },
+              }}
               value={phoneNum ? phoneNum : ""}
               onChange={handlePhoneNumChange}
               label={
@@ -613,7 +685,9 @@ function MyProfile() {
 
           <Grid item xs={12}>
             {decodedToken.role === role[2] && (
-              <FormHelperText>
+              <FormHelperText
+                sx={{ color: "red", fontSize: "14px", marginBottom: "10px" }}
+              >
                 At least one phone number (mother, father, or guardian) is
                 required.
               </FormHelperText>
@@ -687,14 +761,21 @@ function MyProfile() {
             <Typography sx={{ fontSize: 20, fontWeight: "bold" }}>
               {t("Password Recovery Question")}
             </Typography>
-            <Typography>{t("What is your most favorite food?")}</Typography>
+            <Typography sx={{ marginTop: "5px" }}>
+              {t("What is your most favorite food?")}
+            </Typography>
             <TextField
               fullWidth
               variant="outlined"
               disabled={firstAccess != null || decodedToken.role == role[0]}
-              sx={{ marginTop: 2 }}
               value={pwAnswer}
               onChange={handlePwAnswerChange}
+              sx={{
+                "& .MuiFormLabel-root": {
+                  color: decodedToken.role[2] ? "red" : "",
+                },
+                marginTop: 2,
+              }}
               label={
                 decodedToken.role === role[0]
                   ? t("PW Answer field for student/teacher")
@@ -715,6 +796,7 @@ function MyProfile() {
           <Grid item xs={12}>
             <TextField
               fullWidth
+              disabled={decodedToken.role === role[0]}
               label={t("New PW")}
               variant="outlined"
               type={showNewPassword ? "text" : "password"}
@@ -738,6 +820,7 @@ function MyProfile() {
           <Grid item xs={12}>
             <TextField
               fullWidth
+              disabled={decodedToken.role === role[0]}
               label={t("Re-type PW")}
               variant="outlined"
               type={showConfirmPassword ? "text" : "password"}

@@ -134,7 +134,7 @@ function LoginContainer() {
             onKeyDown={handleKeyDown}
             sx={{
               marginBottom: "16px",
-              width: isSmallScreen ? "80vw" : "30vw",
+              width: isSmallScreen ? "270px" : "540px",
             }}
           />
         </div>
@@ -151,27 +151,27 @@ function LoginContainer() {
             onKeyDown={handleKeyDown}
             sx={{
               marginBottom: "16px",
-              width: isSmallScreen ? "80vw" : "30vw",
+              width: isSmallScreen ? "270px" : "540px",
             }}
           />
         </div>
       </Box>
       <div id={styles.login_footer}>
-        <div>
-          <p
-            id={styles.forgotPw_btn}
-            onClick={moveForgotPassword}
-            style={{ color: "#1B3DA6" }}
-          >
-            {t("forgotPw")}
-          </p>
-        </div>
         <Button
           title={t("login")}
           disabled={userPW.length === 0 || userID.length === 0}
           onClick={login}
           size={"bg"}
         />
+        <div>
+          <p
+            id={styles.forgotPw_btn}
+            onClick={moveForgotPassword}
+            style={{ color: "#1B3DA6", fontSize: "20px" }}
+          >
+            {t("forgotPw")}
+          </p>
+        </div>
       </div>
     </div>
   );

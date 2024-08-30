@@ -507,6 +507,7 @@ function AssignHomeroom() {
               >
                 <CustomButton
                   title={">"}
+                  size={"md"}
                   variant="contained"
                   onClick={() =>
                     handleStudentTransferToRight(
@@ -520,6 +521,7 @@ function AssignHomeroom() {
                 <Box sx={{ marginTop: 2, marginBottom: 2 }} />
                 <CustomButton
                   title={"<"}
+                  size={"md"}
                   variant="contained"
                   onClick={() =>
                     handleStudentTransferToLeft(

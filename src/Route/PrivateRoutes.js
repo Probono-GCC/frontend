@@ -13,7 +13,8 @@ import TeacherView from "../Pages/TeacherView";
 import CreateClass from "../Pages/CreateClass";
 import ClassInfo from "../Pages/ClassInfo";
 import CreateAccount from "../Pages/CreateAccount";
-
+import TodayAttendance from "../Pages/TodayAttendance";
+import ClassAttendanceReport from "../Pages/ClassAttendanceReport";
 import SubjectInfo from "../Pages/SubjectInfo";
 import SubjectNewPostForm from "../Pages/SubjectNewPostForm";
 import AssignHomeroom from "../Pages/AssignHomeroom";
@@ -107,7 +108,22 @@ const PrivateRoutes = () => (
         </PrivateRoute>
       }
     />
-
+    <Route
+      path="/class-attendance/report/*"
+      element={
+        <PrivateRoute requiredRole={[role[0], role[1]]}>
+          <ClassAttendanceReport />
+        </PrivateRoute>
+      }
+    />
+    <Route
+      path="/class-attendance/today/*"
+      element={
+        <PrivateRoute requiredRole={[role[0], role[1]]}>
+          <TodayAttendance />
+        </PrivateRoute>
+      }
+    />
     <Route
       path="/subject-info"
       element={
