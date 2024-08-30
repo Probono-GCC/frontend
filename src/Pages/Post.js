@@ -21,8 +21,6 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "../store/AuthContext";
 import { PostTranslation } from "../Apis/Api/Translate";
 
-import { PostTranslation } from "../Apis/Api/Translate";
-
 function Post() {
   const navigate = useNavigate();
   const [tempImageList, setTempImageList] = useState([]);
