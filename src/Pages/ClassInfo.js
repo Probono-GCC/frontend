@@ -177,7 +177,7 @@ function ClassInfo() {
         const coursePromises = result.content.map(async (courseItem) => {
           const teachers = await fetchCourseTeachers(courseItem.courseId);
           console.log("tea", teachers);
-          if (teachers) {
+          if (teachers.length > 0) {
             const teacherName = teachers[0].name;
 
             return createCourseData(

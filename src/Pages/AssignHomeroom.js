@@ -85,7 +85,7 @@ function AssignHomeroom() {
 
           // Create a mapping for teachers information
           const teacherInfo = teachersResult.reduce((acc, teacher, index) => {
-            acc[`teacher${index + 1}`] = teacher.username;
+            acc[`teacher${index + 1}`] = teacher.name;
             return acc;
           }, {});
 
