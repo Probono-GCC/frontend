@@ -25,7 +25,6 @@ const Table = memo(
 
     // 페이지 변경 핸들러
     const handlePageChange = (page, newPage) => {
-      console.log("handle page change", newPage);
       setPage(newPage);
       if (handlePageNumber) {
         handlePageNumber(page, newPage); // 페이지 변경 시 부모에게 전달
@@ -34,25 +33,21 @@ const Table = memo(
 
     // 페이지 크기 변경 핸들러
     const handlePageSizeChange = (newPageSize) => {
-      console.log("handle page size change", newPageSize);
       setPageSize(newPageSize);
       if (onPageSizeChange) {
         onPageSizeChange(page, newPageSize); // 페이지 크기 변경 시 부모에게 전달
       }
     };
     const handleRowClick = (params) => {
-      console.log("table:", params.row);
       onRowSelection(params.row);
     };
     const handleRowSelection = (newSelection) => {
-      console.log("table selected rows:", newSelection);
+      // console.log("table selected rows:", newSelection);
       if (id === "student_select_body") {
         onRowSelectedId(newSelection); // 선택된 행 ID들을 상위 컴포넌트에 전달
       }
     };
-    useEffect(() => {
-      console.log("내가 받은 row", rows);
-    }, []);
+
     return (
       <div id={id ? styles[id] : ""}>
         <DataGrid

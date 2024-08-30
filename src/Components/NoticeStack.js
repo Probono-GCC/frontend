@@ -104,7 +104,7 @@ export default function NoticeStack() {
           );
 
           const translatedNotices = await Promise.all(translatedTitlesPromises);
-          console.log("Translated notices:", translatedNotices); // 번역된 공지사항 로그
+          // console.log("Translated notices:", translatedNotices); // 번역된 공지사항 로그
           setRows(translatedNotices); // 번역된 제목을 포함한 공지사항 상태 업데이트
         } else {
           console.log("No content found in result.");

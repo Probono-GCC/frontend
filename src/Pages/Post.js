@@ -6,6 +6,8 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import PersonIcon from "@mui/icons-material/Person";
 import { IconButton } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import TextToSpeech from "../Util/TextToSpeech";
+
 import { convertDateFormat } from "../Util/DateUtils";
 
 import { useMediaQueryContext } from "../store/MediaQueryContext";
@@ -17,6 +19,8 @@ import { postTranslationData } from "../Apis/Api/Translate";
 import i18n from "../i18n/i18n";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../store/AuthContext";
+import { PostTranslation } from "../Apis/Api/Translate";
+
 import { PostTranslation } from "../Apis/Api/Translate";
 
 function Post() {
@@ -98,6 +102,9 @@ function Post() {
           );
           console.log("Translation content result:", translationContentResult);
 
+          // 번역 결과가 있으면 상태를 업데이트
+          setTranslatedContent(translationContentResult.translatedText);
+
           // 제목 번역
           const titleTranslationData = {
             text: result.title,
@@ -166,10 +173,11 @@ function Post() {
   // }, [translatedContent, translatedTitle]);
 
   const handleBack = () => {
-    navigate(-1); // Go back to the previous page
+    navigate(-1);
   };
+  // 데이터 로딩중일 때
   if (!postData) {
-    return <div>Loading...</div>; // 데이터를 로딩 중일 때 보여줄 내용
+    return <div>Loading...</div>;
   }
   if (!tempImageList) {
     return <div>Loading...</div>;
@@ -263,6 +271,7 @@ function Post() {
                 {convertDateFormat(postedData.updatedAt)}
               </Typography>
             </Grid>
+
             <Grid
               item
               xs={4}
@@ -291,32 +300,58 @@ function Post() {
               </Box>
             </Grid>
           </Grid>
-
-          <Typography
-            variant="body1"
+        </Paper>
+        <Paper
+          sx={{
+            paddingTop: 1,
+            paddingBottom: 2,
+            paddingLeft: 3,
+            paddingRight: 3,
+            position: "relative", // 내부 요소의 상대적 위치 설정
+          }}
+          elevation={0}
+        >
+          <Box
             sx={{
-              marginBottom: 3,
-              marginTop: 2,
-              minHeight: "20vh",
-              maxWidth: "100vw", // 컨텐츠가 부모 요소를 넘지 않도록 함
-              // overflowY: "scroll",
-              border: "1px solid #e0e0e0",
-              // borderTop: "1px solid #e0e0e0",
-              // borderBottom: "1px solid #e0e0e0",
-              borderRadius: "8px",
-              padding: 2,
-              wordBreak: "break-word", // 긴 단어를 줄 바꿈하여 보더 밖으로 넘치지 않도록 함
-              boxSizing: "border-box", // 보더와 패딩을 포함하여 요소의 전체 크기를 계산
+              position: "relative", //상대적 위치
             }}
-            dangerouslySetInnerHTML={{ __html: postedData.content }}
-          ></Typography>
+          >
+            <Typography
+              variant="body1"
+              sx={{
+                marginBottom: 3,
+                marginTop: 2,
+                minHeight: "20vh",
+                maxWidth: "100vw",
+                border: "1px solid #e0e0e0",
+                borderRadius: "8px",
+                padding: 2,
+                wordBreak: "break-word",
+                boxSizing: "border-box",
+                paddingBottom: "40px",
+              }}
+              dangerouslySetInnerHTML={{ __html: postedData.content }}
+            />
+            {/* 스피커 아이콘 */}
+            {/* <Box
+              sx={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                padding: 2,
+              }}
+            >
+              <TextToSpeech text={postedData.content} />
+            </Box> */}
+          </Box>
+
           {tempImageList && tempImageList.length !== 0 ? (
             <Box
               sx={{
                 textAlign: "center",
                 marginBottom: 3,
-                maxWidth: "95%", // body1과 동일한 너비
-                margin: "0 auto", // 가운데 정렬
+                maxWidth: "95%",
+                margin: "0 auto",
               }}
             >
               {tempImageList.map((image, index) => (
@@ -327,7 +362,7 @@ function Post() {
                   style={{
                     maxWidth: "100%",
                     height: "auto",
-                    margin: "10px 0", // 이미지 간격 조정
+                    margin: "10px 0",
                   }}
                 />
               ))}
