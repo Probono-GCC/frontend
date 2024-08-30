@@ -306,7 +306,7 @@ function Post() {
               dangerouslySetInnerHTML={{ __html: postedData.content }}
             />
             {/* 스피커 아이콘 */}
-            {/* <Box
+            <Box
               sx={{
                 position: "absolute",
                 bottom: 0,
@@ -315,7 +315,7 @@ function Post() {
               }}
             >
               <TextToSpeech text={postedData.content} />
-            </Box> */}
+            </Box>
           </Box>
 
           {tempImageList && tempImageList.length !== 0 ? (
