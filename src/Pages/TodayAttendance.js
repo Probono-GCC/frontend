@@ -7,6 +7,7 @@ import {
   Typography,
   Box,
   FormControlLabel,
+  Button,
 } from "@mui/material";
 
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -258,24 +259,50 @@ const Attendance = () => {
       <Box
         sx={{
           margin: "30px auto",
-          width: "260px",
+          width: "100vw",
           display: "flex",
           textAlign: "center",
-          justifyContent: "space-between",
+          justifyContent: "center",
         }}
       >
-        <CustomButton
-          size="md"
-          title={"undo"}
-          id={"cancel"}
+        <Button
+          style={{
+            backgroundColor: "white",
+            color: "#405c8b",
+            // border: "#405c8b 1px solid",
+            padding: "10px 20px",
+            marginBottom: "30px",
+            "&:hover": {
+              backgroundColor: "#f5f5f5",
+              border: "#2e4a6d 1px solid",
+              color: "#bd2304",
+            },
+          }}
+          variant="contained"
           onClick={handleCancel}
-        />
-        <CustomButton
-          title={"Save"}
-          size="md"
-          color="primary"
+        >
+          undo
+        </Button>
+
+        <Button
+          style={{
+            backgroundColor: "#405c8b",
+            color: "#F2F2F2",
+            // border: "#405c8b 1px solid",
+            padding: "10px 20px",
+            marginBottom: "30px",
+            marginLeft: "15px",
+            "&:hover": {
+              backgroundColor: "#7187a3",
+              border: "#42566e 1px solid",
+              color: "#1e293b",
+            },
+          }}
+          variant="contained"
           onClick={handleSave}
-        />
+        >
+          save
+        </Button>
       </Box>
     </Box>
   );
