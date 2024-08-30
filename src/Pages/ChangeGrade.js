@@ -306,7 +306,7 @@ function ChangeGrade() {
               onClick={handleModalOpen}
               disabled={checkedRowId == null}
               id={"view_btn"}
-              size={"bg"}
+              size={"md"}
             />
           </Grid>
         </Grid>

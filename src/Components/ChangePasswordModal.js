@@ -41,7 +41,6 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
     }
 
     if (rowData) {
-      console.log("???", rowData);
       const updatedStudentData = { newPassword: password };
       resetPassword(rowData.id, updatedStudentData)
         .then((result) => {

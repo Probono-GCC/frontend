@@ -15,12 +15,60 @@ import { useTranslation } from "react-i18next";
 
 import i18n from "../i18n/i18n";
 import { postTranslationData } from "../Apis/Api/Translate";
+import { PostTranslation } from "../Apis/Api/Translate";
 
 export default function NoticeStack() {
   const [rows, setRows] = useState([]); // Initialize rows state
   const [loading, setLoading] = useState(true); // Initialize loading state
   const navigate = useNavigate();
   const { t } = useTranslation();
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     setLoading(true);
+
+  //     try {
+  //       const result = await getNoticePostList(0, 5); // 공지사항 데이터 가져오기
+  //       console.log("Fetched result:", result); // 가져온 결과 로그
+
+  //       if (result && Array.isArray(result.content)) {
+  //         // 제목 번역
+  //         const translatedTitlesPromises = result.content.map(
+  //           async (notice) => {
+  //             try {
+  //               const translationResult = await postTranslationData(
+  //                 notice.title,
+  //                 i18n.language
+  //               );
+  //               console.log("Translation result for title:", translationResult); // 번역 결과 로그
+  //               return {
+  //                 ...notice,
+  //                 title: translationResult.translatedText,
+  //               };
+  //             } catch (error) {
+  //               console.error("Failed to translate title:", error);
+  //               return { ...notice, title: notice.title }; // 번역 실패 시 원본 제목 사용
+  //             }
+  //           }
+  //         );
+
+  //         const translatedNotices = await Promise.all(translatedTitlesPromises);
+  //         console.log("Translated notices:", translatedNotices); // 번역된 공지사항 로그
+  //         setRows(translatedNotices); // 번역된 제목을 포함한 공지사항 상태 업데이트
+  //       } else {
+  //         console.log("No content found in result.");
+  //         setRows([]); // 데이터가 없으면 빈 배열 설정
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching notice posts", error);
+  //       setRows([]); // 오류 발생 시 빈 배열 설정
+  //     } finally {
+  //       setLoading(false); // 로딩 완료
+  //     }
+  //   };
+
+  //   fetchData(); // 데이터 가져오기 함수 호출
+  // }, [i18n.language]); // 언어 변경 시 데이터 다시 가져오기
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -34,14 +82,18 @@ export default function NoticeStack() {
           const translatedTitlesPromises = result.content.map(
             async (notice) => {
               try {
-                const translationResult = await postTranslationData(
-                  notice.title,
-                  i18n.language
+                const translatingData = {
+                  text: notice.title,
+                  to: i18n.language, // 현재 선택된 언어
+                };
+
+                const translationResult = await PostTranslation(
+                  translatingData
                 );
-                console.log("Translation result for title:", translationResult); // 번역 결과 로그
+                // console.log("Translation result for title:", translationResult); // 번역 결과 로그
                 return {
                   ...notice,
-                  title: translationResult.translatedText,
+                  title: translationResult.translatedText, // 번역된 제목
                 };
               } catch (error) {
                 console.error("Failed to translate title:", error);
@@ -51,7 +103,7 @@ export default function NoticeStack() {
           );
 
           const translatedNotices = await Promise.all(translatedTitlesPromises);
-          console.log("Translated notices:", translatedNotices); // 번역된 공지사항 로그
+          // console.log("Translated notices:", translatedNotices); // 번역된 공지사항 로그
           setRows(translatedNotices); // 번역된 제목을 포함한 공지사항 상태 업데이트
         } else {
           console.log("No content found in result.");

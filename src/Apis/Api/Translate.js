@@ -1,4 +1,5 @@
 import axios from "axios";
+import { axiosInstance } from "../Utils/Axios";
 
 const TRANSLATE_URL = process.env.REACT_APP_TRANSLATE_URL;
 // Axios 인스턴스를 생성합니다 (기본 URL을 설정할 수 있습니다)
@@ -30,8 +31,18 @@ export async function postTranslationData(text, toLanguage) {
 (async () => {
   try {
     const result = await postTranslationData("Hello", "ne");
-    console.log("Translation result:", result);
+    // console.log("Translation result:", result);
   } catch (error) {
     console.error("Failed to translate:", error);
   }
 })();
+
+//백엔드 translate API 호출
+export async function PostTranslation(translatingData) {
+  try {
+    const response = await axiosInstance.post("/translate", translatingData);
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+}

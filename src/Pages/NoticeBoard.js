@@ -27,6 +27,7 @@ import { convertDateFormat } from "../Util/DateUtils";
 import i18n from "../i18n/i18n";
 import { useTranslation } from "react-i18next";
 import { postTranslationData } from "../Apis/Api/Translate";
+import { PostTranslation } from "../Apis/Api/Translate";
 
 function NoticeBoard() {
   const { t } = useTranslation();
@@ -43,24 +44,34 @@ function NoticeBoard() {
   const [loading, setLoading] = useState(false); // 추가된 부분
 
   useEffect(() => {
+    console.log("enter into useEffect()");
     const fetchData = async () => {
       setLoading(true);
 
       try {
+        // 공지사항 데이터 가져오기
         const result = await getNoticePostList(page - 1, itemsPerPage);
+        console.log("get into try문");
+
         if (result && Array.isArray(result.content)) {
+          console.log("get into if문");
           // 제목 번역
           const translatedTitlesPromises = result.content.map(
             async (notice) => {
               try {
-                const translationResult = await postTranslationData(
-                  notice.title,
-                  i18n.language
+                const translatingData = {
+                  text: notice.title,
+                  to: i18n.language, // 현재 선택된 언어
+                };
+
+                const translationResult = await PostTranslation(
+                  translatingData
                 );
                 console.log("Translation result for title:", translationResult); // 번역 결과 로그
+
                 return {
                   ...notice,
-                  title: translationResult.translatedText,
+                  title: translationResult.translatedText, // 번역된 제목
                 };
               } catch (error) {
                 console.error("Failed to translate title:", error);
@@ -69,9 +80,11 @@ function NoticeBoard() {
             }
           );
 
+          // 모든 번역 요청을 처리한 후 상태 업데이트
           const translatedNotices = await Promise.all(translatedTitlesPromises);
           console.log("Translated notices:", translatedNotices); // 번역된 공지사항 로그
-          console.log("새로운 페이지 컨텐츠 받아왔나?", result.content);
+
+          // 결과와 상태 업데이트
           setRows(translatedNotices);
           setTotalPages(result.totalPages);
           setTotalPosting(result.totalElements);
@@ -88,8 +101,9 @@ function NoticeBoard() {
         setLoading(false);
       }
     };
-    fetchData();
-  }, [page, i18n.language]);
+
+    fetchData(); // 데이터 가져오기 함수 호출
+  }, [page, i18n.language]); // 페이지와 언어 변경 시 데이터 다시 가져오기
 
   const handleChangePage = (event, newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
