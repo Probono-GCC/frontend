@@ -151,21 +151,21 @@ function StudentView() {
     fetchStudents(page, newSize);
   };
   const handleRowSelection = (id) => {
-    console.log(id, "idtyupe");
+    //console.log(id, "idtyupe");
     if (!Array.isArray(id)) {
-      console.log(id, "idtyupe");
+      //console.log(id, "idtyupe");
       setCheckedRows((prevCheckedRows) => {
         if (prevCheckedRows.includes(id)) {
           // 이미 존재하는 id면 배열에서 제거
           const newCheckedRows = prevCheckedRows.filter(
             (rowId) => rowId !== id
           );
-          console.log("업데이트된 선택된 행:", newCheckedRows);
+          //console.log("업데이트된 선택된 행:", newCheckedRows);
           return newCheckedRows;
         } else {
           // 존재하지 않으면 배열에 추가
           const newCheckedRows = [...prevCheckedRows, id];
-          console.log("업데이트된 선택된 행:", newCheckedRows);
+          //console.log("업데이트된 선택된 행:", newCheckedRows);
           return newCheckedRows;
         }
       });
@@ -206,7 +206,7 @@ function StudentView() {
 
   const handleGradeChange = (event) => {
     setGrade(event.target.value);
-    console.log("다시받아오기");
+    //console.log("다시받아오기");
     // if (event.target.value != "ALL") {
     //   fetchGradeStudents(event.target.value, page, pageSize);
     // } else {
@@ -218,7 +218,7 @@ function StudentView() {
       // 선택된 각 행에 대해 삭제 로직을 수행
       checkedRows.forEach((userId) => {
         deleteStudent(userId).then((result) => {
-          console.log(result);
+          //console.log(result);
 
           if (result.status == 200) {
             fetchStudents(page, pageSize);
@@ -240,9 +240,9 @@ function StudentView() {
 
   const fetchStudents = (page, pageSize) => {
     getStudents(page, pageSize).then((result) => {
-      // console.log("????", result);
+      // //console.log("????", result);
       const students = result.content || []; // content 배열 가져오기
-      // console.log(students);
+      // //console.log(students);
       setTotalRowCount(result.totalElements);
       if (students.length > 0) {
         const tempRow = students.map((item) =>
@@ -269,7 +269,7 @@ function StudentView() {
   const fetchGradeStudents = (grade, page, pageSize) => {
     getGradeStudents(grade, page, pageSize).then((result) => {
       const students = result.content || []; // content 배열 가져오기
-      console.log(students);
+      //console.log(students);
       setTotalRowCount(result.totalElements);
       if (students.length > 0) {
         const tempRow = students.map((item) =>

@@ -98,7 +98,7 @@ function Post() {
           const translationContentResult = await PostTranslation(
             contentTranslationData
           );
-          console.log("Translation content result:", translationContentResult);
+          //console.log("Translation content result:", translationContentResult);
 
           // 번역 결과가 있으면 상태를 업데이트
           setTranslatedContent(translationContentResult.translatedText);
@@ -111,7 +111,7 @@ function Post() {
           const translationTitleResult = await PostTranslation(
             titleTranslationData
           );
-          console.log("Translation title result:", translationTitleResult);
+          //console.log("Translation title result:", translationTitleResult);
 
           // 번역된 결과를 반환
           return {
@@ -154,7 +154,7 @@ function Post() {
   };
 
   useEffect(() => {
-    console.log("i18n.language", i18n.language);
+    //console.log("i18n.language", i18n.language);
 
     fetchData(); // 데이터 불러오기 함수 호출
   }, [i18n.language, postData.noticeId]);

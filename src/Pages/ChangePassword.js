@@ -51,7 +51,7 @@ function ChangePassword() {
   };
   // 페이지 변경 핸들러
   const handlePageChange = (newPage, pageSize) => {
-    console.log("페이지 변경:", newPage, "페이지 크기:", pageSize);
+    //console.log("페이지 변경:", newPage, "페이지 크기:", pageSize);
     // 페이지 변경에 따른 데이터 로드 등의 작업을 수행합니다.
     // 예를 들어, 서버에서 새 데이터를 가져오는 함수 호출
     fetchStudents();
@@ -59,13 +59,13 @@ function ChangePassword() {
 
   // 페이지 크기 변경 핸들러
   const handlePageSizeChange = (newPage, newPageSize) => {
-    console.log("페이지 크기 변경:", newPageSize, "현재 페이지:", newPage);
+    //console.log("페이지 크기 변경:", newPageSize, "현재 페이지:", newPage);
     // 페이지 크기 변경에 따른 데이터 로드 등의 작업을 수행합니다.
     fetchTeachers();
   };
   const fetchStudents = () => {
     getStudents(page, pageSize).then((result) => {
-      console.log("학셍", result);
+      //console.log("학셍", result);
       const students = result.content || []; // 학생 데이터 추출
       setTotalRowCount(result.totalElements);
       // 학생과 교사 데이터를 합치기
@@ -84,7 +84,7 @@ function ChangePassword() {
   };
   const fetchTeachers = () => {
     getTeachers(page, pageSize).then((result) => {
-      console.log("result", result);
+      //console.log("result", result);
       const teachers = result.content || []; // 교사 데이터 추출
       setTotalRowCount(result.totalElements);
       const teacherRows = teachers.map((item) =>
@@ -124,7 +124,7 @@ function ChangePassword() {
   useEffect(() => {
     // Fetch new data whenever page or pageSize changes
     fetchStudents();
-    console.log("page,pagesize", page, pageSize);
+    //console.log("page,pagesize", page, pageSize);
   }, [page, pageSize]);
 
   const columns = isSmallScreen
@@ -160,7 +160,7 @@ function ChangePassword() {
       ];
 
   const handleRowSelection = (_loginId) => {
-    console.log("rowselectuon프롭전달", _loginId);
+    //console.log("rowselectuon프롭전달", _loginId);
     setCheckedRowId(_loginId);
   };
 

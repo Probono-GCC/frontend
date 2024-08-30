@@ -63,7 +63,7 @@ function NoticeNewPostForm() {
     formData.append("title", title);
     formData.append("content", content);
     formData.append("type", "SCHOOL");
-    console.log(imgURL, "img있는지");
+    //console.log(imgURL, "img있는지");
     if (imgURL) {
       imgURL.forEach((url, index) => {
         formData.append(`imageList`, url);
@@ -74,7 +74,7 @@ function NoticeNewPostForm() {
     if (postData) {
       // initialImageList에서 imageId 값만 추출하여 새로운 배열로 만듦
       const imageIdList = initialImageList.map((item) => item.imageId);
-      // console.log("image id list", imageIdList);
+      // //console.log("image id list", imageIdList);
       // 배열을 콤마로 구분된 문자열로 변환
       const imageIdString = imageIdList.join(",");
 
@@ -86,22 +86,22 @@ function NoticeNewPostForm() {
           alert("Edit complete");
           navigate(-1);
         } else {
-          console.log("뭘보내는지");
+          //console.log("뭘보내는지");
           for (const [key, value] of formData.entries()) {
-            console.log(`${key}: ${value}`);
+            //console.log(`${key}: ${value}`);
           }
           alert("Edit failed");
         }
       });
     } else {
       // FormData를 서버에 POST 요청으로 전송
-      console.log("뭘보내는지");
+      //console.log("뭘보내는지");
       for (const [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
+        //console.log(`${key}: ${value}`);
       }
       postNewNotice(formData).then((result) => {
         if (result && imgURL) {
-          console.log("result", result);
+          //console.log("result", result);
           alert("Post complete");
           navigate("/notice-board");
         } else {

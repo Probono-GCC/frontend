@@ -177,7 +177,7 @@ function MyProfile() {
   };
 
   const handleProfileImageChange = (event) => {
-    console.log("imagechanged");
+    //console.log("imagechanged");
     const file = event.target.files[0];
 
     const checkMsg = checkImage(file);
@@ -201,13 +201,13 @@ function MyProfile() {
   };
   const validateForm = () => {
     const isProfileImageValid = profileImage !== "";
-    console.log(
-      profileImage,
-      "?",
-      profileImage,
-      "//image?",
-      isProfileImageValid
-    );
+    //console.log(
+    //   profileImage,
+    //   "?",
+    //   profileImage,
+    //   "//image?",
+    //   isProfileImageValid
+    // );
     const isPersonalInfoValid =
       gender !== "" &&
       birth !== "" &&
@@ -220,10 +220,10 @@ function MyProfile() {
         fatherPhoneNum !== "" ||
         motherPhoneNum !== "" ||
         guardiansPhoneNum !== "";
-      console.log(
-        isProfileImageValid && isPersonalInfoValid && isContactInfoValid,
-        "왜 true???"
-      );
+      //console.log(
+      //   isProfileImageValid && isPersonalInfoValid && isContactInfoValid,
+      //   "왜 true???"
+      // );
       return isProfileImageValid && isPersonalInfoValid && isContactInfoValid;
     } else {
       return isProfileImageValid && isPersonalInfoValid;
@@ -255,7 +255,7 @@ function MyProfile() {
       imageData.append("image", profileImage); // File 객체를 FormData에 추가
       postProfileImage(imageData, userID)
         .then((result) => {
-          // console.log("image new post", result.imageId);
+          // //console.log("image new post", result.imageId);
           changedFields.imageId = result.imageId;
           updateProfile(); // 이미지 업로드가 완료된 후 updateProfile 함수 호출
         })
@@ -266,17 +266,17 @@ function MyProfile() {
       changedFields.imageId = initialImageId;
       updateProfile();
     } else {
-      // console.log(initialImageId, "ini");
+      // //console.log(initialImageId, "ini");
       alert("Profile image registration is required");
       // updateProfile();
     }
   };
   const updateProfile = () => {
     if (decodedToken.role == role[1]) {
-      console.log("teacher userData", changedFields);
+      //console.log("teacher userData", changedFields);
       updateTeacherProfile(changedFields, decodedToken.username).then(
         (result) => {
-          console.log("final teacher data", result);
+          //console.log("final teacher data", result);
           if (result && result.status == 200) {
             alert("Complete");
             navigate("/private/home");
@@ -296,7 +296,7 @@ function MyProfile() {
       if (guardiansPhoneNum !== initialValues.guardiansPhoneNum) {
         changedFields.guardiansPhoneNum = guardiansPhoneNum;
       }
-      console.log("put userdata", changedFields);
+      //console.log("put userdata", changedFields);
       updateStudentProfile(changedFields, decodedToken.username).then(
         (result) => {
           if (result && result.status == 200) {
@@ -340,13 +340,13 @@ function MyProfile() {
     if (profileImage) {
       postProfileImage(imageData, userID)
         .then((result) => {
-          console.log("image new post", result.imageId);
+          //console.log("image new post", result.imageId);
           changedUserData.imageId = result.imageId;
           if (decodedToken.role == role[1]) {
-            console.log("teacher userData", changedUserData);
+            //console.log("teacher userData", changedUserData);
             updateTeacherProfile(changedUserData, decodedToken.username).then(
               (result) => {
-                console.log("final teacher data", result);
+                //console.log("final teacher data", result);
                 if (result && result.status == 200) {
                   alert("Complete");
                   navigate("/private/home");
@@ -354,7 +354,7 @@ function MyProfile() {
               }
             );
           } else if (decodedToken.role == role[2]) {
-            console.log("put userdata", changedUserData);
+            //console.log("put userdata", changedUserData);
             updateStudentProfile(changedUserData, decodedToken.username).then(
               (result) => {
                 if (result && result.status == 200) {
@@ -374,7 +374,7 @@ function MyProfile() {
   };
 
   useEffect(() => {
-    console.log("decodedToken.role", decodedToken.role);
+    //console.log("decodedToken.role", decodedToken.role);
     if (decodedToken.role == role[1]) {
       getTeacher(decodedToken.username).then((result) => {
         setBirth(result.birth);
@@ -383,13 +383,13 @@ function MyProfile() {
         setPhoneNum(result.phoneNum);
         setPwAnswer(result.pwAnswer);
         setFirstAccess(result.pwAnswer);
-        console.log("result.imageId.imageId", result);
+        //console.log("result.imageId.imageId", result);
 
         if (result.imageId) {
           getProfileImage(result.imageId.imageId).then((res) => {
             setThumnailImage(res.imagePath);
             setInitialImageId(res.imageId);
-            // console.log("imagepath", res.imagePath);
+            // //console.log("imagepath", res.imagePath);
           });
         }
         // 초기 값 설정(변경 전 후 감지후 put하기위해)
@@ -404,7 +404,7 @@ function MyProfile() {
       });
     } else if (decodedToken.role == role[2]) {
       getStudent(decodedToken.username).then((result) => {
-        console.log("result.imageId.imageId", result, userData);
+        //console.log("result.imageId.imageId", result, userData);
         setBirth(result.birth);
         setName(result.name);
         setGrade(result.grade);
@@ -445,9 +445,9 @@ function MyProfile() {
   }, []);
   useEffect(() => {
     if (firstAccess === null) {
-      console.log("!agree?", !agree);
-      console.log("!isButtonEnabled?", !isButtonEnabled);
-      console.log("firstAccess임!!!", !agree && !isButtonEnabled);
+      //console.log("!agree?", !agree);
+      //console.log("!isButtonEnabled?", !isButtonEnabled);
+      //console.log("firstAccess임!!!", !agree && !isButtonEnabled);
       setIsButtonEnabled(validateForm());
     }
   }, [

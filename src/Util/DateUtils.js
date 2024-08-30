@@ -20,7 +20,7 @@ export const convertDateFormat = (originalDateString) => {
   return convertedDateString;
 };
 export const convertTimeFormat = (originalDateString) => {
-  console.log("?", originalDateString);
+  //console.log("?", originalDateString);
   // 원본 날짜 문자열을 JavaScript Date 객체로 변환
   const originalDate = new Date(originalDateString);
 

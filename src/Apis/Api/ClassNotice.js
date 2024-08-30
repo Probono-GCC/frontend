@@ -7,7 +7,7 @@ export async function postNewNotice(postingData) {
     const response = await axiosInstance.post("/notice", postingData);
     return response;
   } catch (err) {
-    console.log(err);
+    //console.log(err);
   }
 }
 
@@ -19,7 +19,7 @@ export async function getNoticePostList(id, page, size) {
     );
     return response.data;
   } catch (err) {
-    console.log(err);
+    //console.log(err);
   }
 }
 //단일 게시글 조회
@@ -28,7 +28,7 @@ export async function getNoticePost(noticeId) {
     const response = await axiosInstance.get(`/notice/${noticeId}`);
     return response.data;
   } catch (err) {
-    console.log(err);
+    //console.log(err);
   }
 }
 //이미지 등록
@@ -40,7 +40,7 @@ export async function postImage(noticeId, ImageId) {
     );
     return response.data;
   } catch (err) {
-    console.log(err);
+    //console.log(err);
   }
 }
 
@@ -50,7 +50,7 @@ export async function deleteNoticePost(noticeId) {
     const response = await axiosInstance.delete(`/notice/${noticeId}`);
     return response.data;
   } catch (err) {
-    console.log(err);
+    //console.log(err);
   }
 }
 
@@ -60,6 +60,6 @@ export async function putNoticePost(noticeId, formData) {
     const response = await axiosInstance.put(`/notice/${noticeId}`, formData);
     return response.data;
   } catch (err) {
-    console.log(err);
+    //console.log(err);
   }
 }

@@ -12,7 +12,7 @@ export default function DetailTable({ data, rowsHeader }) {
   const { isSmallScreen } = useMediaQueryContext();
 
   useEffect(() => {
-    // console.log("data", data, "rowHeader", rowsHeader);
+    // //console.log("data", data, "rowHeader", rowsHeader);
   }, [data]);
 
   return (
