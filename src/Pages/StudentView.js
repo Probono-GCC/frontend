@@ -7,6 +7,7 @@ import styles from "../Styles/css/Table.module.css";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 import Checkbox from "@mui/material/Checkbox";
+import * as XLSX from "xlsx";
 
 import Modal from "../Components/Modal";
 import { Typography, Box } from "@mui/material";
@@ -89,7 +90,7 @@ function StudentView() {
         },
         { field: "name", headerName: "Name", flex: 0.35 },
 
-        { field: "id", headerName: "ID", flex: 0.35 },
+        { field: "id", headerName: "Username", flex: 0.35 },
       ]
     : [
         {
@@ -183,6 +184,24 @@ function StudentView() {
 
   const handleRowDoubleClick = (params) => {
     handleModalOpen(params.row);
+  };
+  const handleExportToExcel = () => {
+    const exportData = rows.map((row) => ({
+      SN: row.serialNumber,
+      Name: row.name,
+      Username: row.id,
+      Grade: row.grade,
+    }));
+
+    // Create a new workbook and worksheet
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+
+    // Append the worksheet to the workbook
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Students");
+
+    // Export the workbook to an Excel file
+    XLSX.writeFile(workbook, "CLA_Students_List.xlsx");
   };
 
   const handleGradeChange = (event) => {
@@ -363,20 +382,36 @@ function StudentView() {
             getRowId={(row) => row.id}
             id={isSmallScreen ? "" : "table_body"}
             isStudentTable={true} //row클릭시 체크박스 활성화 안되게 하기위해 커스텀
-            onPageChange={handlePageChange} // 페이지 변경 핸들러 추가
-            onPageSizeChange={handlePageSizeChange} // 페이지 크기 변경 핸들러 추가
+            // onPageChange={handlePageChange} // 페이지 변경 핸들러 추가
+            // onPageSizeChange={handlePageSizeChange} // 페이지 크기 변경 핸들러 추가
           />
         </Box>
         {isSmallScreen ? (
           <div>&nbsp;</div>
         ) : (
-          <Button
-            title={"Delete"}
-            disabled={checkedRows.length === 0}
-            onClick={deleteRow}
-            id={"view_btn"}
-            size={"bg"}
-          />
+          <Box
+            sx={{
+              position: "relative",
+              margin: "50px 5vw",
+              display: "flex",
+              textAlign: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Button
+              size="bg"
+              title={"Export Excel"}
+              id={"cancel"}
+              onClick={handleExportToExcel}
+            />
+            <Button
+              title={"Delete"}
+              disabled={checkedRows.length === 0}
+              onClick={deleteRow}
+              id={"view_btn"}
+              size={"bg"}
+            />
+          </Box>
         )}
       </div>
 

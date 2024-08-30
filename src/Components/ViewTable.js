@@ -5,7 +5,8 @@ import {
   MediaQueryProvider,
   useMediaQueryContext,
 } from "../store/MediaQueryContext";
-const Table = memo(
+
+const ViewTable = memo(
   ({
     columns, //table 열 구성
     rows, // table 행 data
@@ -20,7 +21,8 @@ const Table = memo(
   }) => {
     const { isSmallScreen } = useMediaQueryContext();
     const [page, setPage] = useState(0);
-    const [pageSize, setPageSize] = useState(10);
+    const [pageSize, setPageSize] = useState(400);
+
     const handlePageChange = (newPage) => {
       setPage(newPage);
       onPageChange(newPage, pageSize); // 페이지 변경 시 부모에게 전달
@@ -30,6 +32,7 @@ const Table = memo(
       setPageSize(newPageSize);
       onPageSizeChange(page, newPageSize); // 페이지 크기 변경 시 부모에게 전달
     };
+
     const handleAllRowSelection = (params) => {
       onSelectedAllRow(params);
     };
@@ -63,24 +66,16 @@ const Table = memo(
           checkboxSelection={!(isStudentTable || isSmallScreen)} // 라디오 버튼 모드에 따라 체크박스 선택 여부 조절
           onRowDoubleClick={onRowDoubleClick}
           getRowId={getRowId}
-          //table pagination
-          // initialState={{
-          //   pagination: {
-          //     paginationModel: { page: 0, pageSize: 10 },
-          //   },
-          // }}
           rowCount={totalRowCount} // 총 데이터 수
-          pageSize={pageSize}
-          // onPageSizeChange={(newPageSize) => handlePageSizeChange(newPageSize)}
-          page={page}
-          // onPageChange={(newPage) => handlePageChange(newPage)}
-          pagination
-          paginationMode="server" //설정하지 않으면 Datagrid가 서버에서 모든 데이터를 한 번에 가져오는 것을 전제
-          pageSizeOptions={[]}
+          // pageSize={pageSize}
+          // pagination={false} // Disable pagination
+          // paginationMode="server" // Server-side pagination
+          // pageSizeOptions={[]} // No page size options displayed
+          hideFooter
         />
       </div>
     );
   }
 );
 
-export default Table;
+export default ViewTable;

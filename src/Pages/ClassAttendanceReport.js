@@ -192,7 +192,6 @@ function ClassAttendanceReport() {
             ))}
           </Select>
         </FormControl>
-
         <FormControl>
           <InputLabel>वर्ष</InputLabel>
           <Select value={selectedYear} onChange={handleYearChange}>
@@ -203,7 +202,6 @@ function ClassAttendanceReport() {
             ))}
           </Select>
         </FormControl>
-
         <Typography
           variant="h4"
           sx={{
@@ -213,7 +211,6 @@ function ClassAttendanceReport() {
         >
           {className} Monthly Attendance
         </Typography>
-
         <TableContainer
           component={Paper}
           sx={{
@@ -262,9 +259,9 @@ function ClassAttendanceReport() {
             </TableBody>
           </Table>
         </TableContainer>
-
         <Box
           sx={{
+            position: "relative",
             margin: "50px auto",
             display: "flex",
             textAlign: "center",
@@ -280,10 +277,12 @@ function ClassAttendanceReport() {
           <CustomButton
             title={"Today's Attendance"}
             size="bg"
+            id={"view_btn"}
             color="primary"
             onClick={goTodaysAttendance}
           />
         </Box>
+        &nbsp; &nbsp; &nbsp;
       </Box>
     </Box>
   );

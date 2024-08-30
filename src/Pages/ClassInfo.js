@@ -30,7 +30,7 @@ function ClassInfo() {
   const [classTeacher, setClassTeachers] = useState([]);
   const [classStudents, setClassStudents] = useState([]);
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(100);
   const [totalRowCount, setTotalRowCount] = useState(0); //서버에서 총 학생수 받아와서 설정
 
   const location = useLocation();
