@@ -20,7 +20,7 @@ const Table = memo(
     onPageSizeChange, // 페이지 크기 변경 핸들러
   }) => {
     const [page, setPage] = useState(0);
-    const [pageSize, setPageSize] = useState(100);
+    const [pageSize, setPageSize] = useState(400);
     const { isSmallScreen } = useMediaQueryContext();
 
     // 페이지 변경 핸들러

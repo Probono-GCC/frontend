@@ -592,7 +592,12 @@ function CommonCourseManagement() {
               ))}
             </SelectButtonContainer>
             <Box
-              sx={{ display: "flex", justifyContent: "flex-end", marginTop: 3 }}
+              sx={{
+                position: "relative",
+                display: "flex",
+                justifyContent: "flex-end",
+                marginTop: 3,
+              }}
             >
               <CustomButton
                 title={"Save"}
@@ -722,14 +727,31 @@ function CommonCourseManagement() {
             </Box>
             <Divider sx={{ marginTop: 2 }} />
             <Box
-              sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}
+              sx={{
+                position: "relative",
+                display: "flex",
+                justifyContent: "space-between",
+                mt: 2,
+              }}
             >
-              <CustomButton
-                title={"Back"}
+              <Button
+                style={{
+                  backgroundColor: "white",
+                  color: "#405c8b",
+                  // border: "#405c8b 1px solid",
+                  padding: "10px 20px",
+                  marginBottom: "30px",
+                  "&:hover": {
+                    backgroundColor: "#f5f5f5",
+                    border: "#2e4a6d 1px solid",
+                    color: "#bd2304",
+                  },
+                }}
                 variant="contained"
-                color="primary"
                 onClick={handleCloseModal}
-              />
+              >
+                Back
+              </Button>
             </Box>
           </Box>
         </Modal>
