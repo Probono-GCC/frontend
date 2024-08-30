@@ -139,12 +139,12 @@ function CommonCourseManagement() {
 
   const navigate = useNavigate();
   const handleTeacherClick = (teacher) => {
-    console.log(teacher, "click한 티펴?");
+    //console.log(teacher, "click한 티펴?");
     setSelectedTeachers(teacher);
   };
 
   const handleSubjectClick = (subject) => {
-    console.log(subject, "선택한 subject");
+    //console.log(subject, "선택한 subject");
     setSelectedSubjects([subject]);
   };
   const handleSubjectIdClick = (id) => {
@@ -227,7 +227,7 @@ function CommonCourseManagement() {
         });
       }
     } else {
-      console.log("과목을 하나만 선택해주세요.");
+      //console.log("과목을 하나만 선택해주세요.");
     }
   };
 
@@ -258,7 +258,7 @@ function CommonCourseManagement() {
   };
 
   const handleClassRowIdSelection = (id) => {
-    console.log("rowid???", id);
+    //console.log("rowid???", id);
     setSelectedClassRowId(id);
   };
   //선택된 course id 배열 받기
@@ -267,7 +267,7 @@ function CommonCourseManagement() {
   };
 
   const handleSelectedClassRowData = (row) => {
-    console.log("rowid???", row);
+    //console.log("rowid???", row);
     setSelectedClassRowId(row.classId);
   };
   //선택된 course Row
@@ -278,11 +278,11 @@ function CommonCourseManagement() {
     // }
   };
   const handleDeleteCourse = () => {
-    console.log("selectdcourse", selectedCourseRowId);
+    //console.log("selectdcourse", selectedCourseRowId);
     if (selectedCourseRowId) {
       selectedCourseRowId.map((item) => {
         deleteCourse(item).then((result) => {
-          console.log(result);
+          //console.log(result);
           if (result.status == 204) {
             fetchCourse();
             setShowAlert(true);
@@ -298,10 +298,10 @@ function CommonCourseManagement() {
   const fetchClass = () => {
     getClasses(page, pageSize, currentYear).then(async (result) => {
       const classMap = result.content || [];
-      console.log("fetchclass", result.content);
+      //console.log("fetchclass", result.content);
       if (classMap.length > 0) {
         const classPromise = classMap.map(async (classItem, index) => {
-          console.log("??", index, "\n", classItem);
+          //console.log("??", index, "\n", classItem);
           const teachers = await fetchClassTeacher(classItem.classId);
           if (teachers && teachers.length > 0) {
             return createClassData(
@@ -325,7 +325,7 @@ function CommonCourseManagement() {
             );
           }
         });
-        console.log("classPromise", classPromise);
+        //console.log("classPromise", classPromise);
         const NewClasses = await Promise.all(classPromise);
         setClassRows(NewClasses);
       } else {
@@ -338,7 +338,7 @@ function CommonCourseManagement() {
       if (result && result.content) {
         const coursePromises = result.content.map(async (courseItem) => {
           const teachers = await fetchCourseTeachers(courseItem.courseId);
-          console.log("tea", teachers);
+          //console.log("tea", teachers);
           if (teachers.length > 0) {
             const teacherNames =
               teachers && teachers.length > 1
@@ -370,7 +370,7 @@ function CommonCourseManagement() {
 
         setCourseRows(NewCourses);
       } else {
-        console.log("course fetch failed");
+        //console.log("course fetch failed");
       }
     });
   };
@@ -404,9 +404,9 @@ function CommonCourseManagement() {
   };
   const fetchCourseTeachers = (courseId) => {
     return getCourseTeachers(courseId).then((result) => {
-      console.log("item", result);
+      //console.log("item", result);
       if (result && result.data && result.data.userResponse) {
-        console.log("item", result.data.userResponse);
+        //console.log("item", result.data.userResponse);
         const userResponses = Array.isArray(result.data.userResponse)
           ? result.data.userResponse
           : [result.data.userResponse];
@@ -426,9 +426,9 @@ function CommonCourseManagement() {
   };
   const fetchClassTeacher = (classId) => {
     return getClassTeacher(classId).then((result) => {
-      console.log("clasteacher", result);
+      //console.log("clasteacher", result);
       if (result) {
-        console.log("item", result);
+        //console.log("item", result);
         const userResponses = Array.isArray(result) ? result : [result];
 
         const teachers = userResponses

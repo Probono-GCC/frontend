@@ -14,7 +14,7 @@ const LanguageSwitcher = () => {
   const handleMenuClose = (lang) => {
     i18n.changeLanguage(lang); // 언어를 변경합니다
     setAnchorEl(null);
-    console.log("language changed to ", i18n.language);
+    //console.log("language changed to ", i18n.language);
   };
   useEffect(() => {}, []);
   return (

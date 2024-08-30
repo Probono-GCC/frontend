@@ -115,7 +115,7 @@ function ClassInfo() {
   };
   const handleRowSelection = (id) => {
     if (!Array.isArray(id)) {
-      console.log(id, "idtyupe");
+      //console.log(id, "idtyupe");
     }
   };
 
@@ -132,7 +132,7 @@ function ClassInfo() {
   const fetchStudents = (page, pageSize) => {
     getClassStudent(classData.classId, page, pageSize).then((result) => {
       if (result && result.totalElements) {
-        console.log(result.totalElements, "전체 클래스 학생?");
+        //console.log(result.totalElements, "전체 클래스 학생?");
         setTotalRowCount(result.totalElements);
       } else {
         setTotalRowCount(0);
@@ -144,16 +144,16 @@ function ClassInfo() {
           id: item.username,
         }));
 
-        // console.log(resultStudents);
+        // //console.log(resultStudents);
         setClassStudents(resultStudents);
       }
     });
   };
   const fetchCourseTeachers = (courseId) => {
     return getCourseTeachers(courseId).then((result) => {
-      console.log("item", result);
+      //console.log("item", result);
       if (result && result.data && result.data.userResponse) {
-        console.log("item", result.data.userResponse);
+        //console.log("item", result.data.userResponse);
         const userResponses = Array.isArray(result.data.userResponse)
           ? result.data.userResponse
           : [result.data.userResponse];
@@ -176,7 +176,7 @@ function ClassInfo() {
       if (result && result.content) {
         const coursePromises = result.content.map(async (courseItem) => {
           const teachers = await fetchCourseTeachers(courseItem.courseId);
-          console.log("tea", teachers);
+          //console.log("tea", teachers);
           if (teachers.length > 0) {
             const teacherName = teachers[0].name;
 
@@ -204,15 +204,15 @@ function ClassInfo() {
 
         setCourseRows(NewCourses);
       } else {
-        console.log("course fetch failed");
+        //console.log("course fetch failed");
       }
     });
   };
   useEffect(() => {
-    console.log("currentclss", classData, "currentclss");
+    //console.log("currentclss", classData, "currentclss");
     getClassTeacher(classData.classId).then((result) => {
       const resultTeachers = result.map((item) => item.name);
-      console.log(resultTeachers);
+      //console.log(resultTeachers);
       setClassTeachers(resultTeachers);
     });
     fetchStudents(page, pageSize);

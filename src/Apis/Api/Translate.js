@@ -31,7 +31,7 @@ export async function postTranslationData(text, toLanguage) {
 (async () => {
   try {
     const result = await postTranslationData("Hello", "ne");
-    // console.log("Translation result:", result);
+    // //console.log("Translation result:", result);
   } catch (error) {
     console.error("Failed to translate:", error);
   }
@@ -43,6 +43,6 @@ export async function PostTranslation(translatingData) {
     const response = await axiosInstance.post("/translate", translatingData);
     return response.data;
   } catch (err) {
-    console.log(err);
+    //console.log(err);
   }
 }

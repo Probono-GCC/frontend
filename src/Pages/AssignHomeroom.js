@@ -121,16 +121,16 @@ function AssignHomeroom() {
     }
   };
   useEffect(() => {
-    console.log("selecte left sutdnet 2", selectedLeftStudents);
+    //console.log("selecte left sutdnet 2", selectedLeftStudents);
     getStudents(0, 400).then((result) => {
-      console.log(result);
+      //console.log(result);
       if (result && result.content) {
         const students = result.content || []; // content 배열 가져오기
-        console.log("students map", students);
+        //console.log("students map", students);
         setAllStudentDatas(students);
       }
     });
-    console.log("selcted3", selectedLeftStudents);
+    //console.log("selcted3", selectedLeftStudents);
   }, []);
   useEffect(() => {}, [
     rightStudents,
@@ -175,7 +175,7 @@ function AssignHomeroom() {
     setSelectedRightStudents(selectedStudents);
   };
   const handleSelectedClassRowData = (row) => {
-    // console.log(row, "selected row");
+    // //console.log(row, "selected row");
     setSelectedClassRowId(row.classId);
     setSelectedClassRowData(row);
     // 할당되지 않은 학생 LEFT 테이블에
@@ -194,7 +194,7 @@ function AssignHomeroom() {
     //할당된 학생 RIGHT 테이블에
     if (row.classId) {
       getClassStudent(row.classId, 0, 50).then((result) => {
-        console.log("너는 right student배열", result.content);
+        //console.log("너는 right student배열", result.content);
         if (result && result.content) {
           // 각 객체에 id 키를 인덱스로 추가한 새로운 배열 생성
           const updatedStudents = result.content.map((student, index) => ({
@@ -208,7 +208,7 @@ function AssignHomeroom() {
       });
       //class 선생님 불러오기
       getClassTeacher(row.classId).then((result) => {
-        console.log("class에 할당된 teacher get result ", result);
+        //console.log("class에 할당된 teacher get result ", result);
 
         setInitalSelectedTeacher(result);
         setSelectedTeachers(result.map((teacher) => teacher.username));
@@ -216,17 +216,17 @@ function AssignHomeroom() {
     }
   };
   const handleClassRowIdSelection = (id) => {
-    console.log(selectedClassRowData, "rowid???", id[0]);
+    //console.log(selectedClassRowData, "rowid???", id[0]);
     // setSelectedClassRowId(id[0]);
   };
 
   const handleLeftStudentRowSelection = (_id) => {
-    console.log("체크: ", _id);
+    //console.log("체크: ", _id);
     // setLeftStudents(_id);
     setSelectedLeftStudents(_id);
   };
   const handleRightStudentRowSelection = (_id) => {
-    console.log("체크: ", _id);
+    //console.log("체크: ", _id);
     // setLeftStudents(_id);
     setSelectedRightStudents(_id);
   };
@@ -266,7 +266,7 @@ function AssignHomeroom() {
 
   //  params: leftStudents, rightStudents, selectedLeftStudents
   const handleStudentTransferToRight = (from, to, setFrom) => {
-    console.log("setfrom value?", setFrom);
+    //console.log("setfrom value?", setFrom);
     // from 배열에서 setFrom에 포함된 ID를 가진 학생 객체 제거
     // const newFrom = from.filter((student) => !setFrom.includes(student.id));
 
@@ -284,10 +284,10 @@ function AssignHomeroom() {
     //from 배열과 to 배열의 상태를 업데이트
     setLeftStudents(newFrom);
     setRightStudents(newTo);
-    console.log("selectedLeftStudentss ", selectedLeftStudents);
+    //console.log("selectedLeftStudentss ", selectedLeftStudents);
     setNewSelectedLeftStudent(selectedLeftStudents);
-    console.log("newForm", newFrom);
-    console.log("newto", newTo);
+    //console.log("newForm", newFrom);
+    //console.log("newto", newTo);
   };
 
   //  params: rightStudents, leftStudents, selectedRightStudents
@@ -311,8 +311,8 @@ function AssignHomeroom() {
     setRightStudents(newFrom);
     setLeftStudents(newTo);
     // setSelectedRightStudents(newFrom);
-    console.log("newForm", newFrom, setFrom);
-    console.log("newto", newTo);
+    //console.log("newForm", newFrom, setFrom);
+    //console.log("newto", newTo);
     //asign API
 
     //선택된 학생 ID를 초기화
@@ -320,20 +320,20 @@ function AssignHomeroom() {
   };
 
   const handleSave = async () => {
-    // console.log("selected teacher?", selectedTeachers);
-    // console.log("selected left student", newSelctedLeftStudent);
+    // //console.log("selected teacher?", selectedTeachers);
+    // //console.log("selected left student", newSelctedLeftStudent);
 
     try {
-      console.log("selectedLeftStudents", selectedLeftStudents);
+      //console.log("selectedLeftStudents", selectedLeftStudents);
       if (newSelctedLeftStudent) {
         newSelctedLeftStudent.map((item) => {
-          console.log(
-            "assign에서 현재 클래스 아이디 불러오고싷ㅍ음 selectedClass",
-            selectedClassRowData.classId
-          );
+          // console.log(
+          //   "assign에서 현재 클래스 아이디 불러오고싷ㅍ음 selectedClass",
+          //   selectedClassRowData.classId
+          // );
           assignClassMember(selectedClassRowData, item.username)
             .then((result) => {
-              console.log("assign class member result", result);
+              //console.log("assign class member result", result);
               setShowAlert(true);
               setTimeout(() => setShowAlert(false), 2000); // 2초 후 알림 숨김
             })
@@ -344,16 +344,16 @@ function AssignHomeroom() {
       }
       if (newSelctedRightStudent) {
         //새롭게 선택된 학생 리스트
-        console.log(
-          "assign에서 현재 클래스 아이디 불러오고싷ㅍ음 selectedClass",
-          selectedClassRowData.classId
-        );
-        console.log("selectedRightStudents", newSelctedRightStudent);
+        //console.log(
+        // "assign에서 현재 클래스 아이디 불러오고싷ㅍ음 selectedClass",
+        // selectedClassRowData.classId
+        // );
+        //console.log("selectedRightStudents", newSelctedRightStudent);
         newSelctedRightStudent.map((item) => {
           deleteClassMember(selectedClassRowData, item.username)
             .then((result) => {
               if (result) {
-                console.log("delete class member result", result, "item name");
+                //console.log("delete class member result", result, "item name");
                 setShowAlert(true);
                 setTimeout(() => setShowAlert(false), 2000); // 2초 후 알림 숨김
               } else {
@@ -372,9 +372,9 @@ function AssignHomeroom() {
             .then((result) => {
               setShowAlert(true);
               setTimeout(() => setShowAlert(false), 2000); // 2초 후 알림 숨김
-              console.log(
-                `Teacher ${initialTeacher.username} removed successfully`
-              );
+              //console.log(
+              //   `Teacher ${initialTeacher.username} removed successfully`
+              // );
               fetchData();
             })
             .catch((err) => {
@@ -402,7 +402,7 @@ function AssignHomeroom() {
               } else {
                 setShowAlert(true);
                 setTimeout(() => setShowAlert(false), 2000); // 2초 후 알림 숨김
-                console.log(`Teacher ${selectedTeacher} assigned successfully`);
+                //console.log(`Teacher ${selectedTeacher} assigned successfully`);
                 fetchData();
               }
             })

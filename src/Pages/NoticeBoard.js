@@ -44,17 +44,17 @@ function NoticeBoard() {
   const [loading, setLoading] = useState(false); // 추가된 부분
 
   useEffect(() => {
-    console.log("enter into useEffect()");
+    //console.log("enter into useEffect()");
     const fetchData = async () => {
       setLoading(true);
 
       try {
         // 공지사항 데이터 가져오기
         const result = await getNoticePostList(page - 1, itemsPerPage);
-        console.log("get into try문");
+        //console.log("get into try문");
 
         if (result && Array.isArray(result.content)) {
-          console.log("get into if문");
+          //console.log("get into if문");
           // 제목 번역
           const translatedTitlesPromises = result.content.map(
             async (notice) => {
@@ -67,7 +67,7 @@ function NoticeBoard() {
                 const translationResult = await PostTranslation(
                   translatingData
                 );
-                console.log("Translation result for title:", translationResult); // 번역 결과 로그
+                //console.log("Translation result for title:", translationResult); // 번역 결과 로그
 
                 return {
                   ...notice,
@@ -82,14 +82,14 @@ function NoticeBoard() {
 
           // 모든 번역 요청을 처리한 후 상태 업데이트
           const translatedNotices = await Promise.all(translatedTitlesPromises);
-          console.log("Translated notices:", translatedNotices); // 번역된 공지사항 로그
+          //console.log("Translated notices:", translatedNotices); // 번역된 공지사항 로그
 
           // 결과와 상태 업데이트
           setRows(translatedNotices);
           setTotalPages(result.totalPages);
           setTotalPosting(result.totalElements);
         } else {
-          console.log("No content found in result.");
+          //console.log("No content found in result.");
           setRows([]);
           setTotalPages(1);
         }
@@ -117,12 +117,12 @@ function NoticeBoard() {
   };
 
   const handlePreviousGroup = () => {
-    console.log("Previous group button clicked"); // 버튼 클릭 확인
+    //console.log("Previous group button clicked"); // 버튼 클릭 확인
     setPage((prevPage) => Math.max(prevPage - 5, 1));
   };
 
   const handleNextGroup = () => {
-    console.log("Next group button clicked"); // 버튼 클릭 확인
+    //console.log("Next group button clicked"); // 버튼 클릭 확인
     setPage((prevPage) => Math.min(prevPage + 5, totalPages));
   };
 

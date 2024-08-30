@@ -16,18 +16,18 @@ const Table = memo(
     isReadOnly,
   }) => {
     const handleRowClick = (params) => {
-      console.log("table:", params.row);
+      //console.log("table:", params.row);
       onRowSelection(params.row);
     };
     const handleRowSelection = (newSelection) => {
-      console.log("table selected rows:", newSelection);
+      //console.log("table selected rows:", newSelection);
 
       if (id === "student_select_body") {
         onRowSelectedId(newSelection); // 선택된 행 ID들을 상위 컴포넌트에 전달
       }
     };
     useEffect(() => {
-      console.log("내가 받은 row", rows);
+      //console.log("내가 받은 row", rows);
     }, []);
     return (
       <div id={id ? styles[id] : ""}>

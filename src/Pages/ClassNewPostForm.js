@@ -61,9 +61,9 @@ function ClassNewPostForm() {
     formData.append("type", "CLASS");
     formData.append("classId", currentClassId);
 
-    // console.log(imgURL, "img있는지");
+    // //console.log(imgURL, "img있는지");
     if (imgURL) {
-      console.log(imgURL);
+      //console.log(imgURL);
       imgURL.forEach((url, index) => {
         formData.append(`imageList`, url);
       });
@@ -80,7 +80,7 @@ function ClassNewPostForm() {
       formData.append("maintainImageList", imageIdString);
 
       putNoticePost(currentClassId, formData).then((result) => {
-        // console.log("formData", formData);
+        // //console.log("formData", formData);
         if (result) {
           alert("Edit complete");
           navigate(-1);
@@ -90,13 +90,13 @@ function ClassNewPostForm() {
       });
     } else {
       // FormData를 서버에 POST 요청으로 전송
-      console.log("뭘보내는지");
+      //console.log("뭘보내는지");
       for (const [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
+        //console.log(`${key}: ${value}`);
       }
       postNewNotice(formData).then((result) => {
         if (result && imgURL) {
-          console.log("result", result);
+          //console.log("result", result);
           alert("Post complete");
           navigate(-1);
         } else {
@@ -153,7 +153,7 @@ function ClassNewPostForm() {
       });
     }
 
-    console.log(postData, "postData");
+    //console.log(postData, "postData");
     if (postData) {
       setTitle(postData.title || "");
       setContent(postData.content || "");

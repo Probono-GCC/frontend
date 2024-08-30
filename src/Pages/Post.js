@@ -70,11 +70,11 @@ function Post() {
   };
 
   const fetchData = async () => {
-    // console.log("enter into fetchData");
+    // //console.log("enter into fetchData");
     try {
       // 1. 먼저 공지사항 데이터를 가져옴
       const result = await getNoticePost(postData.noticeId);
-      // console.log("get notice post", result);
+      // //console.log("get notice post", result);
 
       // 2. 공지사항 데이터를 상태로 먼저 업데이트
       if (result) {
@@ -98,7 +98,7 @@ function Post() {
           const translationContentResult = await PostTranslation(
             contentTranslationData
           );
-          console.log("Translation content result:", translationContentResult);
+          //console.log("Translation content result:", translationContentResult);
 
           // 번역 결과가 있으면 상태를 업데이트
           setTranslatedContent(translationContentResult.translatedText);
@@ -111,7 +111,7 @@ function Post() {
           const translationTitleResult = await PostTranslation(
             titleTranslationData
           );
-          console.log("Translation title result:", translationTitleResult);
+          //console.log("Translation title result:", translationTitleResult);
 
           // 번역 결과가 있으면 상태를 업데이트
           setTranslatedTitle(translationTitleResult.translatedText);
@@ -133,7 +133,7 @@ function Post() {
     }
   };
   useEffect(() => {
-    console.log("i18n.language", i18n.language);
+    //console.log("i18n.language", i18n.language);
 
     fetchData(); // 데이터 불러오기 함수 호출
   }, [i18n.language, postData.noticeId]);
