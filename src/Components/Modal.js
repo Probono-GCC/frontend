@@ -20,9 +20,9 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
     if (title === "Teacher Detail Info") {
       if (rowData && rowData.id) {
         getTeacher(rowData.id).then((result) => {
-          // console.log("getteacher", result, "rowData", rowData);
+          // //console.log("getteacher", result, "rowData", rowData);
           if (result && result.imageId && result.imageId.imagePath) {
-            // console.log("getteacher image pth", result.imageId.imagePath);
+            // //console.log("getteacher image pth", result.imageId.imagePath);
             setProfileImgPath(result.imageId.imagePath);
           } else {
             setProfileImgPath("");
@@ -64,7 +64,7 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
             result.imageResponseDTO &&
             result.imageResponseDTO.imagePath
           ) {
-            // console.log(
+            // //console.log(
             //   "get stud image pth",
             //   result.imageResponseDTO.imagePath
             // );
@@ -75,7 +75,7 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
         });
       }
     }
-    // console.log("recieveted", rowData);
+    // //console.log("recieveted", rowData);
   }, [open, profileImgPath]);
   // 이미지가 로드되지 않을 경우를 대비한 예외 처리
   const handleImageError = (event) => {

@@ -50,7 +50,7 @@ function ClassBoard() {
           itemsPerPage
         );
         if (result && Array.isArray(result.content)) {
-          console.log("view있는지 확인", result.content);
+          //console.log("view있는지 확인", result.content);
           setRows(result.content);
           setTotalPages(result.totalPages);
           setTotalPosting(result.totalElements);
@@ -88,7 +88,7 @@ function ClassBoard() {
   };
 
   const handleRowClick = (rowData) => {
-    console.log("rowData", rowData);
+    //console.log("rowData", rowData);
     // 현재 경로의 마지막 부분을 추출
     const lastSegment = location.pathname.split("/").pop();
 

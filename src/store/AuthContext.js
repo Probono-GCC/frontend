@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const storedToken = localStorage.getItem("jwt");
-    console.log("Stored token:", storedToken); // 토큰 확인
+    //console.log("Stored token:", storedToken); // 토큰 확인
 
     if (storedToken) {
       setToken(storedToken);

@@ -11,17 +11,17 @@ export async function putClass(classData) {
       return response.data;
     } else if (response.status == 409) {
       //클래스 중복
-      console.log(response);
+      // //console.log(response);
       return response;
     }
   } catch (err) {
-    console.log(err);
+    //console.log(err);
   }
 }
 export async function postClass(classData) {
   try {
     const response = await axiosInstance.post("/class", classData);
-    console.log("Response:", response); // 응답 정보 로깅
+    //console.log("Response:", response); // 응답 정보 로깅
     return response.data;
   } catch (err) {
     console.error("요청 중 오류 발생:", err); // 오류 메시지 로깅
@@ -44,10 +44,10 @@ export async function getClass(classData) {
       `/class/${classData.classId}`,
       classData
     );
-    console.log(response);
+    //console.log(response);
     return response.data;
   } catch (err) {
-    console.log(err);
+    //console.log(err);
   }
 }
 
@@ -56,10 +56,10 @@ export async function getClasses(page, pageSize, yearData) {
     const response = await axiosInstance.get(
       `/classes?page=${page}&size=${pageSize}&year=${yearData}`
     );
-    // console.log(response);
+    // //console.log(response);
     return response.data;
   } catch (err) {
-    console.log(err);
+    //console.log(err);
   }
 }
 
@@ -68,10 +68,10 @@ export async function assignClassMember(classData, username) {
     const response = await axiosInstance.put(
       `/class/${classData.classId}/assignUser/${username}`
     );
-    console.log(response);
+    //console.log(response);
     return response.data;
   } catch (err) {
-    console.log(err);
+    //console.log(err);
     return err;
   }
 }
@@ -82,10 +82,10 @@ export async function deleteClass(classData) {
       `/class/${classData.classId}`,
       classData
     );
-    console.log(response);
+    //console.log(response);
     return response.data;
   } catch (err) {
-    console.log(err);
+    //console.log(err);
   }
 }
 
@@ -96,7 +96,7 @@ export async function getClassStudent(classId, page, size) {
     );
     return response.data;
   } catch (err) {
-    console.log(err);
+    //console.log(err);
     return err;
   }
 }
@@ -105,7 +105,7 @@ export async function getClassTeacher(classId) {
     const response = await axiosInstance.get(`class/${classId}/teachers`);
     return response.data;
   } catch (err) {
-    console.log(err);
+    //console.log(err);
   }
 }
 export async function deleteClassMember(classData, username) {
@@ -113,10 +113,10 @@ export async function deleteClassMember(classData, username) {
     const response = await axiosInstance.delete(
       `/class/${classData.classId}/assignedUser/${username}`
     );
-    console.log(response);
+    //console.log(response);
     return response.data;
   } catch (err) {
-    console.log(err);
+    //console.log(err);
   }
 }
 export async function getClassList(page, size, year) {
@@ -124,10 +124,10 @@ export async function getClassList(page, size, year) {
     const response = await axiosInstance.get(
       `/classes?page=${page}&size=${size}&year=${year}`
     );
-    console.log(response);
+    //console.log(response);
     return response.data;
   } catch (err) {
-    console.log(err);
+    //console.log(err);
   }
 }
 export async function getNotAssignedStudent(grade, page, size) {
@@ -135,9 +135,9 @@ export async function getNotAssignedStudent(grade, page, size) {
     const response = await axiosInstance.get(
       `/notAssignStudents?grade=${grade}&page=${page}&size=${size}`
     );
-    console.log(response);
+    //console.log(response);
     return response.data;
   } catch (err) {
-    console.log(err);
+    //console.log(err);
   }
 }

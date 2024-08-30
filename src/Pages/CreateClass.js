@@ -75,11 +75,11 @@ function CreateClass() {
           section: item.section,
           classId: item.classId, // classId를 가져와서 삭제에 활용
         }));
-        console.log("temp row?", tempRow);
+        //console.log("temp row?", tempRow);
         setRows(tempRow);
         setTotalRowCount(result.totalElements);
       } else {
-        console.log("결과없음", result);
+        //console.log("결과없음", result);
         setRows([]);
       }
     });
@@ -102,7 +102,7 @@ function CreateClass() {
             ...prevRows,
             { id: prevRows.length + 1, ...result },
           ]);
-          console.log(result, "wnddy");
+          //console.log(result, "wnddy");
           setShowAlert(true);
           setTimeout(() => setShowAlert(false), 2000); // 2초 후 알림 숨김
           setBatch("");
@@ -120,13 +120,13 @@ function CreateClass() {
   };
 
   // const handleRowSelection = (_row) => {
-  //   console.log("onselectrow?", _row);
+  //   //console.log("onselectrow?", _row);
   //   setCheckedRows(_row);
   // };
 
   const deleteRow = () => {
     try {
-      console.log(checkedRows, "delete대상");
+      //console.log(checkedRows, "delete대상");
       if (Array.isArray(checkedRows)) {
         checkedRows.map((item) => {
           deleteClass({ classId: item })
@@ -137,12 +137,12 @@ function CreateClass() {
               fetchClass();
             })
             .catch((error) => {
-              console.log(error);
+              //console.log(error);
             });
         });
       }
 
-      console.log(rows, "현재 남은 row");
+      //console.log(rows, "현재 남은 row");
       // 성공적으로 삭제되었음을 알림
     } catch (err) {
       console.error("Failed to delete class:", err);
@@ -150,11 +150,11 @@ function CreateClass() {
     }
   };
   const handleClassRowIdSelection = (id) => {
-    console.log("rowid???", id);
+    //console.log("rowid???", id);
     setCheckedRows(id);
   };
   const handleClassRowSelection = (data) => {
-    console.log("all checked", data);
+    //console.log("all checked", data);
     setAllCheckedRows(data);
   };
   const columns = [

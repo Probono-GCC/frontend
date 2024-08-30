@@ -14,12 +14,12 @@ export const isFirstAccessStudent = async (userId) => {
       result.fatherPhoneNum !== null ||
       result.motherPhoneNum !== null ||
       result.guardiansPhoneNum !== null;
-    console.log(
-      "isPersonalInfoValid",
-      isPersonalInfoValid,
-      " iscon",
-      isContactInfoValid
-    );
+    //console.log(
+    //   "isPersonalInfoValid",
+    //   isPersonalInfoValid,
+    //   " iscon",
+    //   isContactInfoValid
+    // );
     return !(isPersonalInfoValid && isContactInfoValid);
   } catch (error) {
     console.error("Error fetching student data:", error);

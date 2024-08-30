@@ -69,26 +69,26 @@ function ChangeGrade() {
       ];
 
   const handleRowSelection = (_loginId) => {
-    console.log("CHECKED: ", _loginId);
+    //console.log("CHECKED: ", _loginId);
     setCheckedRowId(_loginId);
     setCheckedRowData(_loginId);
   };
   // 페이지 변경 시 처리
   const handlePageChange = (newPage, size) => {
-    console.log("page change", newPage, size);
+    //console.log("page change", newPage, size);
     setPage(newPage);
     fetchStudents(newPage, size);
   };
 
   // 페이지 크기 변경 시 처리
   const handlePageSizeChange = (page, newSize) => {
-    console.log("page change", newSize, page);
+    //console.log("page change", newSize, page);
 
     setPageSize(newSize);
     fetchStudents(page, newSize);
   };
   const handleModalOpen = () => {
-    console.log("OPENING: ", checkedRowId);
+    //console.log("OPENING: ", checkedRowId);
     setModalOpen(true);
   };
 
@@ -123,7 +123,7 @@ function ChangeGrade() {
       if (result && result.content) {
         const students = result.content || []; // content 배열 가져오기
         setAllStudentDatas(students);
-        console.log(result.totalElements, "??");
+        //console.log(result.totalElements, "??");
         setTotalRowCount(result.totalElements);
         if (students.length > 0) {
           const tempRow = students.map((item) =>
@@ -213,19 +213,19 @@ function ChangeGrade() {
     }
   };
   useEffect(() => {
-    console.log("page change", page, pageSize);
+    //console.log("page change", page, pageSize);
     fetchStudents(page, pageSize);
   }, []);
 
   useEffect(() => {
-    console.log("checkedrowid", checkedRowId);
+    //console.log("checkedrowid", checkedRowId);
     if (checkedRowId) {
       const selectedData = allStudentData.find(
         (item) => item.username === checkedRowId.id
       );
       if (selectedData) {
         setCheckedRowData(selectedData);
-        console.log(selectedData, "selectedDta?");
+        //console.log(selectedData, "selectedDta?");
       }
     }
   }, [checkedRowId, allStudentData]);

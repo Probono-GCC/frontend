@@ -79,19 +79,19 @@ function TeacherView() {
 
   const handleRowSelection = (id) => {
     if (!Array.isArray(id)) {
-      console.log(id, "idtyupe");
+      //console.log(id, "idtyupe");
       setCheckedRows((prevCheckedRows) => {
         if (prevCheckedRows.includes(id)) {
           // 이미 존재하는 id면 배열에서 제거
           const newCheckedRows = prevCheckedRows.filter(
             (rowId) => rowId !== id
           );
-          console.log("업데이트된 선택된 행:", newCheckedRows);
+          //console.log("업데이트된 선택된 행:", newCheckedRows);
           return newCheckedRows;
         } else {
           // 존재하지 않으면 배열에 추가
           const newCheckedRows = [...prevCheckedRows, id];
-          console.log("업데이트된 선택된 행:", newCheckedRows);
+          //console.log("업데이트된 선택된 행:", newCheckedRows);
           return newCheckedRows;
         }
       });
@@ -114,11 +114,11 @@ function TeacherView() {
 
   const deleteRow = async () => {
     try {
-      console.log("checkedros?", checkedRows);
+      //console.log("checkedros?", checkedRows);
       // 선택된 각 행에 대해 삭제 로직을 수행
       checkedRows.forEach((userId) => {
         deleteTeacher(userId).then((result) => {
-          console.log("status?", result);
+          //console.log("status?", result);
           if (result && result.status == 200) {
             fetchTeacher(page, pageSize);
             setCheckedRows([]);
@@ -142,7 +142,7 @@ function TeacherView() {
   };
   const fetchTeacher = () => {
     getTeachers(page, pageSize).then((result) => {
-      console.log("teacherinfo", result);
+      //console.log("teacherinfo", result);
       const teachers = result.content || []; // content 배열 가져오기
       setTotalRowCount(result.totalElements);
 
