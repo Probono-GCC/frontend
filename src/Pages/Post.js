@@ -6,7 +6,6 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import PersonIcon from "@mui/icons-material/Person";
 import { IconButton } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-
 import { convertDateFormat } from "../Util/DateUtils";
 
 import { useMediaQueryContext } from "../store/MediaQueryContext";
@@ -16,15 +15,15 @@ import { deleteNoticePost, getNoticePost } from "../Apis/Api/Notice";
 import { postTranslationData } from "../Apis/Api/Translate";
 
 import i18n from "../i18n/i18n";
-
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../store/AuthContext";
-
 import { PostTranslation } from "../Apis/Api/Translate";
 
 function Post() {
   const navigate = useNavigate();
   const [tempImageList, setTempImageList] = useState([]);
   const [postedData, setPostedData] = useState([]); //서버에서 받아온 포스팅 데이터
+  const { t } = useTranslation();
 
   const [translatedContent, setTranslatedContent] = useState(""); //번역
   const [translatedTitle, setTranslatedTitle] = useState("");
@@ -38,7 +37,7 @@ function Post() {
   // 현재 URL에서 경로(path)를 가져옴
   const path = window.location.pathname;
 
-  const { userRole, roleArray, userData } = useAuth();
+  const { userRole } = useAuth();
 
   // 경로를 슬래시(/)로 분리하여 배열로 변환
   const pathSegments = path.split("/");
@@ -67,88 +66,86 @@ function Post() {
     }
   };
 
+  const fetchData = async () => {
+    // console.log("enter into fetchData");
+    try {
+      // 1. 먼저 공지사항 데이터를 가져옴
+      const result = await getNoticePost(postData.noticeId);
+      // console.log("get notice post", result);
+
+      // 2. 공지사항 데이터를 상태로 먼저 업데이트
+
+      if (result) {
+        setPostedData({
+          title: result.title,
+          content: result.content, // 초기에는 원본 content로 설정
+          updatedAt: result.updatedAt,
+          views: result.views,
+          createdChargeId: result.createdChargeId,
+        });
+      }
+
+      // 3. 번역 요청
+      if (result && result.content) {
+        try {
+          // 내용 번역
+          const contentTranslationData = {
+            text: result.content,
+            to: i18n.language,
+          };
+          const translationContentResult = await PostTranslation(
+            contentTranslationData
+          );
+          console.log("Translation content result:", translationContentResult);
+
+          // 번역 결과가 있으면 상태를 업데이트
+          setTranslatedContent(translationContentResult.translatedText);
+
+          // 제목 번역
+          const titleTranslationData = {
+            text: result.title,
+            to: i18n.language,
+          };
+          const translationTitleResult = await PostTranslation(
+            titleTranslationData
+          );
+          console.log("Translation title result:", translationTitleResult);
+
+          // 번역 결과가 있으면 상태를 업데이트
+          setTranslatedTitle(translationTitleResult.translatedText);
+        } catch (error) {
+          console.error("Failed to translate:", error);
+        }
+      }
+
+      // 4. 이미지 리스트가 있으면 상태 업데이트
+      if (result && result.imageList != null) {
+        postData.imageList = result.imageList;
+        setTempImageList(result.imageList);
+      } else {
+        setTempImageList([]);
+        postData.imageList = null;
+      }
+    } catch (error) {
+      console.error("Error fetching notice post:", error);
+    }
+  };
   useEffect(() => {
     console.log("i18n.language", i18n.language);
-    const fetchData = async () => {
-      console.log("enter into fetchData");
-      try {
-        // 1. 먼저 공지사항 데이터를 가져옴
-        const result = await getNoticePost(postData.noticeId);
-        console.log("get notice post", result);
-
-        // 2. 공지사항 데이터를 상태로 먼저 업데이트
-        if (result) {
-          setPostedData({
-            title: result.title,
-            content: result.content, // 초기에는 원본 content로 설정
-            updatedAt: result.updatedAt,
-            views: result.views,
-            createdChargeId: result.createdChargeId,
-          });
-        }
-
-        // 3. 번역 요청
-        if (result && result.content) {
-          try {
-            // 내용 번역
-            const contentTranslationData = {
-              text: result.content,
-              to: i18n.language,
-            };
-            const translationContentResult = await PostTranslation(
-              contentTranslationData
-            );
-            console.log(
-              "Translation content result:",
-              translationContentResult
-            );
-
-            // 번역 결과가 있으면 상태를 업데이트
-            setTranslatedContent(translationContentResult.translatedText);
-
-            // 제목 번역
-            const titleTranslationData = {
-              text: result.title,
-              to: i18n.language,
-            };
-            const translationTitleResult = await PostTranslation(
-              titleTranslationData
-            );
-            console.log("Translation title result:", translationTitleResult);
-
-            // 번역 결과가 있으면 상태를 업데이트
-            setTranslatedTitle(translationTitleResult.translatedText);
-          } catch (error) {
-            console.error("Failed to translate:", error);
-          }
-        }
-
-        // 4. 이미지 리스트가 있으면 상태 업데이트
-        if (result && result.imageList != null) {
-          postData.imageList = result.imageList;
-          setTempImageList(result.imageList);
-        } else {
-          setTempImageList([]);
-          postData.imageList = null;
-        }
-      } catch (error) {
-        console.error("Error fetching notice post:", error);
-      }
-    };
 
     fetchData(); // 데이터 불러오기 함수 호출
   }, [i18n.language, postData.noticeId]);
 
   // 번역된 텍스트가 설정되면 content 업데이트
-  // useEffect(() => {
-  //   if (translatedTitle || translatedContent) {
-  //     setPostedData((prevData) => ({
-  //       ...prevData,
-  //       title: translatedTitle || prevData.title,
-  //       content: translatedContent || prevData.content, // 번역된 텍스트로 content를 업데이트
-  //     }));
-  //   }
-  // }, [translatedContent, translatedTitle]);
+  useEffect(() => {
+    if (translatedTitle || translatedContent) {
+      setPostedData((prevData) => ({
+        ...prevData,
+        title: translatedTitle || prevData.title,
+        content: translatedContent || prevData.content, // 번역된 텍스트로 content를 업데이트
+      }));
+    }
+  }, [translatedContent, translatedTitle]);
 
   const handleBack = () => {
     navigate(-1); // Go back to the previous page
@@ -291,7 +288,6 @@ function Post() {
             }}
             dangerouslySetInnerHTML={{ __html: postedData.content }}
           ></Typography>
-
           {tempImageList && tempImageList.length !== 0 ? (
             <Box
               sx={{
