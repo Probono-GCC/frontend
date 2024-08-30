@@ -26,22 +26,16 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 const Attendance = () => {
   // 학생 목록 정의
   const students = [
-    "Student A",
-    "Student B",
-    "Student C",
-    "Student D",
-    "Student E",
-    "Student F",
-    "Student G",
-    "Student H",
-    "Student I",
-    "Student J",
-    "Student K",
-    "Student L",
-    "Student M",
-    "Student N",
-    "Student O",
-    "Student P",
+    "Abik Lama",
+    "Amir Lama",
+    "Chhyoing Yanji Lama",
+    "Kristina Shrestha",
+    "Niraj Basnet",
+    "Sawal kapali",
+    "Ichhya Tamang",
+    "Amika Ghising",
+    "Aruna Basnet",
+    "Dikesh koju",
   ];
   const location = useLocation();
   const NepaliDate = require("nepali-date");

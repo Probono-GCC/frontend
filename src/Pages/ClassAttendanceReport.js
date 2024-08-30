@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import CustomButton from "../Components/Button";
 import * as XLSX from "xlsx";
 import {
+  Grid,
   Box,
   Table,
   TableBody,
@@ -38,32 +39,25 @@ const nepaliYears = Array.from({ length: 5 }, (_, i) => currentNepaliYear - i);
 
 // Students and days definitions
 const students = [
-  "Student A",
-  "Student B",
-  "Student C",
-  "Student D",
-  "Student E",
-  "Student F",
-  "Student G",
-  "Student H",
-  "Student I",
-  "Student J",
-  "Student K",
-  "Student L",
-  "Student M",
-  "Student N",
-  "Student O",
-  "Student P",
+  "Abik Lama",
+  "Amir Lama",
+  "Chhyoing Yanji Lama",
+  "Kristina Shrestha",
+  "Niraj Basnet",
+  "Sawal kapali",
+  "Ichhya Tamang",
+  "Amika Ghising",
+  "Aruna Basnet",
 ];
 const daysInMonth = Array.from({ length: 31 }, (_, i) => i + 1);
 
 const absentDays = {
-  1: [0, 1, 2],
-  2: [3, 4, 5],
-  3: [6, 7, 8],
-  4: [9, 10, 11],
-  5: [12, 13, 14],
-  6: [15],
+  1: [0, 1],
+  2: [3],
+  3: [2, 6, 7, 8],
+  4: [9, 10],
+
+  6: [5],
   7: [0, 3, 6],
 };
 
@@ -238,31 +232,108 @@ function ClassAttendanceReport() {
                 <TableRow key={studentIndex}>
                   <TableCell>{studentIndex + 1}</TableCell>
                   <TableCell>{student}</TableCell>
-                  {daysInMonth.map((_, dayIndex) => (
-                    <TableCell className={style.day_cell} key={dayIndex}>
-                      <input
-                        type="checkbox"
-                        className={style.checkbox}
-                        checked={attendanceData[studentIndex][dayIndex]}
-                        onChange={() =>
-                          toggleAttendance(studentIndex, dayIndex + 1)
-                        }
-                        disabled={
-                          dayIndex < 14 &&
-                          absentDays[dayIndex + 1]?.includes(studentIndex)
-                        }
-                      />
-                    </TableCell>
-                  ))}
+                  {daysInMonth.map((_, dayIndex) =>
+                    dayIndex < 14 ? (
+                      absentDays[dayIndex + 1]?.includes(studentIndex) ? (
+                        <TableCell className={style.day_cell} key={dayIndex}>
+                          <div>❌</div>
+                        </TableCell>
+                      ) : (
+                        <TableCell className={style.day_cell} key={dayIndex}>
+                          <div>🟢</div>
+                        </TableCell>
+                      )
+                    ) : (
+                      <TableCell className={style.day_cell} key={dayIndex}>
+                        <div>-</div>
+                      </TableCell>
+                    )
+                  )}
                 </TableRow>
               ))}
+              <TableRow>
+                <TableCell
+                  colSpan={2}
+                  sx={{ fontWeight: "bold", fontSize: "medium" }}
+                >
+                  No. of Absences
+                </TableCell>
+                {daysInMonth.map((_, dayIndex) => {
+                  const absences = students.filter(
+                    (_, studentIndex) => !attendanceData[studentIndex][dayIndex]
+                  ).length;
+                  return dayIndex < 14 ? (
+                    <TableCell
+                      key={dayIndex}
+                      sx={{
+                        fontWeight: "bold",
+                        textAlign: "center",
+                        fontSize: "medium",
+                        color: absences != 0 ? "red" : "",
+                      }}
+                    >
+                      {absences}
+                    </TableCell>
+                  ) : (
+                    <TableCell
+                      key={dayIndex}
+                      sx={{
+                        fontWeight: "bold",
+                        textAlign: "center",
+                        fontSize: "medium",
+                      }}
+                    >
+                      -
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+              <TableRow>
+                <TableCell
+                  colSpan={2}
+                  sx={{ fontWeight: "bold", fontSize: "medium" }}
+                >
+                  No. of Present Students
+                </TableCell>
+                {daysInMonth.map((_, dayIndex) => {
+                  const absences = students.filter(
+                    (_, studentIndex) => !attendanceData[studentIndex][dayIndex]
+                  ).length;
+                  const presents = students.length - absences;
+                  return dayIndex < 14 ? (
+                    <TableCell
+                      key={dayIndex}
+                      sx={{
+                        fontWeight: "bold",
+                        textAlign: "center",
+                        fontSize: "medium",
+                      }}
+                    >
+                      {presents}
+                    </TableCell>
+                  ) : (
+                    <TableCell
+                      key={dayIndex}
+                      sx={{
+                        fontWeight: "bold",
+                        textAlign: "center",
+                        fontSize: "medium",
+                      }}
+                    >
+                      -
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
             </TableBody>
           </Table>
         </TableContainer>
         <Box
           sx={{
             position: "relative",
-            margin: "50px auto",
+            marginRight: "auto",
+            marginLeft: "auto",
+            marginBottom: "100px",
             display: "flex",
             textAlign: "center",
             justifyContent: "space-between",
