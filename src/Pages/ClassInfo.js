@@ -30,7 +30,7 @@ function ClassInfo() {
   const [classTeacher, setClassTeachers] = useState([]);
   const [classStudents, setClassStudents] = useState([]);
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(100);
   const [totalRowCount, setTotalRowCount] = useState(0); //서버에서 총 학생수 받아와서 설정
 
   const location = useLocation();
@@ -152,7 +152,7 @@ function ClassInfo() {
   const fetchCourseTeachers = (courseId) => {
     return getCourseTeachers(courseId).then((result) => {
       console.log("item", result);
-      if (result && result.data.userResponse) {
+      if (result && result.data && result.data.userResponse) {
         console.log("item", result.data.userResponse);
         const userResponses = Array.isArray(result.data.userResponse)
           ? result.data.userResponse

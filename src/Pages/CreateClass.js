@@ -256,21 +256,20 @@ function CreateClass() {
             isRadioButton={false}
             id={"student_select_body"}
           />
-          {/* <Box
+          <Box
             sx={{
-              display: "flex",
-              justifyContent: "flex-end",
+              position: "relative",
             }}
-          > */}
-          <CustomButton
-            title={"Delete"}
-            id={"view_btn"}
-            size={"bg"}
-            onClick={deleteRow}
-            disabled={checkedRows && checkedRows.length === 0}
-          />
-          &nbsp;
-          {/* </Box> */}
+          >
+            <CustomButton
+              title={"Delete"}
+              id={"view_btn"}
+              size={"bg"}
+              onClick={deleteRow}
+              disabled={checkedRows && checkedRows.length === 0}
+            />
+            &nbsp;
+          </Box>
         </Paper>
         &nbsp;
       </Box>

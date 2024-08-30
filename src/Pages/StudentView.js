@@ -382,8 +382,8 @@ function StudentView() {
             getRowId={(row) => row.id}
             id={isSmallScreen ? "" : "table_body"}
             isStudentTable={true} //row클릭시 체크박스 활성화 안되게 하기위해 커스텀
-            onPageChange={handlePageChange} // 페이지 변경 핸들러 추가
-            onPageSizeChange={handlePageSizeChange} // 페이지 크기 변경 핸들러 추가
+            // onPageChange={handlePageChange} // 페이지 변경 핸들러 추가
+            // onPageSizeChange={handlePageSizeChange} // 페이지 크기 변경 핸들러 추가
           />
         </Box>
         {isSmallScreen ? (
