@@ -90,7 +90,8 @@ export default function NoticeStack() {
                 const translationResult = await PostTranslation(
                   translatingData
                 );
-                // console.log("Translation result for title:", translationResult); // 번역 결과 로그
+                console.log("Translation result for title:", translationResult); // 번역 결과 로그
+
                 return {
                   ...notice,
                   title: translationResult.translatedText, // 번역된 제목
