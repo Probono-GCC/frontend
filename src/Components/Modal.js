@@ -123,8 +123,8 @@ function CustomModal({ open, handleClose, title, rowData, rowsHeader }) {
 }
 const modalImageStyle = {
   borderRadius: "50%",
-  width: "120px",
-  height: "120px",
+  width: "150px",
+  height: "150px",
   objectFit: "cover", // 비율 유지하면서 이미지 전체를 표시 cover or contain
   display: "block",
   margin: "auto",
