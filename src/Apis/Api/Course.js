@@ -6,7 +6,7 @@ export async function postCourse(courseData) {
     const response = await axiosInstance.post("/course", courseData);
     return response.data;
   } catch (err) {
-    console.log(err);
+    //console.log(err);
   }
 }
 export async function postCourseUser(courseData) {
@@ -20,10 +20,10 @@ export async function postCourseUser(courseData) {
 export async function getCourse(courseData) {
   try {
     const response = await axiosInstance.get(`/course/${courseData.courseId}`);
-    console.log(response);
+    //console.log(response);
     return response.data;
   } catch (err) {
-    console.log(err);
+    //console.log(err);
   }
 }
 
@@ -32,10 +32,10 @@ export async function getCourses(page, size) {
     const response = await axiosInstance.get(
       `/courses?page=${page}&size=${size}`
     );
-    console.log(response);
+    //console.log(response);
     return response.data;
   } catch (err) {
-    console.log(err);
+    //console.log(err);
   }
 }
 
@@ -64,9 +64,9 @@ export async function getClassCourse(classId, page, size) {
     const response = await axiosInstance.get(
       `/courses/${classId}?page=${page}&size=${size}`
     );
-    console.log(response);
+    //console.log(response);
     return response.data;
   } catch (err) {
-    console.log(err);
+    //console.log(err);
   }
 }

@@ -42,7 +42,7 @@ const Table = memo(
       onRowSelection(params.row);
     };
     const handleRowSelection = (newSelection) => {
-      // console.log("table selected rows:", newSelection);
+      // //console.log("table selected rows:", newSelection);
       if (id === "student_select_body") {
         onRowSelectedId(newSelection); // 선택된 행 ID들을 상위 컴포넌트에 전달
       }

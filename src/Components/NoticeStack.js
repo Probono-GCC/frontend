@@ -28,7 +28,7 @@ export default function NoticeStack() {
 
   //     try {
   //       const result = await getNoticePostList(0, 5); // 공지사항 데이터 가져오기
-  //       console.log("Fetched result:", result); // 가져온 결과 로그
+  //       //console.log("Fetched result:", result); // 가져온 결과 로그
 
   //       if (result && Array.isArray(result.content)) {
   //         // 제목 번역
@@ -39,7 +39,7 @@ export default function NoticeStack() {
   //                 notice.title,
   //                 i18n.language
   //               );
-  //               console.log("Translation result for title:", translationResult); // 번역 결과 로그
+  //               //console.log("Translation result for title:", translationResult); // 번역 결과 로그
   //               return {
   //                 ...notice,
   //                 title: translationResult.translatedText,
@@ -52,10 +52,10 @@ export default function NoticeStack() {
   //         );
 
   //         const translatedNotices = await Promise.all(translatedTitlesPromises);
-  //         console.log("Translated notices:", translatedNotices); // 번역된 공지사항 로그
+  //         //console.log("Translated notices:", translatedNotices); // 번역된 공지사항 로그
   //         setRows(translatedNotices); // 번역된 제목을 포함한 공지사항 상태 업데이트
   //       } else {
-  //         console.log("No content found in result.");
+  //         //console.log("No content found in result.");
   //         setRows([]); // 데이터가 없으면 빈 배열 설정
   //       }
   //     } catch (error) {
@@ -75,7 +75,7 @@ export default function NoticeStack() {
 
       try {
         const result = await getNoticePostList(0, 5); // 공지사항 데이터 가져오기
-        console.log("Fetched result:", result); // 가져온 결과 로그
+        //console.log("Fetched result:", result); // 가져온 결과 로그
 
         if (result && Array.isArray(result.content)) {
           // 제목 번역
@@ -90,7 +90,7 @@ export default function NoticeStack() {
                 const translationResult = await PostTranslation(
                   translatingData
                 );
-                // console.log("Translation result for title:", translationResult); // 번역 결과 로그
+                // //console.log("Translation result for title:", translationResult); // 번역 결과 로그
                 return {
                   ...notice,
                   title: translationResult.translatedText, // 번역된 제목
@@ -103,10 +103,10 @@ export default function NoticeStack() {
           );
 
           const translatedNotices = await Promise.all(translatedTitlesPromises);
-          // console.log("Translated notices:", translatedNotices); // 번역된 공지사항 로그
+          // //console.log("Translated notices:", translatedNotices); // 번역된 공지사항 로그
           setRows(translatedNotices); // 번역된 제목을 포함한 공지사항 상태 업데이트
         } else {
-          console.log("No content found in result.");
+          //console.log("No content found in result.");
           setRows([]); // 데이터가 없으면 빈 배열 설정
         }
       } catch (error) {

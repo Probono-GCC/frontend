@@ -18,24 +18,24 @@ const PrivateRoute = ({ requiredRole, children }) => {
   }
   // 사용자가 인증되지 않은 경우
   if (!userRole) {
-    console.log("토큰없음");
+    //console.log("토큰없음");
     return <Navigate to="/" replace />;
   }
 
   if (Array.isArray(requiredRole)) {
     // requiredRole이 배열인 경우
     if (!requiredRole.includes(userRole)) {
-      console.log("userRole is ", userRole, "\n 권한없음");
+      //console.log("userRole is ", userRole, "\n 권한없음");
       return <Navigate to="/unauthorized" replace />;
     }
   } else if (requiredRole && userRole !== requiredRole) {
     // requiredRole이 단일 역할인 경우
-    console.log("userRole is ", userRole, "\n 권한없음");
+    //console.log("userRole is ", userRole, "\n 권한없음");
     return <Navigate to="/unauthorized" replace />;
   }
 
   // 권한이 있는 경우
-  console.log("통과: ", userRole, "");
+  //console.log("통과: ", userRole, "");
   return children;
 };
 

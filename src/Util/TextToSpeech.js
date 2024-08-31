@@ -43,7 +43,7 @@ const TextToSpeech = ({ text }) => {
   }, []);
 
   const speak = (text) => {
-    // console.log("speak", speak);
+    // //console.log("speak", speak);
     const availableVoices = window.speechSynthesis.getVoices();
     if (availableVoices.length === 0) {
       console.error("No voices available.");
@@ -70,12 +70,12 @@ const TextToSpeech = ({ text }) => {
     utterance.rate = 1; // 기본 속도
 
     utterance.onstart = () => {
-      // console.log("Speech started.");
+      // //console.log("Speech started.");
       setIsSpeaking(true);
     };
 
     utterance.onend = () => {
-      // console.log("Speech ended.");
+      // //console.log("Speech ended.");
       setIsSpeaking(false);
     };
 

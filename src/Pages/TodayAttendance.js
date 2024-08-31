@@ -90,7 +90,7 @@ const Attendance = () => {
     navigate(-1);
   };
   useEffect(() => {
-    console.log("columns?", todayNepaliDate);
+    //console.log("columns?", todayNepaliDate);
   }, []);
 
   return (

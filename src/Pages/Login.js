@@ -32,7 +32,7 @@ function Login({ type }) {
     const selectedLanguage = event.target.value;
     setLang(selectedLanguage);
 
-    console.log("event.target.value", event.target.value);
+    //console.log("event.target.value", event.target.value);
 
     let languageCode;
     if (selectedLanguage === "ne") {

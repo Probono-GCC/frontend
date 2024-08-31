@@ -87,7 +87,7 @@ function CalendarEventModal({ onClose }) {
           Authorization: `Bearer ${access_token}`,
         },
       });
-      console.log("Event added successfully:", response);
+      //console.log("Event added successfully:", response);
       onClose(true);
     } catch (error) {
       console.error("Error adding event:", error.response, event);
