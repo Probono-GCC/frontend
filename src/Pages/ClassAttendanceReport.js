@@ -48,6 +48,7 @@ const students = [
   "Ichhya Tamang",
   "Amika Ghising",
   "Aruna Basnet",
+  "Dikesh koju",
 ];
 const daysInMonth = Array.from({ length: 31 }, (_, i) => i + 1);
 
@@ -168,7 +169,7 @@ function ClassAttendanceReport() {
       <Box
         sx={{
           width: "85vw",
-          margin: "25px auto",
+          margin: "10px auto 25px auto",
         }}
       >
         <FormControl>
@@ -262,6 +263,7 @@ function ClassAttendanceReport() {
                   const absences = students.filter(
                     (_, studentIndex) => !attendanceData[studentIndex][dayIndex]
                   ).length;
+
                   return dayIndex < 14 ? (
                     <TableCell
                       key={dayIndex}

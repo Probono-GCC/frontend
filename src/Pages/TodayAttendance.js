@@ -235,7 +235,7 @@ const Attendance = () => {
         </Grid>
       </Box>
 
-      <Box sx={{ marginTop: 4, textAlign: "center" }}>
+      <Box sx={{ textAlign: "center" }}>
         <Typography
           sx={{ fontWeight: "bold", fontSize: "20px" }}
           variant="body1"

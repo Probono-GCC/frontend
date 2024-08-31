@@ -21,8 +21,9 @@ function CustomButton({ title, disabled, onClick, id, size }) {
           // border: "#405c8b 1px solid",
           padding: "10px 20px",
           marginBottom: "30px",
+          border: "#405c8b 1px solid",
           "&:hover": {
-            backgroundColor: id === "cancel" ? "#f5f5f5" : "#7187a3", // 호버 시 색상 변경
+            backgroundColor: id === "cancel" ? "#f5f5f5" : "#53678a", // 호버 시 색상 변경
             border: id === "cancel" ? "#2e4a6d 1px solid" : "#42566e 1px solid",
             color: id === "cancel" ? "#bd2304" : "#1e293b",
           },

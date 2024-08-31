@@ -2,9 +2,8 @@ import styles from "../Styles/css/Login.module.css";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { TextField, Typography, Box } from "@mui/material";
+import { TextField, Typography, Box, Button } from "@mui/material";
 
-import Button from "../Components/Button";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
 import { useAuth } from "../store/AuthContext";
 import { isFirstAccessStudent } from "../Util/CheckFirstAccess";
@@ -116,7 +115,7 @@ function LoginContainer() {
         </Typography>
       </Typography>
 
-      <div id={styles.logoImg} />
+      <div id={styles.logoImg} style={{ height: "250px", width: "250px" }} />
       <Box
         component="form"
         className={styles.input_container}
@@ -158,11 +157,22 @@ function LoginContainer() {
       </Box>
       <div id={styles.login_footer}>
         <Button
-          title={t("login")}
+          variant="contained"
           disabled={userPW.length === 0 || userID.length === 0}
           onClick={login}
-          size={"bg"}
-        />
+          sx={{
+            width: "270px",
+            padding: "10px 20px",
+            marginBottom: "30px",
+            background: "#405c8b",
+            "&:hover": {
+              backgroundColor: "#53678a", // 호버 시 색상 변경
+              color: "#1e293b",
+            },
+          }}
+        >
+          {t("login")}
+        </Button>
         <div>
           <p
             id={styles.forgotPw_btn}
