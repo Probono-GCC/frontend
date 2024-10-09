@@ -29,7 +29,6 @@ function createData(
   birth,
   id,
   grade,
-
   phone_num,
   motherPhoneNum,
   fatherPhoneNum,
@@ -141,6 +140,12 @@ function StudentView() {
   ];
   // 페이지 변경 시 처리
   const handlePageChange = (newPage, size) => {
+    console.log(
+      "Student view js파일 내부 page change함수발동",
+      newPage,
+      " ",
+      size
+    );
     setPage(newPage);
     fetchStudents(newPage, size);
   };
@@ -151,9 +156,7 @@ function StudentView() {
     fetchStudents(page, newSize);
   };
   const handleRowSelection = (id) => {
-    //console.log(id, "idtyupe");
     if (!Array.isArray(id)) {
-      //console.log(id, "idtyupe");
       setCheckedRows((prevCheckedRows) => {
         if (prevCheckedRows.includes(id)) {
           // 이미 존재하는 id면 배열에서 제거
@@ -206,7 +209,6 @@ function StudentView() {
 
   const handleGradeChange = (event) => {
     setGrade(event.target.value);
-    //console.log("다시받아오기");
     // if (event.target.value != "ALL") {
     //   fetchGradeStudents(event.target.value, page, pageSize);
     // } else {
@@ -373,6 +375,7 @@ function StudentView() {
             padding: "10px",
           }}
         >
+          {/* 한번에 받는거 아니고 커스텀 페이지네이션해서 서버 페이지네이션 쓰기 */}
           <Table
             columns={isSmallScreen ? basic_columns : updatedColumns}
             rows={rows}
@@ -382,8 +385,6 @@ function StudentView() {
             getRowId={(row) => row.id}
             id={isSmallScreen ? "" : "table_body"}
             isStudentTable={true} //row클릭시 체크박스 활성화 안되게 하기위해 커스텀
-            // onPageChange={handlePageChange} // 페이지 변경 핸들러 추가
-            // onPageSizeChange={handlePageSizeChange} // 페이지 크기 변경 핸들러 추가
           />
         </Box>
         {isSmallScreen ? (
@@ -392,7 +393,7 @@ function StudentView() {
           <Box
             sx={{
               position: "relative",
-              margin: "50px 5vw",
+              margin: "20px 5vw",
               display: "flex",
               textAlign: "center",
               justifyContent: "space-between",

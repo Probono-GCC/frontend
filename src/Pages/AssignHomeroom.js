@@ -320,9 +320,6 @@ function AssignHomeroom() {
   };
 
   const handleSave = async () => {
-    // //console.log("selected teacher?", selectedTeachers);
-    // //console.log("selected left student", newSelctedLeftStudent);
-
     try {
       //console.log("selectedLeftStudents", selectedLeftStudents);
       if (newSelctedLeftStudent) {
@@ -481,7 +478,7 @@ function AssignHomeroom() {
               Assign Students
             </Typography>
             <Grid container spacing={2}>
-              <Grid item xs={5}>
+              <Grid item xs={5.5}>
                 <Table
                   getRowId={(row) => row.username}
                   sx={{ width: "100%" }} // 왼쪽 테이블의 너비 설정
@@ -497,7 +494,7 @@ function AssignHomeroom() {
               </Grid>
               <Grid
                 item
-                xs={2}
+                xs={1}
                 sx={{
                   display: "flex",
                   flexDirection: "column",
@@ -533,7 +530,7 @@ function AssignHomeroom() {
                   disabled={selectedRightStudents.length === 0}
                 />
               </Grid>
-              <Grid item xs={5}>
+              <Grid item xs={5.5}>
                 <Table
                   getRowId={(row) => row.username}
                   sx={{ width: "100%" }} // 오른쪽 테이블의 너비 설정

@@ -12,7 +12,6 @@ import Modal from "../Components/Modal";
 import { Typography, Box } from "@mui/material";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
 import { getTeachers, deleteTeacher } from "../Apis/Api/User"; // deleteTeacher 함수를 가져옵니다.
-import { getClassTeacher } from "../Apis/Api/Class";
 import { useTranslation } from "react-i18next";
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
@@ -31,8 +30,8 @@ function TeacherView() {
   const [rows, setRows] = useState([]);
   const { isSmallScreen } = useMediaQueryContext();
   //pagination
-  const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(100);
+  const page = 0;
+  const pageSize = 100;
   const [totalRowCount, setTotalRowCount] = useState(0); //서버에서 총 학생수 받아와서 설정
 
   // 기본 컬럼 정의
@@ -224,13 +223,23 @@ function TeacherView() {
         {isSmallScreen ? (
           <div>&nbsp;</div>
         ) : (
-          <Button
-            title={"Delete"}
-            disabled={checkedRows.length === 0}
-            onClick={deleteRow}
-            id={"view_btn"}
-            size={"bg"}
-          />
+          <Box
+            sx={{
+              position: "relative",
+              margin: "20px 5vw",
+              display: "flex",
+              textAlign: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Button
+              title={"Delete"}
+              disabled={checkedRows.length === 0}
+              onClick={deleteRow}
+              id={"view_btn"}
+              size={"bg"}
+            />
+          </Box>
         )}
       </div>
 

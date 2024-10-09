@@ -18,7 +18,7 @@ import { useTranslation } from "react-i18next";
 import "../i18n/i18n.js"; // src/Pages에서 src/i18n으로 접근; // i18next 초기화 파일
 
 export default ForgotPassword;
-
+//forgot password view
 function ForgotPassword() {
   const navigate = useNavigate();
   const { t } = useTranslation();

@@ -132,6 +132,7 @@ export default function NoticeStack() {
   }));
 
   const handleRowClick = (rowData) => {
+    console.log("rowData", rowData);
     if (rowData.noticeId) {
       navigate(`/notice/${rowData.noticeId}`, { state: rowData });
     } else {
@@ -204,7 +205,7 @@ export default function NoticeStack() {
             <Item key={index} onClick={() => handleRowClick(row)}>
               <NoticeTitle>{row.title}</NoticeTitle>
               <NoticeDate>
-                {new Date(row.updatedAt).toLocaleDateString()}
+                {new Date(row.createdAt).toLocaleDateString()}
               </NoticeDate>
             </Item>
           ))}

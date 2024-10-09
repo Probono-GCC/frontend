@@ -19,6 +19,7 @@ import i18n from "../i18n/i18n"; // 경로는 파일의 위치에 따라 조정�
 import { useTranslation } from "react-i18next";
 import "../i18n/i18n.js"; // src/Pages에서 src/i18n으로 접근; // i18next 초기화 파일
 
+//login 틀
 function Login({ type }) {
   const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(1);
@@ -32,7 +33,7 @@ function Login({ type }) {
     const selectedLanguage = event.target.value;
     setLang(selectedLanguage);
 
-    //console.log("event.target.value", event.target.value);
+    console.log("event.target.value", event.target.value);
 
     let languageCode;
     if (selectedLanguage === "ne") {
