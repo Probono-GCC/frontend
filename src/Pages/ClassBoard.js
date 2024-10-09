@@ -228,7 +228,7 @@ function ClassBoard() {
                     variant="body2"
                     sx={{ color: "gray", marginTop: "4px" }}
                   >
-                    {convertDateFormat(row.updatedAt)}
+                    {convertDateFormat(row.createdAt)}
                   </Typography>
                 </TableCell>
                 {!isSmallScreen && (
