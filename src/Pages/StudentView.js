@@ -209,11 +209,6 @@ function StudentView() {
 
   const handleGradeChange = (event) => {
     setGrade(event.target.value);
-    // if (event.target.value != "ALL") {
-    //   fetchGradeStudents(event.target.value, page, pageSize);
-    // } else {
-    //   fetchStudents(page, pageSize);
-    // }
   };
   const deleteRow = async () => {
     try {
