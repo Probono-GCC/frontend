@@ -16,7 +16,6 @@ import { Password } from "@mui/icons-material";
 
 // 다국어 지원
 import i18n from "../i18n/i18n"; // 경로는 파일의 위치에 따라 조정해야 합니다.
-import { useTranslation } from "react-i18next";
 import "../i18n/i18n.js"; // src/Pages에서 src/i18n으로 접근; // i18next 초기화 파일
 
 //login 틀
@@ -24,7 +23,7 @@ function Login({ type }) {
   const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(1);
 
-  const initialLang = i18n.language || "en";
+  const initialLang = i18n.language || "eng";
 
   // 초기값으로 언어 상태 설정
   const [lang, setLang] = useState(initialLang);

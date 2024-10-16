@@ -20,7 +20,7 @@ import {
   AccordionSummary,
   AccordionDetails,
 } from "@mui/material";
-
+import PolicyIcon from "@mui/icons-material/Policy";
 import {
   Menu as MenuIcon,
   Notifications as NotificationsIcon,
@@ -93,7 +93,9 @@ function AppBar() {
   const goCreateClass = () => {
     navigate("/private/create-class");
   };
-
+  const goAppPolicy = () => {
+    navigate("/app-policy");
+  };
   const goClassBoard = (classItem) => {
     navigate(`/class-board/${classItem.grade}-${classItem.section}`, {
       state: classItem,
@@ -359,6 +361,7 @@ function AppBar() {
             </IconButton>
             <Typography variant="h6" noWrap component="div"></Typography>
             <Box sx={{ flexGrow: 1 }} />
+
             <Box sx={{ display: "flex" }}>
               <LanguageSwitcher />
               <IconButton
@@ -850,6 +853,17 @@ function AppBar() {
           <Box sx={{ mt: "auto" }}>
             <Divider />
             <List>
+              <ListItem key={"Policy"} disablePadding>
+                <ListItemButton
+                  onClick={goAppPolicy}
+                  sx={{ paddingLeft: "16px" }}
+                >
+                  <ListItemIcon sx={{ minWidth: "40px" }}>
+                    <PolicyIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={t("Policy")} />
+                </ListItemButton>
+              </ListItem>
               <ListItem key={"Logout"} disablePadding>
                 <ListItemButton
                   onClick={handleLogout}
