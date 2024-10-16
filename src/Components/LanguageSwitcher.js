@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
-import { IconButton, Menu, MenuItem } from "@mui/material";
+import { IconButton, Menu, MenuItem, Box } from "@mui/material";
 import LanguageIcon from "@mui/icons-material/Language";
 import i18n from "../i18n/i18n";
 import { fontSize } from "@mui/system";
+import { BoltRounded } from "@mui/icons-material";
 
 const LanguageSwitcher = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -27,10 +28,20 @@ const LanguageSwitcher = () => {
         aria-haspopup="true"
         onClick={handleMenuClick}
         color="inherit"
-        sx={{ marginRight: 1 }}
       >
         <LanguageIcon sx={{ fontSize: "30px" }} />
       </IconButton>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          marginRight: 1,
+          marginLeft: 0.5,
+          fontWeight: "semibold",
+        }}
+      >
+        {i18n.language === "en" ? "eng" : "नेपाली"}
+      </Box>
       <Menu
         id="language-menu"
         anchorEl={anchorEl}

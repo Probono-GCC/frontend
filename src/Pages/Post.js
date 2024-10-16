@@ -31,7 +31,6 @@ function Post() {
   const [translatedTitle, setTranslatedTitle] = useState("");
 
   const { isSmallScreen } = useMediaQueryContext();
-  // const [postData, setPostData] = useState(null);
   const location = useLocation();
   const postData = location.state;
   const className = postData.className;
@@ -75,12 +74,12 @@ function Post() {
     // console.log("get notice post", result);
 
     // 2. 공지사항 데이터를 상태로 먼저 업데이트
-
     if (result) {
       setPostedData({
         title: result.title,
         content: result.content, // 초기에는 원본 content로 설정
         updatedAt: result.updatedAt,
+        createdAt: result.createdAt,
         views: result.views,
         createdChargeId: result.createdChargeId,
       });
@@ -234,14 +233,21 @@ function Post() {
                 {postedData.title}
               </Typography>
             </Grid>
+          </Grid>
+          <Grid container>
+            <Grid item xs={8} lg={8}>
+              <Typography variant="subtitle2" sx={{ color: "#999" }}>
+                Created {convertDateFormat(postedData.createdAt)}
+              </Typography>
+            </Grid>
             <Grid
               item
-              xs={12}
-              sm={12}
-              md={6}
+              xs={4}
               lg={4}
               container
               direction="column"
+              justifyContent="flex-end"
+              alignItems="flex-end"
             >
               <Box
                 sx={{
@@ -262,11 +268,10 @@ function Post() {
               </Box>
             </Grid>
           </Grid>
-
           <Grid container>
             <Grid item xs={8} lg={8}>
               <Typography variant="subtitle2" sx={{ color: "#999" }}>
-                {convertDateFormat(postedData.updatedAt)}
+                Updated {convertDateFormat(postedData.updatedAt)}
               </Typography>
             </Grid>
 
@@ -301,7 +306,6 @@ function Post() {
         </Paper>
         <Paper
           sx={{
-            paddingTop: 1,
             paddingBottom: 2,
             paddingLeft: 3,
             paddingRight: 3,

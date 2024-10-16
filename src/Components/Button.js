@@ -15,7 +15,7 @@ function CustomButton({ title, disabled, onClick, id, size }) {
         disabled={disabled}
         onClick={onClick}
         sx={{
-          width: size === "md" ? "100px" : "270px",
+          width: size === "md" ? "5vw" : "270px",
           backgroundColor: id === "cancel" ? "white" : "#405c8b", // title이 "cancel"일 때 배경색 빨간색, 그렇지 않으면 파란색
           color: id === "cancel" ? "#405c8b" : "#F2F2F2",
           // border: "#405c8b 1px solid",

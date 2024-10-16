@@ -10,6 +10,7 @@ import MyProfile from "../Pages/MyProfile";
 import Post from "../Pages/Post";
 import ClassBoard from "../Pages/ClassBoard";
 import SubjectBoard from "../Pages/SubjectBoard";
+import AppPolicy from "../Pages/AppPolicy";
 const PublicRoutes = () => (
   <Routes>
     <Route path="/" element={<Login type={"default"} />} />
@@ -24,7 +25,7 @@ const PublicRoutes = () => (
     <Route path="/class-notice/*" element={<Post />} />
     <Route path="/class-board/*" element={<ClassBoard />} />
     <Route path="/subject-board" element={<SubjectBoard />} />
-
+    <Route path="/app-policy" element={<AppPolicy />} />
     <Route
       path="/unauthorized"
       element={

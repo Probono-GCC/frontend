@@ -16,26 +16,13 @@ const ViewTable = memo(
     getRowId,
     id, // 테이블 id 속성 지정 (css 설정을 위한)
     isStudentTable, // student view 특수 동작을 위해
-    onPageChange, // 페이지 변경 핸들러
-    onPageSizeChange, // 페이지 크기 변경 핸들러
   }) => {
     const { isSmallScreen } = useMediaQueryContext();
-    const [page, setPage] = useState(0);
-    const [pageSize, setPageSize] = useState(400);
-
-    const handlePageChange = (newPage) => {
-      setPage(newPage);
-      onPageChange(newPage, pageSize); // 페이지 변경 시 부모에게 전달
-    };
-
-    const handlePageSizeChange = (newPageSize) => {
-      setPageSize(newPageSize);
-      onPageSizeChange(page, newPageSize); // 페이지 크기 변경 시 부모에게 전달
-    };
 
     const handleAllRowSelection = (params) => {
       onSelectedAllRow(params);
     };
+    const paginationModel = { page: 0, pageSize: 10 };
 
     return (
       <div id={id ? styles[id] : ""}>
@@ -57,21 +44,22 @@ const ViewTable = memo(
             "& .MuiDataGrid-menuIcon": {
               display: isSmallScreen ? "none" : "block", //모바일 뷰 table column option 숨기기
             },
-            overflowY: "auto", // 스크롤 추가
             height: isSmallScreen ? "70vh" : "60vh",
           }}
           rows={rows}
           columns={columns}
+          initialState={{ pagination: { paginationModel } }}
+          pageSizeOptions={[10, 30, 50, 100]}
           onRowSelectionModelChange={handleAllRowSelection}
           checkboxSelection={!(isStudentTable || isSmallScreen)} // 라디오 버튼 모드에 따라 체크박스 선택 여부 조절
           onRowDoubleClick={onRowDoubleClick}
           getRowId={getRowId}
           rowCount={totalRowCount} // 총 데이터 수
           // pageSize={pageSize}
-          // pagination={false} // Disable pagination
+          // // pagination={false} // Disable pagination
           // paginationMode="server" // Server-side pagination
           // pageSizeOptions={[]} // No page size options displayed
-          hideFooter
+          // // hideFooter
         />
       </div>
     );
