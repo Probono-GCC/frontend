@@ -258,7 +258,7 @@ function ChangePassword() {
             isRadioButton={true}
             handlePageNumber={handlePageChange} // 페이지 변경 핸들러 추가
             onPageSizeChange={handlePageSizeChange} // 페이지 크기 변경 핸들러 추가
-            // pageSizeOptions={[5, 10, 15]} // 여기서도 전달 가능
+            pageSizeOptions={[10, 30, 50, 100]}
             // renderCell={(params) => (
             //   <Radio
             //     {...label}
