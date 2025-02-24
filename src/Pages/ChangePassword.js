@@ -252,20 +252,12 @@ function ChangePassword() {
             onRowSelectedId={() => {}}
             id={isSmallScreen ? "" : "table_body"}
             totalRowCount={totalRowCount}
-            // onRowClick={handleRowSelection}
             onRowDoubleClick={(params) => handleModalOpen(params.row)}
             getRowId={(row) => row.id}
             isRadioButton={true}
             handlePageNumber={handlePageChange} // 페이지 변경 핸들러 추가
             onPageSizeChange={handlePageSizeChange} // 페이지 크기 변경 핸들러 추가
             pageSizeOptions={[10, 30, 50, 100]}
-            // renderCell={(params) => (
-            //   <Radio
-            //     {...label}
-            //     checked={checkedRowId === params.row.id}
-            //     onChange={() => handleRowSelection(params.row.id)}
-            //   />
-            // )}
           />
         </Box>
 
