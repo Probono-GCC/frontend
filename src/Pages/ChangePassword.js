@@ -165,7 +165,6 @@ function ChangePassword() {
   };
 
   const handleModalOpen = () => {
-    setModalRowData(rowData);
     setModalOpen(true);
   };
 
