@@ -51,8 +51,8 @@ function AppBar() {
   const { t } = useTranslation();
 
   const { isSmallScreen } = useMediaQueryContext();
-
-  const { userRole, roleArray, userData } = useAuth();
+  const roleArray = ["ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"];
+  const { userRole, userData } = useAuth();
   const [userName, setUserName] = React.useState("");
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -109,16 +109,6 @@ function AppBar() {
     });
     handleDrawerClose();
   };
-
-  // const goTodayAttendance = (classItem) => {
-  //   navigate(
-  //     `/private/class-attendance/today/${classItem.grade}-${classItem.section}`,
-  //     {
-  //       state: classItem,
-  //     }
-  //   );
-  //   handleDrawerClose();
-  // };
   const goAttendance = (classItem) => {
     navigate(
       `/private/class-attendance/report/${classItem.grade}-${classItem.section}`,
@@ -444,7 +434,7 @@ function AppBar() {
                   <HomeIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary={t("Home")}
+                  // primary={t("Home")}
                   sx={{
                     "& .MuiTypography-root": {
                       fontWeight:
@@ -489,7 +479,10 @@ function AppBar() {
             </ListItem>
           </List>
           <Divider />
-          {userRole == roleArray[0] ? (
+          {Array.isArray(roleArray) &&
+          roleArray[0] &&
+          userRole === roleArray[0] ? (
+            // {userRole == roleArray[0] ? (
             <List>
               <Accordion
                 sx={{

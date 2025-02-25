@@ -10,8 +10,6 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import Alert from "@mui/material/Alert";
-import Stack from "@mui/material/Stack";
 import Radio from "@mui/material/Radio";
 import Button from "@mui/material/Button";
 import { Typography, Box, Grid } from "@mui/material";
@@ -19,7 +17,7 @@ import { useMediaQueryContext } from "../store/MediaQueryContext";
 import { getStudents, changeAllGradeApi } from "../Apis/Api/User";
 import { useTranslation } from "react-i18next";
 
-const label = { inputProps: { "aria-label": "Checkbox demo" } };
+// const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 function createData(sn, name, gender, birth, id, grade) {
   return { sn, name, gender, birth, id, grade };

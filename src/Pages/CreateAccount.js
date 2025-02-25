@@ -1,4 +1,4 @@
-import React, { useState, useTransition } from "react";
+import React, { useState } from "react";
 import AppBar from "../Components/AppBar";
 import {
   Typography,
@@ -14,14 +14,14 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
+import { grades } from "../Data/data";
 import {
   postStudent,
   postTeacher,
   checkDuplicatedUserIdApi,
   checkDuplicatedStudentSerialNumberApi,
 } from "../Apis/Api/User";
-
-import i18n from "../i18n/i18n";
+// import i18n from "../i18n/i18n";
 import { useTranslation } from "react-i18next";
 
 function CreateAccount() {
@@ -36,7 +36,6 @@ function CreateAccount() {
   const [isIdChecked, setIsIdChecked] = useState(false);
   const [isSnChecked, setIsSnChecked] = useState(false);
   const [id, setId] = useState("");
-  const [isFocused, setIsFocused] = useState(false); // input의 포커스 상태를 추적
 
   const [sn, setSn] = useState("");
   const [name, setName] = useState("");
@@ -49,12 +48,8 @@ function CreateAccount() {
     setIsSnChecked(false);
   };
 
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleClickShowRePassword = () => {
-    setShowRePassword(!showRePassword);
+  const togglePasswordVisibility = (setState) => {
+    setState((prev) => !prev);
   };
 
   const handlePasswordChange = (event) => {
@@ -189,23 +184,6 @@ function CreateAccount() {
     setRePassword("");
   };
 
-  const grades = [
-    { value: "PLAYGROUP", label: "PlayGroup" },
-    { value: "NURSERY", label: "Nursery" },
-    { value: "LOWERKG", label: "LowerKG" },
-    { value: "UPPERKG", label: "UpperKG" },
-    { value: "CLASS1", label: "Class 1" },
-    { value: "CLASS2", label: "Class 2" },
-    { value: "CLASS3", label: "Class 3" },
-    { value: "CLASS4", label: "Class 4" },
-    { value: "CLASS5", label: "Class 5" },
-    { value: "CLASS6", label: "Class 6" },
-    { value: "CLASS7", label: "Class 7" },
-    { value: "CLASS8", label: "Class 8" },
-    { value: "CLASS9", label: "Class 9" },
-    { value: "CLASS10", label: "Class 10" },
-  ];
-
   // Validation Regex
   const idRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9]{4,20}$/;
   const pwRegex = /^(?=.*[a-zA-Z])[a-zA-Z\d!@#$%^*+=-]{4,20}$/;
@@ -249,12 +227,11 @@ function CreateAccount() {
               label={"ID"}
               variant="outlined"
               value={id}
-              onFocus={() => setIsFocused(true)} // 포커스가 있을 때 isFocused를 true로 설정
-              onBlur={() => setIsFocused(false)} // 포커스가 벗어날 때 isFocused를 false로 설정
+              // onFocus={() => setIsFocused(true)} // 포커스가 있을 때 isFocused를 true로 설정
+              // onBlur={() => setIsFocused(false)} // 포커스가 벗어날 때 isFocused를 false로 설정
               onChange={(e) => {
                 const newId = e.target.value;
                 setId(newId);
-                setIsIdChecked(idRegex.test(newId));
               }}
               InputProps={{
                 endAdornment: (
@@ -331,7 +308,7 @@ function CreateAccount() {
                   <InputAdornment position="end">
                     <IconButton
                       aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
+                      onClick={() => togglePasswordVisibility(setShowPassword)}
                       edge="end"
                     >
                       {showPassword ? <VisibilityOff /> : <Visibility />}
@@ -340,6 +317,11 @@ function CreateAccount() {
                 ),
               }}
             />
+            <div style={{ fontSize: "14px", color: "#B3B3B3" }}>
+              Password must be 4-20 characters long and contain letters,
+              numbers, and special characters, with at least one letter and one
+              number.
+            </div>
           </Grid>
           <Grid item xs={12}>
             <TextField
@@ -356,7 +338,9 @@ function CreateAccount() {
                   <InputAdornment position="end">
                     <IconButton
                       aria-label="toggle password visibility"
-                      onClick={handleClickShowRePassword}
+                      onClick={() =>
+                        togglePasswordVisibility(setShowRePassword)
+                      }
                       edge="end"
                     >
                       {showRePassword ? <VisibilityOff /> : <Visibility />}

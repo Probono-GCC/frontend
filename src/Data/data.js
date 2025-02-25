@@ -1,0 +1,16 @@
+export const grades = [
+  { value: "PLAYGROUP", label: "PlayGroup" },
+  { value: "NURSERY", label: "Nursery" },
+  { value: "LOWERKG", label: "LowerKG" },
+  { value: "UPPERKG", label: "UpperKG" },
+  { value: "CLASS1", label: "Class 1" },
+  { value: "CLASS2", label: "Class 2" },
+  { value: "CLASS3", label: "Class 3" },
+  { value: "CLASS4", label: "Class 4" },
+  { value: "CLASS5", label: "Class 5" },
+  { value: "CLASS6", label: "Class 6" },
+  { value: "CLASS7", label: "Class 7" },
+  { value: "CLASS8", label: "Class 8" },
+  { value: "CLASS9", label: "Class 9" },
+  { value: "CLASS10", label: "Class 10" },
+];

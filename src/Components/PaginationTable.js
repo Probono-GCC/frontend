@@ -81,7 +81,7 @@ const Table = memo(
           pageSize={pageSize}
           onPageChange={handlePageChange}
           //   onPageSizeChange={handlePageSizeChange}
-          pageSizeOptions={[]}
+          pageSizeOptions={[10, 30, 50, 100]}
           rowCount={totalRowCount} // 총 데이터 수
           page={page}
           pagination

@@ -252,20 +252,12 @@ function ChangePassword() {
             onRowSelectedId={() => {}}
             id={isSmallScreen ? "" : "table_body"}
             totalRowCount={totalRowCount}
-            // onRowClick={handleRowSelection}
             onRowDoubleClick={(params) => handleModalOpen(params.row)}
             getRowId={(row) => row.id}
             isRadioButton={true}
             handlePageNumber={handlePageChange} // 페이지 변경 핸들러 추가
             onPageSizeChange={handlePageSizeChange} // 페이지 크기 변경 핸들러 추가
-            // pageSizeOptions={[5, 10, 15]} // 여기서도 전달 가능
-            // renderCell={(params) => (
-            //   <Radio
-            //     {...label}
-            //     checked={checkedRowId === params.row.id}
-            //     onChange={() => handleRowSelection(params.row.id)}
-            //   />
-            // )}
+            pageSizeOptions={[10, 30, 50, 100]}
           />
         </Box>
 
@@ -281,7 +273,7 @@ function ChangePassword() {
       <Modal
         open={modalOpen}
         handleClose={handleModalClose}
-        title={"Change Password"}
+        title={"Set New Password"}
         rowData={checkedRowId}
         rowsHeader={columns}
       />

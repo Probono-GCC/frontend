@@ -26,6 +26,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
+import { grades } from "../Data/data";
 //권한
 import { useAuth } from "../store/AuthContext"; // Context API에서 인증 상태를 가져옵니다
 
@@ -40,22 +41,7 @@ import {
 } from "../Apis/Api/User";
 import { useTranslation } from "react-i18next";
 import { fontStyle } from "@mui/system";
-const grades = [
-  { value: "PLAYGROUP", label: "PlayGroup" },
-  { value: "NURSERY", label: "Nursery" },
-  { value: "LOWER_KG", label: "LowerKG" },
-  { value: "UPPER_KG", label: "UpperKG" },
-  { value: "CLASS1", label: "Class 1" },
-  { value: "CLASS2", label: "Class 2" },
-  { value: "CLASS3", label: "Class 3" },
-  { value: "CLASS4", label: "Class 4" },
-  { value: "CLASS5", label: "Class 5" },
-  { value: "CLASS6", label: "Class 6" },
-  { value: "CLASS7", label: "Class 7" },
-  { value: "CLASS8", label: "Class 8" },
-  { value: "CLASS9", label: "Class 9" },
-  { value: "CLASS10", label: "Class 10" },
-];
+
 function MyProfile() {
   const { t } = useTranslation();
 
