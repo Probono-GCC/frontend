@@ -22,27 +22,22 @@ jest.mock("../Apis/Utils/Axios", () => ({
   },
 }));
 
-// test("모달이 올바르게 열리고 닫히는가?", async () => {
-//   render(<ChangePassword />);
+test("모달이 올바르게 열리고 닫히는가?", async () => {
+  render(
+    <MediaQueryProvider>
+      <MemoryRouter>
+        <ChangePassword />
+      </MemoryRouter>
+    </MediaQueryProvider>
+  );
 
-//   // 'Change' 버튼 클릭하여 모달 열기
-//   const changeButton = screen.getByText("Change");
-//   fireEvent.click(changeButton);
-
-//   await waitFor(() => {
-//     expect(screen.getByText("Change Password Modal")).toBeInTheDocument();
-//   });
-
-//   // 'Close' 버튼 클릭하여 모달 닫기
-//   const closeButton = screen.getByText("Close");
-//   fireEvent.click(closeButton);
-
-//   await waitFor(() => {
-//     expect(
-//       screen.queryByText("Change Password Modal")
-//     ).not.toBeInTheDocument();
-//   });
-// });
+  // 'Change' 버튼 클릭하여 모달 열기
+  const changeButton = screen.getByText("Change");
+  fireEvent.click(changeButton);
+  await waitFor(() => {
+    expect(screen.getByText("Set New Password")).toBeInTheDocument();
+  });
+});
 
 // test("페이지네이션 핸들러가 올바르게 동작하는가?", async () => {
 //   // 학생 API 응답 설정

@@ -165,6 +165,7 @@ function ChangePassword() {
   };
 
   const handleModalOpen = () => {
+    setModalRowData(rowData);
     setModalOpen(true);
   };
 
@@ -273,7 +274,7 @@ function ChangePassword() {
       <Modal
         open={modalOpen}
         handleClose={handleModalClose}
-        title={"Change Password"}
+        title={"Set New Password"}
         rowData={checkedRowId}
         rowsHeader={columns}
       />
