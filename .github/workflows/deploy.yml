@@ -24,7 +24,7 @@ jobs: # job 시작 명시(모든 job의 묶음)
       #.env에 있던 환경변수들을 등록해주는 단계
       - name: .env setting
         run: |
-          echo "REACT_APP_SERVER_IP=${{ secrets.ENV }}" >> .env
+          echo "${{ secrets.ENV }}" >> .env
       #     echo "REACT_APP_EXAMPLE=${{ secrets.REACT_APP_API_URL }}" >> .env
       #
       #
