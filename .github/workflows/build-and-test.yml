@@ -5,9 +5,9 @@ on: # 트리거
     branches: ["develop"]
 env:
   AWS_REGION: ap-northeast-2
-  AWS_S3_BUCKET: probono-gcc-bucket
-  AWS_CODE_DEPLOY_APPLICATION: probono-gcc-codedeploy-app
-  AWS_CODE_DEPLOY_GROUP: probono-gcc-codedeploy-group-front
+  AWS_S3_BUCKET: github-actions-deploy-s3bucket
+  AWS_CODE_DEPLOY_APPLICATION: Application-CodeDeploy
+  AWS_CODE_DEPLOY_GROUP: Deployment-Group-Front
 
 jobs: # job 시작 명시(모든 job의 묶음)
   build: # job 이름
@@ -20,10 +20,10 @@ jobs: # job 시작 명시(모든 job의 묶음)
       - uses: actions/setup-node@v3
         with:
           node-version: "22"
-      # .env에 있던 환경변수들을 등록해주는 단계
-      # - name: .env setting
-      #   run: |
-      #     echo "REACT_APP_SERVER_IP=${{ secrets.REACT_APP_API_URL }}" >> .env
+      #.env에 있던 환경변수들을 등록해주는 단계
+      - name: .env setting
+        run: |
+          echo "${{ secrets.ENV }}" >> .env
       #     echo "REACT_APP_EXAMPLE=${{ secrets.REACT_APP_API_URL }}" >> .env
       #
       - name: install npm dependencies
