@@ -32,6 +32,7 @@ export default function NoticeStack() {
         if (result && Array.isArray(result.content)) {
           // 제목 번역
           const translatedTitlesPromises = result.content.map(
+            // map안에 async를 두어 모든 컨텐츠가 번역이 될 때까지 기다림 추후 Promise.all처리
             async (notice) => {
               try {
                 const translatingData = {
