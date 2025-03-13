@@ -30,9 +30,16 @@ function TeacherView() {
   const [rows, setRows] = useState([]);
   const { isSmallScreen } = useMediaQueryContext();
   //pagination
-  const page = 0;
-  const pageSize = 100;
   const [totalRowCount, setTotalRowCount] = useState(0); //서버에서 총 학생수 받아와서 설정
+
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
+
+  const handlePaginationChange = (newPagination) => {
+    setPaginationModel(newPagination);
+  };
 
   // 기본 컬럼 정의
   const basic_columns = isSmallScreen
@@ -119,7 +126,7 @@ function TeacherView() {
         deleteTeacher(userId).then((result) => {
           //console.log("status?", result);
           if (result && result.status == 200) {
-            fetchTeacher(page, pageSize);
+            fetchTeacher(paginationModel.page, paginationModel.pageSize);
             setCheckedRows([]);
             setAlert(true);
             setTimeout(() => setAlert(false), 2000); // 2초 후 알림 숨김
@@ -139,7 +146,7 @@ function TeacherView() {
       console.error("Error deleting rows:", error);
     }
   };
-  const fetchTeacher = () => {
+  const fetchTeacher = (page, pageSize) => {
     getTeachers(page, pageSize).then((result) => {
       //console.log("teacherinfo", result);
       const teachers = result.content || []; // content 배열 가져오기
@@ -165,8 +172,8 @@ function TeacherView() {
     });
   };
   useEffect(() => {
-    fetchTeacher();
-  }, []);
+    fetchTeacher(paginationModel.page, paginationModel.pageSize);
+  }, [paginationModel]);
 
   return (
     <div id="page_content">
@@ -212,6 +219,9 @@ function TeacherView() {
             totalRowCount={totalRowCount}
             columns={isSmallScreen ? basic_columns : updatedColumns}
             rows={rows}
+            onPaginationChange={handlePaginationChange} // 페이지네이션 변경 핸들러 전달
+            paginationModel={paginationModel} // 현재 페이지네이션 상태 전달
+            setPaginationModel={setPaginationModel} // 상태 업데이트 함수 전달
             onSelectedAllRow={handleRowSelection}
             onRowDoubleClick={handleRowDoubleClick}
             getRowId={(row) => row.id}
