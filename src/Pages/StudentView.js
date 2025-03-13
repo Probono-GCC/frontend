@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import AppBar from "../Components/AppBar";
-import Table from "../Components/ViewTable";
+import ViewTable from "../Components/ViewTable";
 import Button from "../Components/Button";
 import styles from "../Styles/css/Table.module.css";
 import Alert from "@mui/material/Alert";
@@ -10,12 +10,14 @@ import Checkbox from "@mui/material/Checkbox";
 import * as XLSX from "xlsx";
 
 import Modal from "../Components/Modal";
-import { Typography, Box } from "@mui/material";
+import { Box } from "@mui/material";
 
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
+//custom
+import { TypographyMemo } from "../Data/memoComponents";
 import { grades } from "../Data/data";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
 import { getStudents, deleteStudent, getGradeStudents } from "../Apis/Api/User";
@@ -59,9 +61,17 @@ function StudentView() {
   const [checkedRows, setCheckedRows] = useState([]);
   const [rows, setRows] = useState([]);
   const { isSmallScreen } = useMediaQueryContext();
-  const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(400);
   const [totalRowCount, setTotalRowCount] = useState(0); //서버에서 총 학생수 받아와서 설정
+  // const [pagination, setPagination] = useState({ page: 0, pageSize: 10 });
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
+
+  const handlePaginationChange = (newPagination) => {
+    setPaginationModel(newPagination);
+  };
+
   //student view default table column
   const basic_columns = isSmallScreen
     ? [
@@ -122,23 +132,7 @@ function StudentView() {
     { field: "fatherPhoneNum", headerName: "father Ph" },
     { field: "guardiansPhoneNum", headerName: "guardian Ph" },
   ];
-  // 페이지 변경 시 처리
-  const handlePageChange = (newPage, size) => {
-    console.log(
-      "Student view js파일 내부 page change함수발동",
-      newPage,
-      " ",
-      size
-    );
-    setPage(newPage);
-    fetchStudents(newPage, size);
-  };
 
-  // 페이지 크기 변경 시 처리
-  const handlePageSizeChange = (page, newSize) => {
-    setPageSize(newSize);
-    fetchStudents(page, newSize);
-  };
   const handleRowSelection = (id) => {
     if (!Array.isArray(id)) {
       setCheckedRows((prevCheckedRows) => {
@@ -202,7 +196,7 @@ function StudentView() {
           //console.log(result);
 
           if (result.status == 200) {
-            fetchStudents(page, pageSize);
+            fetchStudents(paginationModel.page, paginationModel.pageSize);
             setCheckedRows([]);
             setAlert(true);
             setTimeout(() => setAlert(false), 2000); // 2초 후 알림 숨김
@@ -221,10 +215,11 @@ function StudentView() {
 
   const fetchStudents = (page, pageSize) => {
     getStudents(page, pageSize).then((result) => {
-      // //console.log("????", result);
+      console.log("????", result);
       const students = result.content || []; // content 배열 가져오기
-      // //console.log(students);
+      console.log(result.totalElements);
       setTotalRowCount(result.totalElements);
+
       if (students.length > 0) {
         const tempRow = students.map((item) =>
           createData(
@@ -251,7 +246,7 @@ function StudentView() {
     getGradeStudents(grade, page, pageSize).then((result) => {
       const students = result.content || []; // content 배열 가져오기
       //console.log(students);
-      setTotalRowCount(result.totalElements);
+      setTotalRowCount(result.totalPages);
       if (students.length > 0) {
         const tempRow = students.map((item) =>
           createData(
@@ -276,11 +271,12 @@ function StudentView() {
   };
   useEffect(() => {
     if (grade === "ALL") {
-      fetchStudents(page, pageSize);
+      fetchStudents(paginationModel.page, paginationModel.pageSize);
     } else {
-      fetchGradeStudents(grade, page, pageSize);
+      fetchGradeStudents(grade, paginationModel.page, paginationModel.pageSize);
     }
-  }, [grade]);
+    console.log("pagemodel", paginationModel);
+  }, [grade, paginationModel]);
 
   return (
     <div id="page_content">
@@ -314,7 +310,7 @@ function StudentView() {
               textAlign: isSmallScreen ? "center" : "left", // 작은 화면에서 텍스트 중앙 정렬
             }}
           >
-            <Typography
+            <TypographyMemo
               variant={isSmallScreen ? "h6" : "h3"}
               sx={{
                 fontFamily: "Copperplate",
@@ -324,7 +320,7 @@ function StudentView() {
               }}
             >
               {t("Student Board")}
-            </Typography>
+            </TypographyMemo>
           </div>
           <FormControl
             sx={{
@@ -354,11 +350,14 @@ function StudentView() {
             padding: "10px",
           }}
         >
-          {/* 한번에 받는거 아니고 커스텀 페이지네이션해서 서버 페이지네이션 쓰기 */}
-          <Table
+          <ViewTable
             columns={isSmallScreen ? basic_columns : updatedColumns}
             rows={rows}
             totalRowCount={totalRowCount}
+            onPaginationChange={handlePaginationChange} // 페이지네이션 변경 핸들러 전달
+            paginationModel={paginationModel} // 현재 페이지네이션 상태 전달
+            setPaginationModel={setPaginationModel} // 상태 업데이트 함수 전달
+            // onPaginationChange={handlePaginationChange} // 페이지 상태 전달
             onSelectedAllRow={handleRowSelection}
             onRowDoubleClick={handleRowDoubleClick}
             getRowId={(row) => row.id}
