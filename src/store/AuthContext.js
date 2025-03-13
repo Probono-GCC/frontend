@@ -1,6 +1,5 @@
 // src/store/AuthContext.js
 import React, { createContext, useContext, useState, useEffect } from "react";
-import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
 const AuthContext = createContext();
@@ -58,4 +57,14 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+// export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+
+  // context가 없거나 undefined일 경우 빈 객체를 반환하여 오류 방지
+  if (!context) {
+    return {};
+  }
+
+  return context;
+};

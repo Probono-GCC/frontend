@@ -1,7 +1,7 @@
 import styles from "../Styles/css/Login.module.css";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import React from "react";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
@@ -21,6 +21,9 @@ import "../i18n/i18n.js"; // src/Pages에서 src/i18n으로 접근; // i18next �
 //login 틀
 function Login({ type }) {
   const navigate = useNavigate();
+  //컴포넌트 메모제이션
+  const FormControlMemo = React.memo(FormControl);
+
   const [currentIndex, setCurrentIndex] = useState(1);
 
   const initialLang = i18n.language || "eng";
@@ -94,7 +97,7 @@ function Login({ type }) {
       {type === "default" ? (
         <div>
           <div id={styles.right_align}>
-            <FormControl sx={{ m: 1, minWidth: 120 }}>
+            <FormControlMemo sx={{ m: 1, minWidth: 120 }}>
               <Select
                 value={lang}
                 onChange={handleChange}
@@ -105,14 +108,14 @@ function Login({ type }) {
                 <MenuItem value={"en"}>Eng</MenuItem>
                 <MenuItem value={"ne"}>Nepali</MenuItem>
               </Select>
-            </FormControl>
+            </FormControlMemo>
           </div>
           <LoginContainer onKeyDown={handleKeyDown} />
         </div>
       ) : (
         <div>
           <div id={styles.right_align}>
-            <FormControl sx={{ m: 1, minWidth: 120, marginLeft: "30vw" }}>
+            <FormControlMemo sx={{ m: 1, minWidth: 120, marginLeft: "30vw" }}>
               <Select
                 value={lang}
                 onChange={handleChange}
@@ -123,7 +126,7 @@ function Login({ type }) {
                 <MenuItem value={10}>Eng</MenuItem>
                 <MenuItem value={20}>Nepali</MenuItem>
               </Select>
-            </FormControl>
+            </FormControlMemo>
           </div>
           <ForgotPassword onKeyDown={handleKeyDown} />
         </div>
