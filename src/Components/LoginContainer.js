@@ -1,10 +1,11 @@
 import styles from "../Styles/css/Login.module.css";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { TextField, Typography, Box } from "@mui/material";
+import { TextField, Box } from "@mui/material";
 
 import Button from "../Components/Button";
+import { TypographyMemo } from "../Data/memoComponents";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
 import { useAuth } from "../store/AuthContext";
 import { isFirstAccessStudent } from "../Util/CheckFirstAccess";
@@ -13,7 +14,6 @@ import { isFirstAccessTeacher } from "../Util/checkFirstAccessTeacher";
 import { loginApi } from "../Apis/Api/User";
 
 //다국어지원
-import React from "react";
 import { useTranslation } from "react-i18next";
 //login view
 function LoginContainer() {
@@ -23,6 +23,8 @@ function LoginContainer() {
   const [userPW, setUserPW] = useState("");
   const { isSmallScreen, isSmallWidth } = useMediaQueryContext();
   const { saveToken, clearToken } = useAuth(); //토큰 전역 저장
+  //컴포넌트를 메모로 감싸서 props가 변경되지 않으면 다시 렌더링하지 않도록
+  const ButtonMemo = React.memo(Button);
 
   const moveForgotPassword = () => {
     navigate("/forgot-password");
@@ -79,7 +81,13 @@ function LoginContainer() {
         //console.log(error);
       });
   };
+  const handleUserIDChange = useCallback((event) => {
+    setUserID(event.target.value);
+  }, []);
 
+  const handleUserPWChange = useCallback((event) => {
+    setUserPW(event.target.value);
+  }, []);
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       login();
@@ -92,7 +100,7 @@ function LoginContainer() {
 
   return (
     <div id={styles.login_container}>
-      <Typography
+      <TypographyMemo
         variant="h5"
         sx={{
           fontFamily: "Copperplate",
@@ -101,7 +109,7 @@ function LoginContainer() {
         }}
       >
         {t("welcome")}
-        <Typography
+        <TypographyMemo
           variant={isSmallWidth ? "h5" : "h4"}
           className={styles.title}
           component="div"
@@ -113,8 +121,8 @@ function LoginContainer() {
           }}
         >
           Creative Learners' Academy
-        </Typography>
-      </Typography>
+        </TypographyMemo>
+      </TypographyMemo>
 
       <div id={styles.logoImg} />
       <Box
@@ -127,9 +135,7 @@ function LoginContainer() {
           <TextField
             label={t("ID")}
             variant="outlined"
-            onChange={(event) => {
-              setUserID(event.target.value);
-            }}
+            onChange={handleUserIDChange}
             value={userID}
             onKeyDown={handleKeyDown}
             sx={{
@@ -144,9 +150,7 @@ function LoginContainer() {
             variant="outlined"
             type="password"
             autoComplete="current-password"
-            onChange={(event) => {
-              setUserPW(event.target.value);
-            }}
+            onChange={handleUserPWChange}
             value={userPW}
             onKeyDown={handleKeyDown}
             sx={{
@@ -157,7 +161,7 @@ function LoginContainer() {
         </div>
       </Box>
       <div id={styles.login_footer}>
-        <Button
+        <ButtonMemo
           title={t("login")}
           disabled={userPW.length === 0 || userID.length === 0}
           onClick={login}
