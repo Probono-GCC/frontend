@@ -165,7 +165,10 @@ function ChangePassword() {
   };
 
   const handleModalOpen = () => {
+<<<<<<< HEAD
     // setModalRowData(rowData);
+=======
+>>>>>>> 069b5bbdaa1ecfadda4570919e66b15d45f43021
     setModalOpen(true);
   };
 
