@@ -4,7 +4,7 @@ import styles from "../Styles/css/Table.module.css";
 import { useMediaQueryContext } from "../store/MediaQueryContext";
 import Toolbar from "./TableFooter";
 
-const ViewTable = memo(
+const ViewTable = React.memo(
   ({
     columns,
     rows,
@@ -24,7 +24,7 @@ const ViewTable = memo(
     //   page: 0,
     //   pageSize: 10,
     // });
-
+    //onPaginationChange값이 변하지 않으면 기존 함수 재사용
     const handlePaginationChange = useCallback(
       (newPaginationModel) => {
         if (onPaginationChange) {
@@ -36,7 +36,7 @@ const ViewTable = memo(
 
     useEffect(() => {
       handlePaginationChange(paginationModel);
-    }, []);
+    }, [paginationModel]);
 
     const handleAllRowSelection = (params) => {
       onSelectedAllRow(params);
