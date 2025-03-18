@@ -62,7 +62,6 @@ function StudentView() {
   const [rows, setRows] = useState([]);
   const { isSmallScreen } = useMediaQueryContext();
   const [totalRowCount, setTotalRowCount] = useState(0); //서버에서 총 학생수 받아와서 설정
-  // const [pagination, setPagination] = useState({ page: 0, pageSize: 10 });
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: 10,
@@ -72,7 +71,6 @@ function StudentView() {
     setPaginationModel(newPagination);
   };
 
-  //student view default table column
   const basic_columns = isSmallScreen
     ? [
         {
@@ -275,7 +273,7 @@ function StudentView() {
     } else {
       fetchGradeStudents(grade, paginationModel.page, paginationModel.pageSize);
     }
-    console.log("pagemodel", paginationModel);
+    // console.log("pagemodel", paginationModel);
   }, [grade, paginationModel]);
 
   return (
@@ -357,7 +355,6 @@ function StudentView() {
             onPaginationChange={handlePaginationChange} // 페이지네이션 변경 핸들러 전달
             paginationModel={paginationModel} // 현재 페이지네이션 상태 전달
             setPaginationModel={setPaginationModel} // 상태 업데이트 함수 전달
-            // onPaginationChange={handlePaginationChange} // 페이지 상태 전달
             onSelectedAllRow={handleRowSelection}
             onRowDoubleClick={handleRowDoubleClick}
             getRowId={(row) => row.id}

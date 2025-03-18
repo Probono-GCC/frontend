@@ -29,10 +29,20 @@ function ClassInfo() {
   const { isSmallScreen } = useMediaQueryContext();
   const [classTeacher, setClassTeachers] = useState([]);
   const [classStudents, setClassStudents] = useState([]);
-  const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(100);
+  // const [page, setPage] = useState(0);
+  // const [pageSize, setPageSize] = useState(100);
+
+  //pagination
   const [totalRowCount, setTotalRowCount] = useState(0); //서버에서 총 학생수 받아와서 설정
 
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
+
+  const handlePaginationChange = (newPagination) => {
+    setPaginationModel(newPagination);
+  };
   const location = useLocation();
   const classData = location.state;
   //student view default table column
@@ -99,17 +109,17 @@ function ClassInfo() {
       },
     },
   ].filter(Boolean); // 배열에서 false, null, undefined 제거
-  // 페이지 변경 시 처리
-  const handlePageChange = (newPage, size) => {
-    setPage(newPage);
-    fetchStudents(newPage, size);
-  };
+  // // 페이지 변경 시 처리
+  // const handlePageChange = (newPage, size) => {
+  //   setPage(newPage);
+  //   fetchStudents(newPage, size);
+  // };
 
-  // 페이지 크기 변경 시 처리
-  const handlePageSizeChange = (page, newSize) => {
-    setPageSize(newSize);
-    fetchStudents(page, newSize);
-  };
+  // // 페이지 크기 변경 시 처리
+  // const handlePageSizeChange = (page, newSize) => {
+  //   setPageSize(newSize);
+  //   fetchStudents(page, newSize);
+  // };
   const handleRowDoubleClick = (params) => {
     handleModalOpen(params.row);
   };
@@ -172,7 +182,11 @@ function ClassInfo() {
     });
   };
   const fetchCourse = () => {
-    getClassCourse(classData.classId, page, pageSize).then(async (result) => {
+    getClassCourse(
+      classData.classId,
+      paginationModel.page,
+      paginationModel.pageSize
+    ).then(async (result) => {
       if (result && result.content) {
         const coursePromises = result.content.map(async (courseItem) => {
           const teachers = await fetchCourseTeachers(courseItem.courseId);
@@ -212,10 +226,10 @@ function ClassInfo() {
     //console.log("currentclss", classData, "currentclss");
     getClassTeacher(classData.classId).then((result) => {
       const resultTeachers = result.map((item) => item.name);
-      //console.log(resultTeachers);
+      console.log(classData.classId, "d?", resultTeachers);
       setClassTeachers(resultTeachers);
     });
-    fetchStudents(page, pageSize);
+    fetchStudents(paginationModel.page, paginationModel.pageSize);
     fetchCourse();
   }, [classData]);
   return (
@@ -306,12 +320,15 @@ function ClassInfo() {
             rows={classStudents}
             onSelectedAllRow={handleRowSelection}
             onRowDoubleClick={handleRowDoubleClick}
+            onPaginationChange={handlePaginationChange} // 페이지네이션 변경 핸들러 전달
+            paginationModel={paginationModel} // 현재 페이지네이션 상태 전달
+            setPaginationModel={setPaginationModel} // 상태 업데이트 함수 전달
             getRowId={(row) => row.id}
             totalRowCount={totalRowCount}
             id={isSmallScreen ? "" : "table_body"}
             isStudentTable={true} //row클릭시 체크박스 활성화 안되게 하기위해 커스텀
-            onPageChange={handlePageChange} // 페이지 변경 핸들러 추가
-            onPageSizeChange={handlePageSizeChange} // 페이지 크기 변경 핸들러 추가
+            // onPageChange={handlePageChange} // 페이지 변경 핸들러 추가
+            // onPageSizeChange={handlePageSizeChange} // 페이지 크기 변경 핸들러 추가
           />
         </Box>
         &nbsp;

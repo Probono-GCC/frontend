@@ -47,7 +47,7 @@ import LanguageSwitcher from "./LanguageSwitcher"; // 언어변경 상자
 import i18n from "../i18n/i18n";
 import { useTranslation } from "react-i18next";
 
-function AppBar() {
+const AppBar = React.memo(function AppBar() {
   const { t } = useTranslation();
 
   const { isSmallScreen } = useMediaQueryContext();
@@ -880,6 +880,6 @@ function AppBar() {
       {renderMenu} */}
     </div>
   );
-}
+});
 
 export default AppBar;

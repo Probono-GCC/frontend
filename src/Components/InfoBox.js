@@ -66,7 +66,12 @@ const ClassInfoBox = ({ batch, grade, section, teacher, studentCount }) => {
             variant="outlined"
             InputProps={{
               readOnly: true,
-              sx: { fontSize: isSmallScreen ? "14px" : "16px" },
+              sx: {
+                minWidth: "600px",
+                fontSize: isSmallScreen ? "14px" : "16px",
+                overflowX: "scroll",
+                whiteSpace: "nowrap",
+              },
             }}
           />
         </Grid>
